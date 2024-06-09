@@ -5,8 +5,7 @@
 #include <nlohmann/json.hpp>
 #include "boost/optional.hpp"
 #include "Logger.h"
-#include "type_traits/ConstraintsRemover.h"
-#include "type_traits/TypeTraits.h"
+#include "TypeTraits.h"
 
 
 namespace open_json {
@@ -325,7 +324,7 @@ namespace open_json {
         template<class T>
         typename std::enable_if<std::is_enum<T>::value, void>::type
         static FromJson(T &object, const nlohmann::json &jsonObject) {
-            object = static_cast<Remove_CVR<T>::Type>(jsonObject.template get<int32_t>());
+            object = static_cast<typename Remove_CVR<T>::Type>(jsonObject.template get<int32_t>());
             LOGGER->trace("Deserializing object: type = Enum&, value = {}", object);
         }
 
@@ -335,7 +334,7 @@ namespace open_json {
         template<class T>
         typename std::enable_if<std::is_enum<T>::value, void>::type
         static FromJson(T *object, const nlohmann::json &jsonObject) {
-            *object = static_cast<Remove_CVR<T>::Type>(jsonObject.template get<int32_t>());
+            *object = static_cast<typename Remove_CVR<T>::Type>(jsonObject.template get<int32_t>());
             LOGGER->trace("Deserializing object: type = Enum*, value = {}", *object);
         }
 
@@ -347,7 +346,7 @@ namespace open_json {
         static FromJson(T **object, const nlohmann::json &jsonObject) {
             using Type = typename Remove_CVR<T>::Type;
             *object = new Type(static_cast<Type>(jsonObject.template get<int32_t>()));
-            LOGGER->trace("Deserializing object: type = Enum*, value = {}", *object);
+            LOGGER->trace("Deserializing object: type = Enum*, value = {}", **object);
         }
 
         /*********************************************************************************
@@ -420,7 +419,7 @@ namespace open_json {
         typename std::enable_if<Is_Char<T>::Value, void>::type
         static FromJson(T &object, const nlohmann::json &jsonObject) {
             object = static_cast<char>(jsonObject.template get<char>());
-            LOGGER->trace("Deserializing object: type = char&, value = {}",  object);
+            LOGGER->trace("Deserializing object: type = char&, value = {}", object);
         }
 
         /**********************************************************************************
@@ -433,7 +432,7 @@ namespace open_json {
         static FromJson(T *object, const nlohmann::json &jsonObject) {
             const std::string str = jsonObject.template get<std::string>();
             strcpy(object, str.c_str());
-            LOGGER->trace("Deserializing object: type = char*, value = {}", object);
+            LOGGER->trace("Deserializing object: type = char*, value = {}", *object);
         }
 
         /**********************************************************************************
@@ -448,7 +447,7 @@ namespace open_json {
             const std::string str = jsonObject.template get<std::string>();
             *object = new char[str.length() + 1];
             strcpy(*object, str.c_str());
-            LOGGER->trace("Deserializing object: type = char**, value = {}", *object);
+            LOGGER->trace("Deserializing object: type = char**, value = {}", **object);
         }
 
         /***********************************************************************************
@@ -458,7 +457,7 @@ namespace open_json {
         typename std::enable_if<Is_Int8<T>::Value || Is_Int16<T>::Value || Is_Int32<T>::Value, void>::type
         static FromJson(T &object, const nlohmann::json &jsonObject) {
             object = static_cast<int32_t>(jsonObject.template get<int32_t>());
-            LOGGER->trace("Deserializing object: type = signed integer32&, value = {}", (int32_t) object);
+            LOGGER->trace("Deserializing object: type = signed integer32&, value = {}", object);
         }
 
         /***********************************************************************************
@@ -468,7 +467,7 @@ namespace open_json {
         typename std::enable_if<Is_Int8<T>::Value || Is_Int16<T>::Value || Is_Int32<T>::Value, void>::type
         static FromJson(T *object, const nlohmann::json &jsonObject) {
             *object = static_cast<int32_t>(jsonObject.template get<int32_t>());
-            LOGGER->trace("Deserializing object: type = signed integer32*, value = {}", (int32_t) *object);
+            LOGGER->trace("Deserializing object: type = signed integer32*, value = {}", *object);
         }
 
         /***********************************************************************************
@@ -478,7 +477,7 @@ namespace open_json {
         typename std::enable_if<Is_Int8<T>::Value || Is_Int16<T>::Value || Is_Int32<T>::Value, void>::type
         static FromJson(T **object, const nlohmann::json &jsonObject) {
             *object = new int32_t(static_cast<int32_t>(jsonObject.template get<int32_t>()));
-            LOGGER->trace("Deserializing object: type = signed integer32**, value = {}", (int32_t) **object);
+            LOGGER->trace("Deserializing object: type = signed integer32**, value = {}", **object);
         }
 
         /***********************************************************************************
@@ -488,7 +487,7 @@ namespace open_json {
         typename std::enable_if<Is_UInt8<T>::Value || Is_UInt16<T>::Value || Is_UInt32<T>::Value, void>::type
         static FromJson(T &object, const nlohmann::json &jsonObject) {
             object = static_cast<uint32_t>(jsonObject.template get<uint32_t>());
-            LOGGER->trace("Deserializing object: type = unsigned integer32&, value = {}", (uint32_t) object);
+            LOGGER->trace("Deserializing object: type = unsigned integer32&, value = {}", object);
         }
 
         /***********************************************************************************
@@ -498,7 +497,7 @@ namespace open_json {
         typename std::enable_if<Is_UInt8<T>::Value || Is_UInt16<T>::Value || Is_UInt32<T>::Value, void>::type
         static FromJson(T *object, const nlohmann::json &jsonObject) {
             *object = static_cast<uint32_t>(jsonObject.template get<uint32_t>());
-            LOGGER->trace("Deserializing object: type = unsigned integer32*, value = {}", (uint32_t) *object);
+            LOGGER->trace("Deserializing object: type = unsigned integer32*, value = {}", *object);
         }
 
         /***********************************************************************************
@@ -509,7 +508,7 @@ namespace open_json {
         static FromJson(T **object, const nlohmann::json &jsonObject) {
 
             *object = new uint32_t(static_cast<T>(jsonObject.template get<uint32_t>()));
-            LOGGER->trace("Deserializing object: type = unsigned integer32**, value = {}", (uint32_t) **object);
+            LOGGER->trace("Deserializing object: type = unsigned integer32**, value = {}", **object);
         }
 
         /***********************************************************************************
@@ -519,7 +518,7 @@ namespace open_json {
         typename std::enable_if<Is_Int64<T>::Value, void>::type
         static FromJson(T &object, const nlohmann::json &jsonObject) {
             object = static_cast<int64_t>(jsonObject.template get<int64_t>());
-            LOGGER->trace("Deserializing object: type = signed integer64&, value = {}", (int64_t) object);
+            LOGGER->trace("Deserializing object: type = signed integer64&, value = {}", object);
         }
 
         /***********************************************************************************
@@ -529,7 +528,7 @@ namespace open_json {
         typename std::enable_if<Is_Int64<T>::Value, void>::type
         static FromJson(T *object, const nlohmann::json &jsonObject) {
             *object = static_cast<int64_t>(jsonObject.template get<int64_t>());
-            LOGGER->trace("Deserializing object: type = signed integer64*, value = {}", (uint64_t) *object);
+            LOGGER->trace("Deserializing object: type = signed integer64*, value = {}", *object);
         }
 
         /***********************************************************************************
@@ -539,7 +538,7 @@ namespace open_json {
         typename std::enable_if<Is_Int64<T>::Value, void>::type
         static FromJson(T **object, const nlohmann::json &jsonObject) {
             *object = new int64_t(static_cast<int64_t>(jsonObject.template get<int64_t>()));
-            LOGGER->trace("Deserializing object: type = signed integer64**, value = {}", (uint64_t) **object);
+            LOGGER->trace("Deserializing object: type = signed integer64**, value = {}", **object);
         }
 
         /***********************************************************************************
@@ -549,7 +548,7 @@ namespace open_json {
         typename std::enable_if<Is_UInt64<T>::Value, void>::type
         static FromJson(T &object, const nlohmann::json &jsonObject) {
             object = static_cast<uint64_t>(jsonObject.template get<uint64_t>());
-            LOGGER->trace("Deserializing object: type = unsigned integer64&, value = {}", (uint64_t) object);
+            LOGGER->trace("Deserializing object: type = unsigned integer64&, value = {}", object);
         }
 
         /***********************************************************************************
@@ -559,7 +558,7 @@ namespace open_json {
         typename std::enable_if<Is_UInt64<T>::Value, void>::type
         static FromJson(T *object, const nlohmann::json &jsonObject) {
             *object = static_cast<uint64_t>(jsonObject.template get<uint64_t>());
-            LOGGER->trace("Deserializing object: type = unsigned integer64*, value = {}", (uint64_t) *object);
+            LOGGER->trace("Deserializing object: type = unsigned integer64*, value = {}", *object);
         }
 
         /***********************************************************************************
@@ -569,7 +568,7 @@ namespace open_json {
         typename std::enable_if<Is_UInt64<T>::Value, void>::type
         static FromJson(T **object, const nlohmann::json &jsonObject) {
             *object = new uint64_t(static_cast<uint64_t>(jsonObject.template get<uint64_t>()));
-            LOGGER->trace("Deserializing object: type = unsigned integer64**, value = {}", (uint64_t) **object);
+            LOGGER->trace("Deserializing object: type = unsigned integer64**, value = {}", **object);
         }
 
         /***********************************************************************************
@@ -599,7 +598,7 @@ namespace open_json {
         typename std::enable_if<Is_Decimal<T>::Value, void>::type
         static FromJson(T **object, const nlohmann::json &jsonObject) {
             *object = new double_t(static_cast<double_t>(jsonObject.template get<double_t>()));
-            LOGGER->trace("Deserializing object: type = decimal**, value = {}",  **object);
+            LOGGER->trace("Deserializing object: type = decimal**, value = {}", **object);
         }
 
         /***********************************************************************************

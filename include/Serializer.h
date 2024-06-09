@@ -2,8 +2,7 @@
 #define OPEN_JSON_SERIALIZER_H
 
 #include "CommonDef.h"
-#include "type_traits/TypeTraits.h"
-#include "type_traits/ConstraintsRemover.h"
+#include "TypeTraits.h"
 #include "nlohmann/json.hpp"
 #include "Logger.h"
 #include "string"

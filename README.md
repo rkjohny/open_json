@@ -1,6 +1,17 @@
 # open_json
 A modern c++ library to serialize and deserialize c++ objects to and from Json string
 * Free, open source, lightweight, header-only json serializer/deserializer for c++ objects
+* nlohmann::json library has been used:
+  * to parse json string and building nlohmann::json object
+  * to serialize nlohmann::json object to string
+* This library converts nlohmann::json objects to and from c++ objects
+  * Serialization:
+    * step1: convert c++ object to nlohmann::json objects. <b>(done by this library)</b>
+    * step2: convert nlohmann::json to std::string (by nlohmann::json library)
+  * Deserialization:
+    * step1: parse std::string and create nlohmann::json object (by nlohmann::json library)
+    * step2: convert nlohmann::json objects to c++ objects. <b>(done by this library)</b>
+* nlohmann::json library can be replaced by any other json library like <b>cpprest::json</b>
 
 ## Toolset:
 * MinGW64 version 11.0 w64
