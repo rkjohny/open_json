@@ -15,9 +15,6 @@ set(EXTERNAL_DEPENDENCIES ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 set (PROJECT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set (PROJECT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-# exposing the header location to be included by other targets
-#set(LIB_OPEN_JSON_INCLUDE_DIR ${LIB_OPEN_JSON_INCLUDE_DIR})
-#set(LIB_OPEN_JSON_INCLUDE_DIR ${LIB_OPEN_JSON_INCLUDE_DIR} PARENT_SCOPE)
 
 if(TARGET ${PROJECT_NAME})
     message("libopen_json is already defined")
@@ -30,23 +27,8 @@ else()
     # Find nlohmann-json
     find_package(nlohmann_json REQUIRED)
 
-# Set the path to the MSYS2 mingw64 or mingw32
-#    if (MINGW)
-#        set(BOOST_ROOT "C:/msys64/mingw64")
-#        # For 32-bit MSYS2, use: set(BOOST_ROOT "C:/msys64/mingw32")
-#    endif()
-
     # Find Boost.Thread
     find_package(Boost REQUIRED COMPONENTS thread)
-
-    # Install Guidelines Support Library (GSL) by Microsoft
-    include(FetchContent)
-    FetchContent_Declare(
-            gsl
-            GIT_REPOSITORY https://github.com/microsoft/GSL.git
-            GIT_TAG main # Use the main branch or specify a specific tag/commit
-    )
-    FetchContent_MakeAvailable(gsl)
 
     # including header files
     include_directories(${PROJECT_INCLUDE_DIR})
@@ -75,12 +57,6 @@ else()
 
     # Include Boost headers
     target_include_directories(${PROJECT_NAME} PRIVATE ${boost_INCLUDE_DIR})
-
-    # Link GSL
-    target_link_libraries(${PROJECT_NAME} PRIVATE Microsoft.GSL::GSL)
-
-    # Include GSL headers
-    target_include_directories(${PROJECT_NAME} PRIVATE ${gsl_INCLUDE_DIR})
 
 endif()
 

@@ -84,7 +84,7 @@ namespace open_json {
             //using GetterReturnType = typename decltype( getter )::Type;
             auto method = getter.fp;
 
-            LOGGER->trace("Found a getter with name: " getterName);
+            LOGGER->trace("Found a getter with name: {}", getterName);
 
             const auto &getterReturnedObject = (object->*method)();
 

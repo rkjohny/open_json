@@ -20,7 +20,6 @@ A modern c++ library to serialize and deserialize c++ objects to and from Json s
 * <a href="https://github.com/nlohmann/json">nlohmann-json</a>
 * <a href="https://github.com/boostorg/boost">boost.thread</a>
 * <a href="https://github.com/boostorg/boost">boost.optional</a>
-* <a href="https://github.com/microsoft/GSL">Guidelines Support Library (GSL)</a> by Microsoft
 
 ## Prepare environment:
 
