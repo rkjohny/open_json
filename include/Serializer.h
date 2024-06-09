@@ -10,7 +10,7 @@
 
 namespace open_json {
 
-    class Serializer {
+    class Serializer final {
     private:
         MAKE_STATIC(Serializer);
 
