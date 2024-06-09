@@ -6,6 +6,7 @@
 #include "gsl/gsl"
 #include "nlohmann/json.hpp"
 #include "Deserializer.h"
+#include "Serializer.h"
 
 
 namespace open_json {
@@ -14,29 +15,29 @@ namespace open_json {
     template<class T>
     [[nodiscard]]
     static std::string ToJson(gsl::not_null<const T &&> object) {
-//        auto jsonObject = Serializer::ToJson(std::move(object))
-//        return jsonObject.dump();
+        auto jsonObject = Serializer::ToJson(std::move(object));
+        return jsonObject.dump();
     }
 
     template<class T>
     [[nodiscard]]
     static std::string ToJson(gsl::not_null<const T &> object) {
-//        auto jsonObject = Serializer::ToJson(std::move(object))
-//        return jsonObject.dump();
+        auto jsonObject = Serializer::ToJson(std::move(object));
+        return jsonObject.dump();
     }
 
     template<class T>
     [[nodiscard]]
     static std::string ToJson(gsl::not_null<const T *> object) {
-//        auto jsonObject = Serializer::ToJson(std::move(object))
-//        return jsonObject.dump();
+        auto jsonObject = Serializer::ToJson(std::move(object));
+        return jsonObject.dump();
     }
 
     template<class T>
     [[nodiscard]]
     static std::string ToJson(gsl::not_null<const T *const *> object) {
-//        auto jsonObject = Serializer::ToJson(std::move(object))
-//        return jsonObject.dump();
+        auto jsonObject = Serializer::ToJson(std::move(object));
+        return jsonObject.dump();
     }
 
 
