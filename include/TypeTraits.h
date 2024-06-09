@@ -504,10 +504,9 @@ namespace open_json {
 
 
     /**
-     * make compilable with long long int in 64 bit word size system
-     * and long int is 32 bit word size system.
+     * make "long int" as Int64 in 64 bit word size system and Int32 in 32 bit word size system.
      */
-#if __WORDSIZE == 32
+#if WORD_SIZE == 32
 
     template<>
     struct Is_Int32_Type<long int> {
@@ -519,6 +518,7 @@ namespace open_json {
         static const bool Value = true;
     };
 
+    template<>
     struct Is_UInt32_Type<unsigned long int> {
         static const bool Value = true;
     };
@@ -528,25 +528,25 @@ namespace open_json {
         static const bool Value = true;
     };
 
-#elif __WORDSIZE == 64
+#elif WORD_SIZE == 64
 
     template<>
-    struct Is_Int64_Type<long long> {
+    struct Is_Int64_Type<long int> {
         static const bool Value = true;
     };
 
     template<>
-    struct Is_Int64_Type<const long long> {
+    struct Is_Int64_Type<const long int> {
         static const bool Value = true;
     };
 
     template<>
-    struct Is_UInt64_Type<unsigned long long> {
+    struct Is_UInt64_Type<unsigned long int> {
         static const bool Value = true;
     };
 
     template<>
-    struct Is_UInt64_Type<const unsigned long long> {
+    struct Is_UInt64_Type<const unsigned long int> {
         static const bool Value = true;
     };
 #endif
