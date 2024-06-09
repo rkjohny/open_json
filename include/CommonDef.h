@@ -55,11 +55,11 @@ namespace open_json {
 
 #ifdef __SIZEOF_POINTER__
 #   if __SIZEOF_POINTER__ == 8
-    // 64 bit
+        // 64 bit
 #       define OS_64_BIT
 #       define WORD_SIZE 64
 #   elif __SIZEOF_POINTER__ == 4
-    // 32 bit
+        // 32 bit
 #       define OS_32_BIT
 #       define WORD_SIZE 32
 #   else
