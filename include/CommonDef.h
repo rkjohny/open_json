@@ -68,6 +68,12 @@ namespace open_json {
 #endif
 
 
+#ifdef BUILDING_OPEN_JSON_LIB
+#define OPEN_JSON_API __declspec(dllexport)
+#else
+#define OPEN_JSON_API __declspec(dllimport)
+#endif
+
 
 #define MAX_FILE_SIZE_IN_BYTE  (2 * 1024 * 1024) /* 2 MB */
 #define MAX_FILES_TO_KEEP  10

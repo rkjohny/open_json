@@ -37,7 +37,7 @@ namespace open_json {
     [[nodiscard]]
     static std::string ToJson(const T *const *object) {
         static_assert(object == nullptr, "Argument cannot be null");
-        static_assert(*object == nullptr, "Argument cannot be null");
+        //static_assert(*object == nullptr, "Argument cannot be null");
         auto jsonObject = Serializer::ToJson(std::move(object));
         return jsonObject.dump();
     }
@@ -60,7 +60,7 @@ namespace open_json {
     template<class T>
     static void FromJson(const T *const *object, const std::string &jsonString) {
         static_assert(object == nullptr, "Argument cannot be null");
-        static_assert(*object == nullptr, "Argument cannot be null");
+        //static_assert(*object == nullptr, "Argument cannot be null");
         auto jsonObject = nlohmann::json::parse(jsonString);
         Deserializer::FromJson(object, jsonObject);
     }
