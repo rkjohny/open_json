@@ -75,6 +75,25 @@ namespace open_json {
 #endif
 
 
+
+#if defined(_WIN32) || defined(__CYGWIN__)
+#   ifdef BUILDING_OPEN_JSON_LIB
+#       define OPEN_JSON_API __declspec(dllexport)
+#   else
+#       define OPEN_JSON_API __declspec(dllimport)
+#   endif
+#   define OPEN_JSON_API_LOCAL
+#else
+#   if __GNUC__ >= 4
+#       define OPEN_JSON_API __attribute__ ((visibility ("default")))
+#       define OPEN_JSON_API_LOCAL  __attribute__ ((visibility ("hidden")))
+#   else
+#       define MYLIBRARY_API
+#       define MYLIBRARY_LOCAL
+#   endif
+#endif
+
+
 #define MAX_FILE_SIZE_IN_BYTE  (2 * 1024 * 1024) /* 2 MB */
 #define MAX_FILES_TO_KEEP  10
 #define LOG_FILE_NAME "log/open_json.log"
