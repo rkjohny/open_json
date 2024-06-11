@@ -1,6 +1,6 @@
 # open_json
-A modern c++ library to serialize and deserialize c++ objects to and from Json string
-* Free, open source, lightweight, headers-only json serializer/deserializer for c++ objects
+A modern c++ library to serialize and deserialize c++ objects to and from Json string.
+* Free, open source, lightweight, headers-only json serializer/deserializer for c++ objects using getter, setter and default constructor. 
 * nlohmann::json library has been used:
   * to parse json string and building nlohmann::json object
   * to serialize nlohmann::json object to string
@@ -31,6 +31,7 @@ A modern c++ library to serialize and deserialize c++ objects to and from Json s
 * <a href="https://github.com/gabime/spdlog">spdlog</a>
 * <a href="https://github.com/nlohmann/json">nlohmann-json</a>
 * <a href="https://github.com/boostorg/boost">boost.thread</a>
+* <a href="https://github.com/boostorg/boost">boost.algorithm</a>
 * <a href="https://github.com/boostorg/boost">boost.optional</a>
 
 ## Prepare environment:
