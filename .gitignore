@@ -33,3 +33,11 @@
 /build.ninja
 /.ninja_log
 /.ninja_deps
+/.ninja_lock
+/tests/.ninja_deps
+/tests/.ninja_log
+/tests/build.ninja
+/tests/cmake_install.cmake
+/tests/CMakeCache.txt
+/cmake_install.cmake
+/CMakeCache.txt

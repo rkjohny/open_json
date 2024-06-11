@@ -16,6 +16,9 @@ Unit testing of open_json using Google Test <b>(gtest or googletest)</b>
 
 ## Dependencies:
 * <a href="https://github.com/google/googletest">gtest</a>
+* boost.thread
+* boost.system
+* pthread
 
 ## Prepare environment:
 
