@@ -3,7 +3,8 @@
 
 #include <nlohmann/json.hpp>
 #include "AbstractSerializable.h"
-#include "open_json.h"
+#include "Serializer.h"
+#include "Deserializer.h"
 
 namespace open_json {
 
@@ -16,13 +17,13 @@ namespace open_json {
 
         [[nodiscard]]
         const std::string ToJson() override {
-            m_jsonObject = open_json::ToJson<T>(reinterpret_cast<const T *>(this));
+            m_jsonObject = Serializer::ToJson<T>(reinterpret_cast<const T *>(this));
             m_jsonString = m_jsonObject.dump();
             return m_jsonObject;
         }
 
         void FromJson(const std::string &jsonObject) override {
-            open_json::FromJson<T>(reinterpret_cast<T *> (this), jsonObject);
+            Deserializer::FromJson<T>(reinterpret_cast<T *> (this), jsonObject);
         }
 
 
