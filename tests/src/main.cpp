@@ -5,7 +5,7 @@
 
 int main(int argc, char **argv)
 {
-    std::cout << "Running Json testing..." << std::endl;
+    std::cout << "Running open_json testing..." << std::endl;
 
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
