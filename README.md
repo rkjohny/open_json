@@ -1,6 +1,7 @@
 # open_json
 A modern c++ library to serialize and deserialize c++ objects to and from Json string.
-* Free, open source, lightweight, headers-only json serializer/deserializer for c++ objects using getter, setter and default constructor. 
+* Free, open source, lightweight, headers-only json serializer/deserializer for c++ objects using getter, setter and default constructor.
+* Just include the header files or only the <b>open_json.h</b> file (in include directory) in your project
 * nlohmann::json library has been used:
   * to parse json string and building nlohmann::json object
   * to serialize nlohmann::json object to string
