@@ -19,7 +19,7 @@ set(PROJECT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 set(LIB_OPEN_JSON_INCLUDE_DIR, ${CMAKE_CURRENT_SOURCE_DIR}/../include)
 
-set(BOOST_LIBRARYDIR C:\\msys64\\mingw64\\lib)
+#set(BOOST_LIBRARYDIR C:\\msys64\\mingw64\\lib)
 
 
 # Find GTest
