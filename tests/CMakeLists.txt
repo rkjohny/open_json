@@ -35,6 +35,10 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost REQUIRED COMPONENTS thread system)
 
 
+#link_directories(${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+#
+#find_library(open_json REQUIRED)
+
 # including header files for this target
 include_directories(${PROJECT_INCLUDE_DIR})
 
@@ -43,25 +47,35 @@ include_directories(${LIB_OPEN_JSON_INCLUDE_DIR})
 
 
 set(OPEN_JSON_TEST_SRCS
-        ${PROJECT_SOURCE_DIR}/main.cpp)
+        ${PROJECT_SOURCE_DIR}/main.cpp
+        ${PROJECT_SOURCE_DIR}/SerializePrimitiveTest.cpp )
 
 # creating JonTest target
 add_executable(${PROJECT_NAME} ${OPEN_JSON_TEST_SRCS})
 
 
+#if (OPEN_JSON_FOUND)
+#    target_link_libraries(${PROJECT_NAME} ${GTEST_LIBRARIES} open_json)
+#    # Include nlohmann_json headers
+#    target_include_directories(${PROJECT_NAME} PRIVATE ${open_json_INCLUDE_DIRS})
+#else ()
+#    message(FATAL_ERROR "Could not find open_json library.")
+#endif ()
+
+
 if (nlohmann_json_FOUND)
-    target_link_libraries(${PROJECT_NAME} ${GTEST_LIBRARIES} nlohmann_json)
+    target_link_libraries(${PROJECT_NAME} nlohmann_json)
     # Include nlohmann_json headers
     target_include_directories(${PROJECT_NAME} PRIVATE ${nlohmann_json_INCLUDE_DIRS})
 else ()
-    message(FATAL_ERROR "Could not find nlohmann_json libraries.")
+    message(FATAL_ERROR "Could not find nlohmann_json library.")
 endif ()
 
 if (GTEST_FOUND)
     target_link_libraries(${PROJECT_NAME} ${GTEST_LIBRARIES} GTest::Main GTest::GTest)
     target_include_directories(${PROJECT_NAME} PRIVATE ${GTEST_INCLUDE_DIRS})
 else ()
-    message(FATAL_ERROR "Could not find Gtest libraries.")
+    message(FATAL_ERROR "Could not find Gtest library.")
 endif ()
 
 if(BOOST_FOUND)
@@ -70,5 +84,5 @@ if(BOOST_FOUND)
     target_link_libraries(${PROJECT_NAME} ${GTEST_LIBRARIES} pthread)
     target_include_directories(${PROJECT_NAME} PRIVATE ${boost_INCLUDE_DIR})
 else ()
-    message(FATAL_ERROR "Could not find Boost libraries.")
+    message(FATAL_ERROR "Could not find Boost library.")
 endif ()

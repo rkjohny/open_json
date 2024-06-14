@@ -17,9 +17,8 @@ namespace open_json {
 
         [[nodiscard]]
         const std::string ToJson() override {
-            m_jsonObject = Serializer::ToJson<T>(reinterpret_cast<const T *>(this));
-            m_jsonString = m_jsonObject.dump();
-            return m_jsonObject;
+            auto m_jsonObject = Serializer::ToJson<T>(reinterpret_cast<const T *>(this));
+            return m_jsonObject.dump();
         }
 
         void FromJson(const std::string &jsonObject) override {
@@ -32,10 +31,6 @@ namespace open_json {
 
         REGISTER_SETTER_INCLUDING_BASE_START(AbstractSerializable)
         REGISTER_SETTER_INCLUDING_BASE_END
-
-    private:
-        nlohmann::json m_jsonObject;
-        std::string m_jsonString;
     };
 
 }
