@@ -41,27 +41,11 @@ A modern c++ library to serialize and deserialize c++ objects to and from Json s
   * https://www.msys2.org
 
 * ### Install MinGW64:
-  * https://sourceforge.net/projects/mingw-w64/
-    
-  * pacman -S mingw-w64-x86_64-toolchain
-  * or
-  * pacman -S mingw-w64-ucrt-x86_64-toolchain
- 
-* ### Install gcc
-  * pacman -S mingw-w64-x86_64-gcc
- 
-* ### Install cmake
-  * pacman -S mingw-w64-x86_64-cmake
-
-* ### Install ninja
-  * pacman -S mingw-w64-x86_64-ninja 
+  * https://www.mingw-w64.org/downloads/#msys2
 
 * ### Install spdlog:
   * pacman -S mingw-w64-x86_64-spdlog
  
-* ### Install GDB
-  * pacman -S mingw-w64-x86_64-gdb 
-
 * ### Install nlohmann json library:
   * pacman -S mingw-w64-x86_64-nlohmann-json
 
