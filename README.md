@@ -42,6 +42,7 @@ A modern c++ library to serialize and deserialize c++ objects to and from Json s
 
 * ### Install MinGW64:
   * https://www.mingw-w64.org/downloads/#msys2
+  * pacman -S mingw-w64-x86_64-toolchain
 
 * ### Install spdlog:
   * pacman -S mingw-w64-x86_64-spdlog
