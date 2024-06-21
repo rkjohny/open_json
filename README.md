@@ -41,20 +41,19 @@ A modern c++ library to serialize and deserialize c++ objects to and from Json s
   * https://www.msys2.org
 
 * ### Install MinGW64:
-  * https://www.mingw-w64.org/downloads/#msys2
   * pacman -S mingw-w64-x86_64-toolchain
 
-  * ### Install gcc
-    * pacman -S mingw-w64-x86_64-gcc
-  
-  * ### install GDB
-    * pacman -S mingw-w64-x86_64-gdb
+    * #### Install gcc
+      * pacman -S mingw-w64-x86_64-gcc
+    
+    * #### install GDB
+      * pacman -S mingw-w64-x86_64-gdb
 
-  * ### Install cmake
-    * pacman -S mingw-w64-x86_64-cmake
+* ### Install cmake
+  * pacman -S mingw-w64-x86_64-cmake
 
-  * ### Install ninja
-    * pacman -S mingw-w64-x86_64-ninja
+     * #### Install ninja
+       * pacman -S mingw-w64-x86_64-ninja
   
 * ### Install spdlog:
   * pacman -S mingw-w64-x86_64-spdlog
@@ -64,19 +63,19 @@ A modern c++ library to serialize and deserialize c++ objects to and from Json s
 
 * ### Install boost:
   * pacman -S mingw-w64-x86_64-boost
-  * #### install dependencies of boost:
-    * ##### install python:
-      * pacman -S mingw-w64-x86_64-python
-      * pacman -S mingw-w64-x86_64-python-numpy
-    * ##### install bzip2:
-      * pacman -S mingw-w64-x86_64-bzip2
-    * ##### install gcc-libs:
-      * pacman -S mingw-w64-x86_64-gcc-libs
-    * ##### install icu:
-      * pacman -S mingw-w64-x86_64-icu
-    * ##### install xz:
-      * pacman -S mingw-w64-x86_64-xz
-    * ##### install zlib:
-      * pacman -S mingw-w64-x86_64-zlib
-    * ##### install zstd:
-      * pacman -S mingw-w64-x86_64-zstd
+    * #### install dependencies of boost:
+      * ##### install python:
+        * pacman -S mingw-w64-x86_64-python
+        * pacman -S mingw-w64-x86_64-python-numpy
+      * ##### install bzip2:
+        * pacman -S mingw-w64-x86_64-bzip2
+      * ##### install gcc-libs:
+        * pacman -S mingw-w64-x86_64-gcc-libs
+      * ##### install icu:
+        * pacman -S mingw-w64-x86_64-icu
+      * ##### install xz:
+        * pacman -S mingw-w64-x86_64-xz
+      * ##### install zlib:
+        * pacman -S mingw-w64-x86_64-zlib
+      * ##### install zstd:
+        * pacman -S mingw-w64-x86_64-zstd
