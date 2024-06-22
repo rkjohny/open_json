@@ -19,8 +19,6 @@ set(PROJECT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 set(LIB_OPEN_JSON_INCLUDE_DIR, ${CMAKE_CURRENT_SOURCE_DIR}/../include)
 
-#set(BOOST_LIBRARYDIR C:\\msys64\\mingw64\\lib)
-
 
 # Find GTest
 find_package(GTest REQUIRED)
@@ -32,7 +30,7 @@ find_package(nlohmann_json REQUIRED)
 set(Boost_USE_STATIC_LIBS OFF) # Enable dynamic linking
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
-find_package(Boost REQUIRED COMPONENTS thread system)
+find_package(Boost REQUIRED COMPONENTS system)
 
 
 #link_directories(${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
@@ -79,7 +77,6 @@ else ()
 endif ()
 
 if(BOOST_FOUND)
-    target_link_libraries(${PROJECT_NAME} ${GTEST_LIBRARIES} Boost::thread)
     target_link_libraries(${PROJECT_NAME} ${GTEST_LIBRARIES} Boost::system)
     target_link_libraries(${PROJECT_NAME} ${GTEST_LIBRARIES} pthread)
     target_include_directories(${PROJECT_NAME} PRIVATE ${boost_INCLUDE_DIR})

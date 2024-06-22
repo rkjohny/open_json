@@ -19,7 +19,6 @@ namespace open_json_test {
     }; // class SerializePrimitiveTest
 
     TEST_F(SerializePrimitiveTest, PremitiveInt) {
-
         nlohmann::json jsonObject;
 
         //serialize integer
@@ -54,8 +53,7 @@ namespace open_json_test {
         ASSERT_EQ(*ptrUInt32, jsonObject.template get<const int>());
         delete ptrUInt32;
 
-        int **ptr2Int = new int*;
-        *ptr2Int = new int (-50);
+        int **ptr2Int = new int*(new int(-50));
         jsonObject = open_json::ToJson(ptr2Int);
         ASSERT_EQ(**ptr2Int, jsonObject.template get<int>());
         delete *ptr2Int;
@@ -103,88 +101,66 @@ namespace open_json_test {
         const long * const *longPtr4 = new long*(new long(-40L));
         jsonObject = open_json::ToJson(longPtr4);
         ASSERT_EQ(**longPtr4, jsonObject.template get<const long>());
+        delete *longPtr4;
+        delete longPtr4;
     }
-/*
-    TEST_F(SerializePremitiveTest, PremitiveBool) {
+
+    TEST_F(SerializePrimitiveTest, PremitiveBool) {
         nlohmann::json jsonObject;
-        bool boolVal = true;
 
         jsonObject = open_json::ToJson(true);
-        ASSERT_EQ(true, jsonObject.as_bool());
-        jsonObject = open_json::ToJson(bool(true));
-        ASSERT_EQ(true, jsonObject.as_bool());
-        jsonObject = open_json::ToJson(std::move(boolVal));
-        ASSERT_EQ(boolVal, jsonObject.as_bool());
+        ASSERT_TRUE(jsonObject.is_boolean());
+        ASSERT_EQ(true, jsonObject.template get<bool>());
 
+        jsonObject = open_json::ToJson(false);
+        ASSERT_TRUE(jsonObject.is_boolean());
+        ASSERT_EQ(false, jsonObject.template get<bool>());
+
+        bool boolVal = true;
         jsonObject = open_json::ToJson(boolVal);
-        ASSERT_EQ(boolVal, jsonObject.as_bool());
-        const bool boolVal2 = true;
+        ASSERT_EQ(boolVal, jsonObject.template get<bool>());
+
+        bool &boolVal2 = boolVal;
         jsonObject = open_json::ToJson(boolVal2);
-        ASSERT_EQ(boolVal2, jsonObject.as_bool());
-        bool &boolVal3 = boolVal;
-        jsonObject = open_json::ToJson(boolVal3);
-        ASSERT_EQ(boolVal3, jsonObject.as_bool());
-        const bool &boolVal4 = boolVal2;
-        jsonObject = open_json::ToJson(boolVal4);
-        ASSERT_EQ(boolVal4, jsonObject.as_bool());
-        bool const &boolValue5 = boolVal;
-        jsonObject = open_json::ToJson(boolValue5);
-        ASSERT_EQ(boolValue5, jsonObject.as_bool());
+        ASSERT_EQ(boolVal2, jsonObject.template get<bool>());
 
         bool *boolPtr = &boolVal;
         jsonObject = open_json::ToJson(boolPtr);
-        ASSERT_EQ(*boolPtr, jsonObject.as_bool());
-        const bool *boolPtr2 = &boolVal;
+        ASSERT_EQ(*boolPtr, jsonObject.template get<bool>());
+
+        bool **boolPtr2 = new bool*(new bool(false));
         jsonObject = open_json::ToJson(boolPtr2);
-        ASSERT_EQ(*boolPtr2, jsonObject.as_bool());
-        bool *const boolPtr3 = &boolVal;
-        jsonObject = open_json::ToJson(boolPtr3);
-        ASSERT_EQ(*boolPtr3, jsonObject.as_bool());
-        const bool *const boolPtr4 = &boolVal;
-        jsonObject = open_json::ToJson(boolPtr4);
-        ASSERT_EQ(*boolPtr4, jsonObject.as_bool());
+        ASSERT_EQ(**boolPtr2, jsonObject.template get<bool>());
+        delete *boolPtr2;
+        delete boolPtr2;
     }
 
-    TEST_F(SerializePremitiveTest, PremitiveFloat) {
+    TEST_F(SerializePrimitiveTest, PremitiveFloat) {
         nlohmann::json jsonObject;
-        float decimalVal = 10.51;
 
         jsonObject = open_json::ToJson(10.51);
-        ASSERT_FLOAT_EQ(10.51, jsonObject.as_double());
-        jsonObject = open_json::ToJson(float(10.51));
-        ASSERT_FLOAT_EQ(10.51, jsonObject.as_double());
-        jsonObject = open_json::ToJson(std::move(decimalVal));
-        ASSERT_FLOAT_EQ(decimalVal, jsonObject.as_double());
+        ASSERT_TRUE(jsonObject.is_number_float());
+        ASSERT_FLOAT_EQ(10.51, jsonObject.template get<float>());
 
+        float decimalVal = 20.51;
         jsonObject = open_json::ToJson(decimalVal);
-        ASSERT_FLOAT_EQ(decimalVal, jsonObject.as_double());
-        const float decimalVal2 = 10.51;
+        ASSERT_FLOAT_EQ(decimalVal, jsonObject.template get<float>());
+
+        const float &decimalVal2 = decimalVal;
         jsonObject = open_json::ToJson(decimalVal2);
-        ASSERT_FLOAT_EQ(decimalVal2, jsonObject.as_double());
-        float &decimalVal3 = decimalVal;
-        jsonObject = open_json::ToJson(decimalVal3);
-        ASSERT_FLOAT_EQ(decimalVal3, jsonObject.as_double());
-        const float &decimalVal4 = decimalVal2;
-        jsonObject = open_json::ToJson(decimalVal4);
-        ASSERT_FLOAT_EQ(decimalVal4, jsonObject.as_double());
-        float const &decimalValue5 = decimalVal;
-        jsonObject = open_json::ToJson(decimalValue5);
-        ASSERT_FLOAT_EQ(decimalValue5, jsonObject.as_double());
+        ASSERT_FLOAT_EQ(decimalVal2, jsonObject.template get<float>());
 
-        float *decimalPtr = &decimalVal;
+        const float *decimalPtr = &decimalVal;
         jsonObject = open_json::ToJson(decimalPtr);
-        ASSERT_FLOAT_EQ(*decimalPtr, jsonObject.as_double());
-        const float *decialPtr2 = &decimalVal;
-        jsonObject = open_json::ToJson(decialPtr2);
-        ASSERT_FLOAT_EQ(*decialPtr2, jsonObject.as_double());
-        float *const decimalPtr3 = &decimalVal;
-        jsonObject = open_json::ToJson(decimalPtr3);
-        ASSERT_FLOAT_EQ(*decimalPtr3, jsonObject.as_double());
-        const float *const decimalPtr4 = &decimalVal;
-        jsonObject = open_json::ToJson(decimalPtr4);
-        ASSERT_FLOAT_EQ(*decimalPtr4, jsonObject.as_double());
-    }
+        ASSERT_FLOAT_EQ(*decimalPtr, jsonObject.template get<float>());
 
+        const float * const *decimalPtr2 = new float*(new float(-30.51));
+        jsonObject = open_json::ToJson(decimalPtr2);
+        ASSERT_FLOAT_EQ(**decimalPtr2, jsonObject.template get<float>());
+        delete *decimalPtr2;
+        delete decimalPtr2;
+    }
+/*
     TEST_F(SerializePremitiveTest, PremitiveDouble) {
         nlohmann::json jsonObject;
         double decimalVal = 10.51;

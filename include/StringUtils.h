@@ -3,12 +3,7 @@
 
 #include "CommonDef.h"
 #include "string"
-#include "vector"
 
-#include <boost/algorithm/string/case_conv.hpp>
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string/trim.hpp>
 
 namespace open_json {
     class StringUtils final {
@@ -40,14 +35,6 @@ namespace open_json {
         static Initializer cm_initializer;
 
     public:
-        static void Trim(std::string &str) {
-            boost::algorithm::trim_left_if(str, boost::algorithm::is_any_of("\r\n\t "));
-            boost::algorithm::trim_right_if(str, boost::algorithm::is_any_of("\r\n\t "));
-        }
-
-        static void Tokenize(std::vector<std::string> &v, const std::string &str, const std::string &token) {
-            boost::algorithm::split(v, str, boost::algorithm::is_any_of(token), boost::algorithm::token_compress_on);
-        }
 
         static std::string GetNewLineStr() {
             return cm_newLineStr;
@@ -58,18 +45,13 @@ namespace open_json {
         }
 
         static void ToLower(std::string &str) {
-            boost::algorithm::to_lower(str);
+            for (size_t i = 0; i<str.length(); ++i)
+                str[i] = std::tolower(str[i]);
         }
 
         static void ToUpper(std::string &str) {
-            boost::algorithm::to_upper(str);
-        }
-
-        static int Compare(const std::string &first, const std::string &second, bool ignore_case = false) {
-            if (ignore_case) {
-                return boost::algorithm::iequals(first, second);
-            }
-            return boost::algorithm::equals(first, second);
+            for (size_t i = 0; i<str.length(); ++i)
+                str[i] = std::toupper(str[i]);
         }
     };
 

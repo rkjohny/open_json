@@ -1,10 +1,11 @@
 #ifndef OPEN_JSON_SOFACTORY_H
 #define OPEN_JSON_SOFACTORY_H
 
+#include <mutex>
+
 #include "CommonDef.h"
 #include "AbstractSerializable.h"
 #include "StringUtils.h"
-#include "boost/thread.hpp"
 
 
 namespace open_json {
@@ -123,10 +124,10 @@ namespace open_json {
             return v;
         }
 
-        static boost::mutex cm_mutex;
+        static std::mutex cm_mutex;
         static ListCreators cm_objectCreators;
 
-        static boost::mutex cm_mutexArr;
+        static std::mutex cm_mutexArr;
         static ListCreatorsArr cm_objectArrayCreators;
     };
 
@@ -142,10 +143,10 @@ namespace open_json {
         ClassRegistrar() = default;
     };
 
-    boost::mutex SOFactory::cm_mutex;
+    std::mutex SOFactory::cm_mutex;
     SOFactory::ListCreators SOFactory::cm_objectCreators;
 
-    boost::mutex SOFactory::cm_mutexArr;
+    std::mutex SOFactory::cm_mutexArr;
     SOFactory::ListCreatorsArr SOFactory::cm_objectArrayCreators;
 }
 

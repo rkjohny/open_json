@@ -24,8 +24,6 @@ A modern c++ library to serialize and deserialize c++ objects to and from <a hre
 
 ## Dependencies:
 * <a href="https://github.com/nlohmann/json">nlohmann-json</a>
-* <a href="https://github.com/boostorg/boost">boost.thread</a>
-* <a href="https://github.com/boostorg/boost">boost.algorithm</a>
 * <a href="https://github.com/boostorg/boost">boost.optional</a>
 
 ## Prepare environment:
@@ -51,7 +49,7 @@ A modern c++ library to serialize and deserialize c++ objects to and from <a hre
 * ### Install nlohmann json library:
   * pacman -S mingw-w64-x86_64-nlohmann-json
 
-* ### Install boost:
+* ### Install boost (installing only boost::optional is sufficient):
   * pacman -S mingw-w64-x86_64-boost
     * #### install dependencies of boost:
       * ##### install python:
