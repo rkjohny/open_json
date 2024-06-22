@@ -9,11 +9,7 @@
 
 
 namespace open_json {
-
-    class Serializer final {
-    private:
-        MAKE_STATIC(Serializer);
-
+    namespace  serializer {
 
         template<class T>
         static void GetData(const std::unique_ptr<T> &object, nlohmann::json &jsonObject, const char *name) {
@@ -110,9 +106,6 @@ namespace open_json {
         typename std::enable_if<(iteration == 0), void>::type
         static Serialize(T *, nlohmann::json &) {
         }
-
-
-    public:
 
         template<class T>
         typename std::enable_if<std::is_array<T>::value, nlohmann::json>::type
@@ -443,7 +436,8 @@ namespace open_json {
             }
             return nlohmann::json();
         }
-    };
+
+    }
 }
 
 

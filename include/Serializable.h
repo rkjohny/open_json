@@ -16,13 +16,12 @@ namespace open_json {
         virtual ~Serializable() = default;
 
         [[nodiscard]]
-        const std::string ToJson() override {
-            auto m_jsonObject = Serializer::ToJson<T>(reinterpret_cast<const T *>(this));
-            return m_jsonObject.dump();
+        const nlohmann::json ToJson() override {
+            return  serializer::ToJson<T>(reinterpret_cast<const T *>(this));
         }
 
-        void FromJson(const std::string &jsonObject) override {
-            Deserializer::FromJson<T>(reinterpret_cast<T *> (this), jsonObject);
+        void FromJson(const nlohmann::json &jsonObject) override {
+            deserializer::FromJson<T>(reinterpret_cast<T *> (this), jsonObject);
         }
 
 

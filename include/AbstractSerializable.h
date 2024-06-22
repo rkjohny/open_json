@@ -15,10 +15,10 @@ namespace open_json {
         virtual ~AbstractSerializable() = default;
 
         [[nodiscard]]
-        virtual const std::string ToJson() = 0;
+        virtual const nlohmann::json ToJson() = 0;
 
 
-        virtual void FromJson(const std::string &) = 0;
+        virtual void FromJson(const nlohmann::json &) = 0;
 
 
         REGISTER_GETTER_START

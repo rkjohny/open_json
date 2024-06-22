@@ -27,53 +27,47 @@ namespace open_json {
     template<class T>
     [[nodiscard]]
     static nlohmann::json ToJson(const T &&object) {
-        return  Serializer::ToJson(object);
+        return  serializer::ToJson(object);
     }
 
     template<class T>
     [[nodiscard]]
     static nlohmann::json ToJson(const T &object) {
-        return Serializer::ToJson(object);
+        return serializer::ToJson(object);
     }
 
     template<class T>
     [[nodiscard]]
     static nlohmann::json ToJson(const T *object) {
-        return Serializer::ToJson(object);
+        return serializer::ToJson(object);
     }
 
     template<class T>
     [[nodiscard]]
     static nlohmann::json ToJson(const T *const *object) {
-        return Serializer::ToJson(object);
+        return serializer::ToJson(object);
     }
 
 
     /************************** Deserializing to CPP object from Json String *************************/
 
-    /*
+
 
     template<class T>
-    static void FromJson(T &object, const std::string &jsonString) {
-        auto jsonObject = nlohmann::json::parse(jsonString);
-        Deserializer::FromJson(object, jsonObject);
+    static void FromJson(T &object, const nlohmann::json &jsonObject) {
+        deserializer::FromJson(object, jsonObject);
     }
 
     template<class T>
-    static void FromJson(const T *object, const std::string &jsonString) {
-        //static_assert(object == nullptr, "Argument cannot be null");
-        auto jsonObject = nlohmann::json::parse(jsonString);
-        Deserializer::FromJson(object, jsonObject);
+    static void FromJson(const T *object, const nlohmann::json &jsonObject) {
+        deserializer::FromJson(object, jsonObject);
     }
 
     template<class T>
-    static void FromJson(const T *const *object, const std::string &jsonString) {
-        //static_assert(object == nullptr, "Argument cannot be null");
-        //static_assert(*object == nullptr, "Argument cannot be null");
-        auto jsonObject = nlohmann::json::parse(jsonString);
-        Deserializer::FromJson(object, jsonObject);
+    static void FromJson(const T *const *object, const nlohmann::json &jsonObject) {
+        deserializer::FromJson(object, jsonObject);
     }
-*/
+
 }
 
 #endif //OPEN_JSON_OPEN_JSON_H

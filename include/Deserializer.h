@@ -8,10 +8,7 @@
 
 
 namespace open_json {
-
-    class Deserializer final {
-    private:
-        MAKE_STATIC(Deserializer);
+    namespace  deserializer {
 
         /**
          * calls the setter method with type = boost::optional<T>
@@ -126,27 +123,27 @@ namespace open_json {
             (object->*SetterPtr)(var);
         }
 
-        /**
-         * special handling for char array.
-         * No other array type is supported.
-         */
-        template<class T, class B>
-        static void SetData(T *object, void ( B::*SetterPtr)(char *), const nlohmann::json &jsonObject) {
-            char *var;
-            FromJson(&var, jsonObject);
-            (object->*SetterPtr)(var);
-        }
-
-        /**
-         * special handling for char array.
-         * No other array type is supported.
-         */
-        template<class T, class B>
-        static void SetData(T *object, void ( B::*SetterPtr)(const char *), const nlohmann::json &jsonObject) {
-            char *var;
-            FromJson(&var, jsonObject);
-            (object->*SetterPtr)(var);
-        }
+        // /**
+        //  * TODO: special handling for char array.
+        //  * No other array type is not supported.
+        //  */
+        // template<class T, class B>
+        // static void SetData(T *object, void ( B::*SetterPtr)(char *), const nlohmann::json &jsonObject) {
+        //     char *var;
+        //     FromJson(&var, jsonObject);
+        //     (object->*SetterPtr)(var);
+        // }
+        //
+        // /**
+        //  * TODO: special handling for char array.
+        //  * No other array type is not supported.
+        //  */
+        // template<class T, class B>
+        // static void SetData(T *object, void ( B::*SetterPtr)(const char *), const nlohmann::json &jsonObject) {
+        //     char *var;
+        //     FromJson(&var, jsonObject);
+        //     (object->*SetterPtr)(var);
+        // }
 
         /**
          * calls the setter method with pointer type argument
@@ -258,7 +255,6 @@ namespace open_json {
         static Deserialize(T *, const nlohmann::json &) {
         }
 
-    public:
 
         /**
          * object is constant reference, return error
@@ -615,25 +611,25 @@ namespace open_json {
         /*///////////////////////////  VECTOR ////////////////////////////////////////////*/
 
         /***********************************************************************************
-         * special handling for vector of char*
+         * TODO:  special handling for vector of char*
          ***********************************************************************************/
-        static void FromJson(std::vector<char *> *object, const nlohmann::json &jsonObject) {
-            for (const auto &arrItem: jsonObject) {
-                //char *var = new char[arrItem.size()];
-                char *var;
-                FromJson(&var, arrItem);
-                object->push_back(var);
-            }
-        }
-
-        static void FromJson(std::vector<const char *> *object, const nlohmann::json &jsonObject) {
-            for (const auto &arrItem: jsonObject) {
-                //char *var = new char[arrItem.size()];
-                char *var;
-                FromJson(&var, arrItem);
-                object->push_back(var);
-            }
-        }
+        // static void FromJson(std::vector<char *> *object, const nlohmann::json &jsonObject) {
+        //     for (const auto &arrItem: jsonObject) {
+        //         //char *var = new char[arrItem.size()];
+        //         char *var;
+        //         FromJson(&var, arrItem);
+        //         object->push_back(var);
+        //     }
+        // }
+        // TODO:
+        // static void FromJson(std::vector<const char *> *object, const nlohmann::json &jsonObject) {
+        //     for (const auto &arrItem: jsonObject) {
+        //         //char *var = new char[arrItem.size()];
+        //         char *var;
+        //         FromJson(&var, arrItem);
+        //         object->push_back(var);
+        //     }
+        // }
 
         /***********************************************************************************
          * object type: std::vector<T*>*
@@ -757,7 +753,7 @@ namespace open_json {
             object = var;
         }
 
-    };
+    }
 }
 
 
