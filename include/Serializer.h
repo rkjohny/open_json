@@ -4,7 +4,7 @@
 #include "CommonDef.h"
 #include "TypeTraits.h"
 #include "nlohmann/json.hpp"
-#include "Logger.h"
+#include "boost/optional.hpp"
 #include "string"
 
 
@@ -20,7 +20,7 @@ namespace open_json {
             if (object) {
                 jsonObject[std::string(name)] = ToJson(object);
             } else {
-                LOGGER->trace("value is null and will be ignored.");
+                //value is null and will be ignored.
             }
         }
 
@@ -29,7 +29,7 @@ namespace open_json {
             if (object) {
                 jsonObject[std::string(name)] = ToJson(object);
             } else {
-                LOGGER->trace("value is null and will be ignored.");
+                //value is null and will be ignored.
             }
         }
 
@@ -39,7 +39,7 @@ namespace open_json {
             if (shareObject) {
                 jsonObject[std::string(name)] = ToJson(shareObject);
             } else {
-                LOGGER->trace("value is null and will be ignored.");
+                //value is null and will be ignored.
             }
         }
 
@@ -48,7 +48,7 @@ namespace open_json {
             if (object) {
                 jsonObject[std::string(name)] = ToJson(object);
             } else {
-                LOGGER->trace("value is null and will be ignored.");
+                //value is null and will be ignored.
             }
         }
         
@@ -62,7 +62,7 @@ namespace open_json {
             if (object) {
                 jsonObject[std::string(name)] = ToJson(object);
             } else {
-                LOGGER->trace("value is null and will be ignored.");
+                //value is null and will be ignored.
             }
         }
 
@@ -71,7 +71,7 @@ namespace open_json {
             if (object && *object) {
                 jsonObject[std::string(name)] = ToJson(object);
             } else {
-                LOGGER->trace("value is null and will be ignored.");
+                //value is null and will be ignored.
             }
         }
 
@@ -82,8 +82,6 @@ namespace open_json {
             auto getterName = getter.name;
             //using GetterReturnType = typename decltype( getter )::Type;
             auto method = getter.fp;
-
-            LOGGER->trace("Found a getter with name: {}", getterName);
 
             const auto &getterReturnedObject = (object->*method)();
 
@@ -128,28 +126,24 @@ namespace open_json {
         template<class T>
         typename std::enable_if<std::is_enum<T>::value, nlohmann::json>::type
         static ToJson(const T &&object) {
-            LOGGER->trace("Serializing object: type = enum&&, value = {}", object);
             return nlohmann::json(static_cast<int>(object));
         }
 
         template<class T>
         typename std::enable_if<std::is_enum<T>::value, nlohmann::json>::type
         static ToJson(const T &object) {
-            LOGGER->trace("Serializing object: type = enum&, value = {}", object);
             return nlohmann::json(static_cast<int>(object));
         }
 
         template<class T>
         typename std::enable_if<std::is_enum<T>::value, nlohmann::json>::type
         static ToJson(const T *object) {
-            LOGGER->trace("Serializing object: type = enum*, value = {}", object);
             return nlohmann::json(static_cast<int>(*object));
         }
 
         template<class T>
         typename std::enable_if<std::is_enum<T>::value, nlohmann::json>::type
         static ToJson(const T *const *object) {
-            LOGGER->trace("Serializing object: type = enum**, value = {}", object);
             return nlohmann::json(static_cast<int>(**object));
         }
 
@@ -158,28 +152,24 @@ namespace open_json {
         template<class T>
         typename std::enable_if<Is_Bool<T>::Value, nlohmann::json>::type
         static ToJson(const T &&object) {
-            LOGGER->trace("Serializing object: type = bool&&, value = {}", object);
             return nlohmann::json(object);
         }
 
         template<class T>
         typename std::enable_if<Is_Bool<T>::Value, nlohmann::json>::type
         static ToJson(const T &object) {
-            LOGGER->trace("Serializing object: type = bool&, value = {}", object);
             return nlohmann::json(object);
         }
 
         template<class T>
         typename std::enable_if<Is_Bool<T>::Value, nlohmann::json>::type
         static ToJson(const T *object) {
-            LOGGER->trace("Serializing object: type = bool*, value = {}", *object);
             return nlohmann::json(*object);
         }
 
         template<class T>
         typename std::enable_if<Is_Bool<T>::Value, nlohmann::json>::type
         static ToJson(const T *const *object) {
-            LOGGER->trace("Serializing object: type = bool**, value = {}", **object);
             return nlohmann::json(**object);
         }
 
@@ -188,14 +178,12 @@ namespace open_json {
         template<class T>
         typename std::enable_if<Is_Char<T>::Value, nlohmann::json>::type
         static ToJson(const T &&object) {
-            LOGGER->trace("Serializing object: type = char&&, value = {}", object);
             return nlohmann::json(static_cast<int32_t> (object));
         }
 
         template<class T>
         typename std::enable_if<Is_Char<T>::Value, nlohmann::json>::type
         static ToJson(const T &object) {
-            LOGGER->trace("Serializing object: type = char&, value = {}", object);
             return nlohmann::json(static_cast<int32_t> (object));
         }
 
@@ -204,7 +192,6 @@ namespace open_json {
         static ToJson(const T *object) {
             std::string str = std::string(object);
             std::string str_t = std::string(std::move(str));
-            LOGGER->trace("Serializing object: type = char*, value = {}", str_t);
             return nlohmann::json(std::move(str_t));
         }
 
@@ -213,7 +200,6 @@ namespace open_json {
         static ToJson(const T *const *object) {
             std::string str = std::string(*object);
             std::string str_t = std::string(std::move(str));
-            LOGGER->trace("Serializing object: type = char**, value = {}", str_t);
             return nlohmann::json(std::move(str_t));
         }
 
@@ -222,28 +208,24 @@ namespace open_json {
         template<class T>
         typename std::enable_if<Is_Integer<T>::Value, nlohmann::json>::type
         static ToJson(const T &&object) {
-            LOGGER->trace("Serializing object: type = integer&&, value = {}", object);
             return nlohmann::json(object);
         }
 
         template<class T>
         typename std::enable_if<Is_Integer<T>::Value, nlohmann::json>::type
         static ToJson(const T &object) {
-            LOGGER->trace("Serializing object: type = integer&, value = {}", object);
             return nlohmann::json(object);
         }
 
         template<class T>
         typename std::enable_if<Is_Integer<T>::Value, nlohmann::json>::type
         static ToJson(const T *object) {
-            LOGGER->trace("Serializing object: type = integer*, value = {}", *object);
             return nlohmann::json(*object);
         }
 
         template<class T>
         typename std::enable_if<Is_Integer<T>::Value, nlohmann::json>::type
         static ToJson(const T *const *object) {
-            LOGGER->trace("Serializing object: type = integer**, value = {}", **object);
             return nlohmann::json(**object);
         }
 
@@ -252,28 +234,24 @@ namespace open_json {
         template<class T>
         typename std::enable_if<Is_Decimal<T>::Value, nlohmann::json>::type
         static ToJson(const T &&object) {
-            LOGGER->trace("Serializing object: type = decimal&&, value = {}", object);
             return nlohmann::json(static_cast<double_t> (object));
         }
 
         template<class T>
         typename std::enable_if<Is_Decimal<T>::Value, nlohmann::json>::type
         static ToJson(const T &object) {
-            LOGGER->trace("Serializing object: type = decimal&, value = {}", object);
             return nlohmann::json(static_cast<double_t> (object));
         }
 
         template<class T>
         typename std::enable_if<Is_Decimal<T>::Value, nlohmann::json>::type
         static ToJson(const T *object) {
-            LOGGER->trace("Serializing object: type = decimal*, value = {}", *object);
             return nlohmann::json(static_cast<double_t> (*object));
         }
 
         template<class T>
         typename std::enable_if<Is_Decimal<T>::Value, nlohmann::json>::type
         static ToJson(const T *const *object) {
-            LOGGER->trace("Serializing object: type = decimal**, value = {}", **object);
             return nlohmann::json(static_cast<double_t> (**object));
         }
 
@@ -282,21 +260,18 @@ namespace open_json {
         template<class T>
         typename std::enable_if<Is_String<T>::Value, nlohmann::json>::type
         static ToJson(T &&object) {
-            LOGGER->trace("Serializing object: type = std::string&&, value = {}", object);
             return nlohmann::json(std::string(object));
         }
 
         template<class T>
         typename std::enable_if<Is_String<T>::Value, nlohmann::json>::type
         static ToJson(const T &object) {
-            LOGGER->trace("Serializing object: type = std::string&, value = {}", object);
             return nlohmann::json(std::string(object));
         }
 
         template<class T>
         typename std::enable_if<Is_String<T>::Value, nlohmann::json>::type
         static ToJson(const T *object) {
-            LOGGER->trace("Serializing object: type = std::string*, value = {}", *object);
             std::string str(*object);
             return nlohmann::json(std::move(str));
         }
@@ -304,7 +279,6 @@ namespace open_json {
         template<class T>
         typename std::enable_if<Is_String<T>::Value, nlohmann::json>::type
         static ToJson(const T *const *object) {
-            LOGGER->trace("Serializing object: type = std::string**, value = {}", **object);
             std::string str(**object);
             return nlohmann::json(std::move(str));
         }
@@ -314,7 +288,6 @@ namespace open_json {
         template<class T>
         typename std::enable_if<Is_Class<T>::Value, nlohmann::json>::type
         static ToJson(const T &&object) {
-            LOGGER->trace("Serializing object: type = class{}&&");
             nlohmann::json jsonObject = nlohmann::json::object();
 
             using ObjectType = typename Remove_CVRP<T>::Type;
@@ -329,7 +302,6 @@ namespace open_json {
         template<class T>
         typename std::enable_if<Is_Class<T>::Value, nlohmann::json>::type
         static ToJson(const T &object) {
-            LOGGER->trace("Serializing object: type = class{}&");
             nlohmann::json jsonObject = nlohmann::json::object();
 
             using ObjectType = typename Remove_CVRP<T>::Type;
@@ -344,14 +316,12 @@ namespace open_json {
         template<class T>
         typename std::enable_if<Is_Class<T>::Value, nlohmann::json>::type
         static ToJson(const T *object) {
-            LOGGER->trace("Serializing object: type = class{}*");
             return ToJson(*object);
         }
 
         template<class T>
         typename std::enable_if<Is_Class<T>::Value, nlohmann::json>::type
         static ToJson(const T *const *object) {
-            LOGGER->trace("Serializing object: type = class{}**");
             return ToJson(**object);
         }
 
@@ -361,7 +331,6 @@ namespace open_json {
         template<class T>
         typename std::enable_if<Is_Vector<T>::Value, nlohmann::json>::type
         static ToJson(const T &&object) {
-            LOGGER->trace("Serializing object: type = std::vector<>&&");
             std::size_t length = object.size();
             nlohmann::json jsonObject = nlohmann::json::array();
             size_t index = 0;
@@ -379,7 +348,6 @@ namespace open_json {
         template<class T>
         typename std::enable_if<Is_Vector<T>::Value, nlohmann::json>::type
         static ToJson(const T &object) {
-            LOGGER->trace("Serializing object: type = std::vector<>&");
             std::size_t length = object.size();
             nlohmann::json jsonObject = nlohmann::json::array();
             size_t index = 0;
@@ -396,21 +364,18 @@ namespace open_json {
         template<class T>
         typename std::enable_if<Is_Vector<T>::Value, nlohmann::json>::type
         static ToJson(const T *object) {
-            LOGGER->trace("Serializing object: type = std::vector<>*");
             return ToJson(*object);
         }
 
         template<class T>
         typename std::enable_if<Is_Vector<T>::Value, nlohmann::json>::type
         static ToJson(const T *const *object) {
-            LOGGER->trace("Serializing object: type = std::vector<>**");
             return ToJson(**object);
         }
 
         ///////////////////// std::unique_ptr<T> ///////////////////////////////////
         template<class T>
         static nlohmann::json ToJson(const std::unique_ptr<T> &&object) {
-            LOGGER->trace("Serializing object: type = std::unique::ptr&&");
             if (object) {
                 return ToJson(*object);
             }
@@ -419,7 +384,6 @@ namespace open_json {
 
         template<class T>
         static nlohmann::json ToJson(const std::unique_ptr<T> &object) {
-            LOGGER->trace("Serializing object: type = std::unique::ptr&");
             if (object) {
                 return ToJson(*object);
             }
@@ -429,7 +393,6 @@ namespace open_json {
         ///////////////////// std::shared_ptr<T> ///////////////////////////////////
         template<class T>
         static nlohmann::json ToJson(const std::shared_ptr<T> &&object) {
-            LOGGER->trace("Serializing object: type = std::shared_ptr&&");
             if (object) {
                 return ToJson(*object);
             }
@@ -438,7 +401,6 @@ namespace open_json {
 
         template<class T>
         static nlohmann::json ToJson(const std::shared_ptr<T> &object) {
-            LOGGER->trace("Serializing object: type = std::shared_ptr&");
             if (object) {
                 return ToJson(*object);
             }
@@ -449,7 +411,6 @@ namespace open_json {
         ///////////////////// std::weak_ptr<T> ///////////////////////////////////
         template<class T>
         static nlohmann::json ToJson(const std::weak_ptr<T> &&object) {
-            LOGGER->trace("Serializing object: type = std::weak::ptr&&");
             auto sharedObject = object.lock();
             if (sharedObject) {
                 return ToJson(*sharedObject);
@@ -459,7 +420,6 @@ namespace open_json {
 
         template<class T>
         static nlohmann::json ToJson(const std::weak_ptr<T> &object) {
-            LOGGER->trace("Serializing object: type = std::weak_ptr&");
             auto sharedObject = object.lock();
             if (sharedObject) {
                 return ToJson(*sharedObject);
@@ -470,7 +430,6 @@ namespace open_json {
         ///////////////////// boost::optional<T> ///////////////////////////////////
         template<class T>
         static nlohmann::json ToJson(const boost::optional<T> &&object) {
-            LOGGER->trace("Serializing object: type = Wt::Dbo::ptr&&");
             if (object) {
                 return ToJson(*object);
             }
@@ -479,7 +438,6 @@ namespace open_json {
 
         template<class T>
         static nlohmann::json ToJson(const boost::optional<T> &object) {
-            LOGGER->trace("Serializing object: type = Wt::Dbo::ptr&&");
             if (object) {
                 return ToJson(*object);
             }

@@ -20,55 +20,53 @@ namespace open_json_test {
 
     TEST_F(SerializePrimitiveTest, PremitiveInt) {
 
-/*
         nlohmann::json jsonObject;
 
         //serialize integer
         jsonObject = open_json::ToJson(10);
-        ASSERT_TRUE(jsonObject.is_number());
+        ASSERT_TRUE(jsonObject.is_number_integer());
         ASSERT_EQ(10, jsonObject.template get<int>());
-
+/*
         int intValue = 10;
         jsonObject = open_json::ToJson(intValue);
-        ASSERT_TRUE(jsonObject.is_number());
         ASSERT_EQ(intValue, jsonObject.template get<int>());
 
         const int32_t int32Value = 20;
         jsonObject = open_json::ToJson(int32Value);
-        ASSERT_TRUE(jsonObject.is_number_integer());
         ASSERT_EQ(int32Value, jsonObject.template get<const int32_t>());
 
         unsigned int uintValue = 30;
         jsonObject = open_json::ToJson(uintValue);
-        ASSERT_TRUE(jsonObject.is_number_unsigned());
         ASSERT_EQ(uintValue, jsonObject.template get<unsigned int>());
 
         const uint32_t uint32Value = 40;
         jsonObject = open_json::ToJson(uint32Value);
-        ASSERT_TRUE(jsonObject.is_number_unsigned());
         ASSERT_EQ(uint32Value, jsonObject.template get<const uint32_t>());
 
-        const int *ptrInt = &intValue;
+        int *ptrInt = new int();
         jsonObject = open_json::ToJson(ptrInt);
         ASSERT_EQ(*ptrInt, jsonObject.template get<const int>());
+        delete ptrInt;
 
-        const int * const ptr2Int = &int32Value;
+        uint32_t *ptrUInt32 = new uint32_t;
+        jsonObject = open_json::ToJson(ptrUInt32);
+        ASSERT_EQ(*ptrUInt32, jsonObject.template get<const int>());
+        delete ptrUInt32;
+
+        int **ptr2Int = new int*;
+        *ptr2Int = new int (50);
         jsonObject = open_json::ToJson(ptr2Int);
-        ASSERT_EQ(*ptr2Int, jsonObject.template get<const int>());
+        ASSERT_EQ(**ptr2Int, jsonObject.template get<int>());
+        delete *ptr2Int;
+        delete ptr2Int;
 
-        int **ptr3Int = new int*();
-        *ptr3Int = new int (50);
+        const int * const  *ptr3Int = new int*(new int(60));
         jsonObject = open_json::ToJson(ptr3Int);
         ASSERT_EQ(**ptr3Int, jsonObject.template get<int>());
         delete *ptr3Int;
         delete ptr3Int;
 
-        const int * const  *ptr4Int = new int*(new int(60));
-        jsonObject = open_json::ToJson(ptr4Int);
-        ASSERT_EQ(**ptr4Int, jsonObject.template get<int>());
-        delete *ptr4Int;
-        delete ptr4Int;
-*/
+        */
     }
 /*
     TEST_F(SerializePremitiveTest, PremitiveLong) {

@@ -4,7 +4,6 @@
 #include "CommonDef.h"
 #include <nlohmann/json.hpp>
 #include "boost/optional.hpp"
-#include "Logger.h"
 #include "TypeTraits.h"
 
 
@@ -20,8 +19,6 @@ namespace open_json {
         template<class T, class B, class ArgT>
         static void
         SetData(T *object, void (B::*SetterPtr)(const boost::optional<ArgT> &), const nlohmann::json &jsonObject) {
-            LOGGER->trace("SetData: void (B::*SetterPtr)(const boost::optional<ArgT> &)");
-
             using Type = typename Remove_CVR<ArgT>::Type;
 
             boost::optional<Type> var;
@@ -35,8 +32,6 @@ namespace open_json {
         template<class T, class B, class ArgT>
         static void
         SetData(T *object, void (B::*SetterPtr)(const std::unique_ptr<ArgT> &&), const nlohmann::json &jsonObject) {
-            LOGGER->trace("SetData: void (B::*SetterPtr)(const std::unique_ptr<ArgT> &&)");
-
             using Type = typename Remove_CVR<ArgT>::Type;
 
             std::unique_ptr<Type> var;
@@ -50,8 +45,6 @@ namespace open_json {
         template<class T, class B, class ArgT>
         static void
         SetData(T *object, void (B::*SetterPtr)(const std::shared_ptr<ArgT> &), const nlohmann::json &jsonObject) {
-            LOGGER->trace("SetData: void (B::*SetterPtr)(const std::shared_ptr<ArgT> &)");
-
             using Type = typename Remove_CVR<ArgT>::Type;
 
             std::shared_ptr<Type> var;
@@ -65,8 +58,6 @@ namespace open_json {
         template<class T, class B, class ArgT>
         static void
         SetData(T *object, void (B::*SetterPtr)(const std::weak_ptr<ArgT> &), const nlohmann::json &jsonObject) {
-            LOGGER->trace("SetData: void (B::*SetterPtr)(const std::weak_ptr<ArgT> &)");
-
             using Type = typename Remove_CVR<ArgT>::Type;
 
             std::weak_ptr<Type> var;
@@ -79,8 +70,6 @@ namespace open_json {
          */
         template<class T, class B, class ArgT>
         static void SetData(T *object, void ( B::*SetterPtr)(ArgT &&), const nlohmann::json &jsonObject) {
-            LOGGER->trace("SetData: void (T::*SetterPtr)(ArgT&&)");
-
             using Type = typename Remove_CVR<ArgT>::Type;
 
             Type var;
@@ -94,8 +83,6 @@ namespace open_json {
          */
         template<class T, class B, class ArgT>
         static void SetData(T *object, void ( B::*SetterPtr)(const ArgT &&), const nlohmann::json &jsonObject) {
-            LOGGER->trace("SetData: void (T::*SetterPtr)(const ArgT&&)");
-
             using Type = typename Remove_CVR<ArgT>::Type;
 
             Type var;
@@ -108,8 +95,6 @@ namespace open_json {
          */
         template<class T, class B, class ArgT>
         static void SetData(T *object, void ( B::*SetterPtr)(const ArgT), const nlohmann::json &jsonObject) {
-            LOGGER->trace("SetData: void (T::*SetterPtr)(const ArgT)");
-
             using Type = typename Remove_CVR<ArgT>::Type;
 
             Type var;
@@ -122,8 +107,6 @@ namespace open_json {
          */
         template<class T, class B, class ArgT>
         static void SetData(T *object, void ( B::*SetterPtr)(ArgT &), const nlohmann::json &jsonObject) {
-            LOGGER->trace("SetData: void (T::*SetterPtr)(ArgT&)");
-
             using Type = typename Remove_CVR<ArgT>::Type;
 
             Type var;
@@ -136,8 +119,6 @@ namespace open_json {
          */
         template<class T, class B, class ArgT>
         static void SetData(T *object, void ( B::*SetterPtr)(const ArgT &), const nlohmann::json &jsonObject) {
-            LOGGER->trace("SetData: void (T::*SetterPtr)(const ArgT&)");
-
             using Type = typename Remove_CVR<ArgT>::Type;
 
             Type var;
@@ -151,7 +132,6 @@ namespace open_json {
          */
         template<class T, class B>
         static void SetData(T *object, void ( B::*SetterPtr)(char *), const nlohmann::json &jsonObject) {
-            LOGGER->trace("SetData: void (T::*SetterPtr)(char*)");
             char *var;
             FromJson(&var, jsonObject);
             (object->*SetterPtr)(var);
@@ -163,7 +143,6 @@ namespace open_json {
          */
         template<class T, class B>
         static void SetData(T *object, void ( B::*SetterPtr)(const char *), const nlohmann::json &jsonObject) {
-            LOGGER->trace("SetData: void (T::*SetterPtr)(const char*)");
             char *var;
             FromJson(&var, jsonObject);
             (object->*SetterPtr)(var);
@@ -174,8 +153,6 @@ namespace open_json {
          */
         template<class T, class B, class ArgT>
         static void SetData(T *object, void ( B::*SetterPtr)(ArgT *), const nlohmann::json &jsonObject) {
-            LOGGER->trace("SetData: void (T::*SetterPtr)(ArgT*)");
-
             using Type = typename Remove_CVR<ArgT>::Type;
 
             Type *var = new Type();
@@ -188,8 +165,6 @@ namespace open_json {
          */
         template<class T, class B, class ArgT>
         static void SetData(T *object, void ( B::*SetterPtr)(const ArgT *), const nlohmann::json &jsonObject) {
-            LOGGER->trace("SetData: void (T::*SetterPtr)(const ArgT*)");
-
             using Type = typename Remove_CVR<ArgT>::Type;
 
             Type *var = new Type();
@@ -202,8 +177,6 @@ namespace open_json {
          */
         template<class T, class B, class ArgT>
         static void SetData(T *object, void ( B::*SetterPtr)(ArgT **), const nlohmann::json &jsonObject) {
-            LOGGER->trace("SetData: void (T::*SetterPtr)(ArgT**)");
-
             using Type = typename Remove_CVR<ArgT>::Type;
 
             Type **var = new Type *();
@@ -217,8 +190,6 @@ namespace open_json {
          */
         template<class T, class B, class ArgT>
         static void SetData(T *object, void ( B::*SetterPtr)(const ArgT *const *), const nlohmann::json &jsonObject) {
-            LOGGER->trace("SetData: void (T::*SetterPtr)(const ArgT *const *)");
-
             using Type = typename Remove_CVR<ArgT>::Type;
 
             Type **var = new Type *();
@@ -241,7 +212,6 @@ namespace open_json {
             auto name = setter.name;
             auto fp = setter.fp;
 
-            LOGGER->trace("Found a setter with name: {}", name);
             bool found = false;
 
             if (jsonObject.template contains<nlohmann::json>(name)) {
@@ -255,7 +225,7 @@ namespace open_json {
             }
 
             if (!found) {
-                LOGGER->trace("value is null and will be ignored.");
+                //value is null and will be ignored.
             }
         }
 
@@ -325,7 +295,6 @@ namespace open_json {
         typename std::enable_if<std::is_enum<T>::value, void>::type
         static FromJson(T &object, const nlohmann::json &jsonObject) {
             object = static_cast<typename Remove_CVR<T>::Type>(jsonObject.template get<int32_t>());
-            LOGGER->trace("Deserializing object: type = Enum&, value = {}", object);
         }
 
         /********************************************************************************
@@ -335,7 +304,6 @@ namespace open_json {
         typename std::enable_if<std::is_enum<T>::value, void>::type
         static FromJson(T *object, const nlohmann::json &jsonObject) {
             *object = static_cast<typename Remove_CVR<T>::Type>(jsonObject.template get<int32_t>());
-            LOGGER->trace("Deserializing object: type = Enum*, value = {}", *object);
         }
 
         /********************************************************************************
@@ -346,7 +314,6 @@ namespace open_json {
         static FromJson(T **object, const nlohmann::json &jsonObject) {
             using Type = typename Remove_CVR<T>::Type;
             *object = new Type(static_cast<Type>(jsonObject.template get<int32_t>()));
-            LOGGER->trace("Deserializing object: type = Enum*, value = {}", **object);
         }
 
         /*********************************************************************************
@@ -356,7 +323,6 @@ namespace open_json {
         typename std::enable_if<Is_Bool<T>::Value, void>::type
         static FromJson(T &object, const nlohmann::json &jsonObject) {
             object = static_cast<bool>(jsonObject.template get<bool>());
-            LOGGER->trace("Deserializing object: type = Bool&, value = {}", object);
         }
 
         /*********************************************************************************
@@ -380,7 +346,6 @@ namespace open_json {
         typename std::enable_if<Is_Bool<T>::Value, void>::type
         static FromJson(T *object, const nlohmann::json &jsonObject) {
             *object = static_cast<bool>(jsonObject.template get<bool>());
-            LOGGER->trace("Deserializing object: type = Bool*, value = {}", *object);
         }
 
         /*********************************************************************************
@@ -409,7 +374,6 @@ namespace open_json {
         typename std::enable_if<Is_Bool<T>::Value, void>::type
         static FromJson(T **object, const nlohmann::json &jsonObject) {
             *object = new bool(static_cast<bool>(jsonObject.template get<bool>()));
-            LOGGER->trace("Deserializing object: type = Bool**, value = {}", **object);
         }
 
         /*********************************************************************************
@@ -419,7 +383,6 @@ namespace open_json {
         typename std::enable_if<Is_Char<T>::Value, void>::type
         static FromJson(T &object, const nlohmann::json &jsonObject) {
             object = static_cast<char>(jsonObject.template get<char>());
-            LOGGER->trace("Deserializing object: type = char&, value = {}", object);
         }
 
         /**********************************************************************************
@@ -432,7 +395,6 @@ namespace open_json {
         static FromJson(T *object, const nlohmann::json &jsonObject) {
             const std::string str = jsonObject.template get<std::string>();
             strcpy(object, str.c_str());
-            LOGGER->trace("Deserializing object: type = char*, value = {}", *object);
         }
 
         /**********************************************************************************
@@ -447,7 +409,6 @@ namespace open_json {
             const std::string str = jsonObject.template get<std::string>();
             *object = new char[str.length() + 1];
             strcpy(*object, str.c_str());
-            LOGGER->trace("Deserializing object: type = char**, value = {}", **object);
         }
 
         /***********************************************************************************
@@ -457,7 +418,6 @@ namespace open_json {
         typename std::enable_if<Is_Int8<T>::Value || Is_Int16<T>::Value || Is_Int32<T>::Value, void>::type
         static FromJson(T &object, const nlohmann::json &jsonObject) {
             object = static_cast<int32_t>(jsonObject.template get<int32_t>());
-            LOGGER->trace("Deserializing object: type = signed integer32&, value = {}", object);
         }
 
         /***********************************************************************************
@@ -467,7 +427,6 @@ namespace open_json {
         typename std::enable_if<Is_Int8<T>::Value || Is_Int16<T>::Value || Is_Int32<T>::Value, void>::type
         static FromJson(T *object, const nlohmann::json &jsonObject) {
             *object = static_cast<int32_t>(jsonObject.template get<int32_t>());
-            LOGGER->trace("Deserializing object: type = signed integer32*, value = {}", *object);
         }
 
         /***********************************************************************************
@@ -477,7 +436,6 @@ namespace open_json {
         typename std::enable_if<Is_Int8<T>::Value || Is_Int16<T>::Value || Is_Int32<T>::Value, void>::type
         static FromJson(T **object, const nlohmann::json &jsonObject) {
             *object = new int32_t(static_cast<int32_t>(jsonObject.template get<int32_t>()));
-            LOGGER->trace("Deserializing object: type = signed integer32**, value = {}", **object);
         }
 
         /***********************************************************************************
@@ -487,7 +445,6 @@ namespace open_json {
         typename std::enable_if<Is_UInt8<T>::Value || Is_UInt16<T>::Value || Is_UInt32<T>::Value, void>::type
         static FromJson(T &object, const nlohmann::json &jsonObject) {
             object = static_cast<uint32_t>(jsonObject.template get<uint32_t>());
-            LOGGER->trace("Deserializing object: type = unsigned integer32&, value = {}", object);
         }
 
         /***********************************************************************************
@@ -497,7 +454,6 @@ namespace open_json {
         typename std::enable_if<Is_UInt8<T>::Value || Is_UInt16<T>::Value || Is_UInt32<T>::Value, void>::type
         static FromJson(T *object, const nlohmann::json &jsonObject) {
             *object = static_cast<uint32_t>(jsonObject.template get<uint32_t>());
-            LOGGER->trace("Deserializing object: type = unsigned integer32*, value = {}", *object);
         }
 
         /***********************************************************************************
@@ -506,9 +462,7 @@ namespace open_json {
         template<class T>
         typename std::enable_if<Is_UInt8<T>::Value || Is_UInt16<T>::Value || Is_UInt32<T>::Value, void>::type
         static FromJson(T **object, const nlohmann::json &jsonObject) {
-
             *object = new uint32_t(static_cast<T>(jsonObject.template get<uint32_t>()));
-            LOGGER->trace("Deserializing object: type = unsigned integer32**, value = {}", **object);
         }
 
         /***********************************************************************************
@@ -518,7 +472,6 @@ namespace open_json {
         typename std::enable_if<Is_Int64<T>::Value, void>::type
         static FromJson(T &object, const nlohmann::json &jsonObject) {
             object = static_cast<int64_t>(jsonObject.template get<int64_t>());
-            LOGGER->trace("Deserializing object: type = signed integer64&, value = {}", object);
         }
 
         /***********************************************************************************
@@ -528,7 +481,6 @@ namespace open_json {
         typename std::enable_if<Is_Int64<T>::Value, void>::type
         static FromJson(T *object, const nlohmann::json &jsonObject) {
             *object = static_cast<int64_t>(jsonObject.template get<int64_t>());
-            LOGGER->trace("Deserializing object: type = signed integer64*, value = {}", *object);
         }
 
         /***********************************************************************************
@@ -538,7 +490,6 @@ namespace open_json {
         typename std::enable_if<Is_Int64<T>::Value, void>::type
         static FromJson(T **object, const nlohmann::json &jsonObject) {
             *object = new int64_t(static_cast<int64_t>(jsonObject.template get<int64_t>()));
-            LOGGER->trace("Deserializing object: type = signed integer64**, value = {}", **object);
         }
 
         /***********************************************************************************
@@ -548,7 +499,6 @@ namespace open_json {
         typename std::enable_if<Is_UInt64<T>::Value, void>::type
         static FromJson(T &object, const nlohmann::json &jsonObject) {
             object = static_cast<uint64_t>(jsonObject.template get<uint64_t>());
-            LOGGER->trace("Deserializing object: type = unsigned integer64&, value = {}", object);
         }
 
         /***********************************************************************************
@@ -558,7 +508,6 @@ namespace open_json {
         typename std::enable_if<Is_UInt64<T>::Value, void>::type
         static FromJson(T *object, const nlohmann::json &jsonObject) {
             *object = static_cast<uint64_t>(jsonObject.template get<uint64_t>());
-            LOGGER->trace("Deserializing object: type = unsigned integer64*, value = {}", *object);
         }
 
         /***********************************************************************************
@@ -568,7 +517,6 @@ namespace open_json {
         typename std::enable_if<Is_UInt64<T>::Value, void>::type
         static FromJson(T **object, const nlohmann::json &jsonObject) {
             *object = new uint64_t(static_cast<uint64_t>(jsonObject.template get<uint64_t>()));
-            LOGGER->trace("Deserializing object: type = unsigned integer64**, value = {}", **object);
         }
 
         /***********************************************************************************
@@ -578,7 +526,6 @@ namespace open_json {
         typename std::enable_if<Is_Decimal<T>::Value, void>::type
         static FromJson(T &object, const nlohmann::json &jsonObject) {
             object = static_cast<double_t>(jsonObject.template get<double_t>());
-            LOGGER->trace("Deserializing object: type = decimal&, value = {}", object);
         }
 
         /***********************************************************************************
@@ -588,7 +535,6 @@ namespace open_json {
         typename std::enable_if<Is_Decimal<T>::Value, void>::type
         static FromJson(T *object, const nlohmann::json &jsonObject) {
             *object = static_cast<double_t>(jsonObject.template get<double_t>());
-            LOGGER->trace("Deserializing object: type = decimal*, value = {}", *object);
         }
 
         /***********************************************************************************
@@ -598,7 +544,6 @@ namespace open_json {
         typename std::enable_if<Is_Decimal<T>::Value, void>::type
         static FromJson(T **object, const nlohmann::json &jsonObject) {
             *object = new double_t(static_cast<double_t>(jsonObject.template get<double_t>()));
-            LOGGER->trace("Deserializing object: type = decimal**, value = {}", **object);
         }
 
         /***********************************************************************************
@@ -608,7 +553,6 @@ namespace open_json {
         typename std::enable_if<Is_String<T>::Value, void>::type
         static FromJson(T &object, const nlohmann::json &jsonObject) {
             object = jsonObject.template get<std::string>();
-            LOGGER->trace("Deserializing object: type = std::string&, value = {}", object);
         }
 
         /***********************************************************************************
@@ -618,7 +562,6 @@ namespace open_json {
         typename std::enable_if<Is_String<T>::Value, void>::type
         static FromJson(T *object, const nlohmann::json &jsonObject) {
             *object = jsonObject.template get<std::string>();
-            LOGGER->trace("Deserializing object: type = std::string*, value = {}", *object);
         }
 
         /***********************************************************************************
@@ -628,7 +571,6 @@ namespace open_json {
         typename std::enable_if<Is_String<T>::Value, void>::type
         static FromJson(T **object, const nlohmann::json &jsonObject) {
             *object = new std::string(jsonObject.template get<std::string>());
-            LOGGER->trace("Deserializing object: type = std::string**, value = {}", **object);
         }
 
 
@@ -640,8 +582,6 @@ namespace open_json {
         template<class T>
         typename std::enable_if<Is_Class<T>::Value, void>::type
         static FromJson(T *object, const nlohmann::json &jsonObject) {
-            LOGGER->trace("Deserializing object: type = class{}*");
-
             using Type = typename Remove_CVR<T>::Type;
             auto setters = Type::setters;
             const auto length = std::tuple_size<decltype(setters)>::value;
@@ -656,8 +596,6 @@ namespace open_json {
         template<class T>
         typename std::enable_if<Is_Class<T>::Value, void>::type
         static FromJson(T &object, const nlohmann::json &jsonObject) {
-            LOGGER->trace("Deserializing object: type = class{}&");
-
             FromJson(&object, jsonObject);
         }
 
@@ -667,8 +605,6 @@ namespace open_json {
         template<class T>
         typename std::enable_if<Is_Class<T>::Value, void>::type
         static FromJson(T **object, const nlohmann::json &jsonObject) {
-            LOGGER->trace("Deserializing object: type = class{}**");
-
             using Type = typename Remove_CVR<T>::Type;
             *object = new Type();
 
@@ -682,7 +618,6 @@ namespace open_json {
          * special handling for vector of char*
          ***********************************************************************************/
         static void FromJson(std::vector<char *> *object, const nlohmann::json &jsonObject) {
-            LOGGER->trace("Deserializing object: type = vector<T>*");
             for (const auto &arrItem: jsonObject) {
                 //char *var = new char[arrItem.size()];
                 char *var;
@@ -692,7 +627,6 @@ namespace open_json {
         }
 
         static void FromJson(std::vector<const char *> *object, const nlohmann::json &jsonObject) {
-            LOGGER->trace("Deserializing object: type = vector<T>*");
             for (const auto &arrItem: jsonObject) {
                 //char *var = new char[arrItem.size()];
                 char *var;
@@ -706,8 +640,6 @@ namespace open_json {
          ***********************************************************************************/
         template<class T>
         static void FromJson(std::vector<T *> *object, const nlohmann::json &jsonObject) {
-            LOGGER->trace("Deserializing object: type = vector<T*>*");
-
             using Type = typename Remove_CVR<T>::Type;
 
             for (const auto &arrItem: jsonObject) {
@@ -722,8 +654,6 @@ namespace open_json {
          ***********************************************************************************/
         template<class T>
         static void FromJson(std::vector<T *> &object, const nlohmann::json &jsonObject) {
-            LOGGER->trace("Deserializing object: type = vector<T*>&");
-
             FromJson(&object, jsonObject);
         }
 
@@ -732,8 +662,6 @@ namespace open_json {
          ***********************************************************************************/
         template<class T>
         static void FromJson(std::vector<T *> **object, const nlohmann::json &jsonObject) {
-            LOGGER->trace("Deserializing object: type = vector<T*>*");
-
             //using Type = typename Remove_CVR<T>::Type;
             *object = new std::vector<T *>();
 
@@ -745,8 +673,6 @@ namespace open_json {
          ***********************************************************************************/
         template<class T>
         static void FromJson(std::vector<T> *object, const nlohmann::json &jsonObject) {
-            LOGGER->trace("Deserializing object: type = vector<T>*");
-
             using Type = typename Remove_CVR<T>::Type;
 
             for (const auto &arrItem: jsonObject) {
@@ -761,8 +687,6 @@ namespace open_json {
          ***********************************************************************************/
         template<class T>
         static void FromJson(std::vector<T> &object, const nlohmann::json &jsonObject) {
-            LOGGER->trace("Deserializing object: type = vector<T>&");
-
             FromJson(&object, jsonObject);
         }
 
@@ -771,8 +695,6 @@ namespace open_json {
          ***********************************************************************************/
         template<class T>
         static void FromJson(std::vector<T> **object, const nlohmann::json &jsonObject) {
-            LOGGER->trace("Deserializing object: type = vector<T>*");
-
             //using Type = typename Remove_CVR<T>::Type;
             *object = new std::vector<T>();
 
@@ -785,8 +707,6 @@ namespace open_json {
         ***********************************************************************************/
         template<class T>
         static void FromJson(std::unique_ptr<T> &object, const nlohmann::json &jsonObject) {
-            LOGGER->trace("Deserializing object: type = std::unique_ptr<T> &");
-
             using Type = typename Remove_CVR<T>::Type;
             std::unique_ptr<Type> var = std::make_unique<Type>();
             FromJson(var.get(), jsonObject);
@@ -798,8 +718,6 @@ namespace open_json {
         ***********************************************************************************/
         template<class T>
         static void FromJson(std::shared_ptr<T> &object, const nlohmann::json &jsonObject) {
-            LOGGER->trace("Deserializing object: type = std::shared_ptr<T> &");
-
             using Type = typename Remove_CVR<T>::Type;
             std::shared_ptr<Type> var = std::make_shared<Type>();
             FromJson(var.get(), jsonObject);
@@ -811,8 +729,6 @@ namespace open_json {
         ***********************************************************************************/
         template<class T>
         static void FromJson(std::weak_ptr<T> &object, const nlohmann::json &jsonObject) {
-            LOGGER->trace("Deserializing object: type = std::weak_ptr<T> &");
-
             using Type = typename Remove_CVR<T>::Type;
             std::shared_ptr<Type> var = std::make_shared<Type>();
             FromJson(var.get(), jsonObject);
@@ -824,8 +740,6 @@ namespace open_json {
         ***********************************************************************************/
         template<class T>
         static void FromJson(boost::optional<T> &object, const nlohmann::json &jsonObject) {
-            LOGGER->trace("Deserializing object: type = boost::optional<T> &");
-
             using Type = typename Remove_CVR<T>::Type;
             Type var = Type();
             FromJson(var, jsonObject);
@@ -834,8 +748,6 @@ namespace open_json {
 
         template<class T>
         static void FromJson(boost::optional<T *> &object, const nlohmann::json &jsonObject) {
-            LOGGER->trace("Deserializing object: type = boost::optional<T> &");
-
             using Type = typename Remove_CVR<T>::Type;
             Type *var = new Type();
             FromJson(var, jsonObject);
