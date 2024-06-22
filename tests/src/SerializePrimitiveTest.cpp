@@ -26,17 +26,18 @@ namespace open_json_test {
         jsonObject = open_json::ToJson(10);
         ASSERT_TRUE(jsonObject.is_number_integer());
         ASSERT_EQ(10, jsonObject.template get<int>());
-/*
+
         int intValue = 10;
         jsonObject = open_json::ToJson(intValue);
         ASSERT_EQ(intValue, jsonObject.template get<int>());
 
-        const int32_t int32Value = 20;
+        const int32_t int32Value = -20;
         jsonObject = open_json::ToJson(int32Value);
         ASSERT_EQ(int32Value, jsonObject.template get<const int32_t>());
 
         unsigned int uintValue = 30;
         jsonObject = open_json::ToJson(uintValue);
+        ASSERT_TRUE(jsonObject.is_number_unsigned());
         ASSERT_EQ(uintValue, jsonObject.template get<unsigned int>());
 
         const uint32_t uint32Value = 40;
@@ -54,7 +55,7 @@ namespace open_json_test {
         delete ptrUInt32;
 
         int **ptr2Int = new int*;
-        *ptr2Int = new int (50);
+        *ptr2Int = new int (-50);
         jsonObject = open_json::ToJson(ptr2Int);
         ASSERT_EQ(**ptr2Int, jsonObject.template get<int>());
         delete *ptr2Int;
@@ -65,67 +66,45 @@ namespace open_json_test {
         ASSERT_EQ(**ptr3Int, jsonObject.template get<int>());
         delete *ptr3Int;
         delete ptr3Int;
-
-        */
     }
-/*
-    TEST_F(SerializePremitiveTest, PremitiveLong) {
+
+    TEST_F(SerializePrimitiveTest, PremitiveLong) {
         nlohmann::json jsonObject;
-        long longVal = 10;
 
         jsonObject = open_json::ToJson(10L);
         ASSERT_TRUE(jsonObject.is_number());
-        ASSERT_TRUE(jsonObject.as_number().is_int64());
-        ASSERT_TRUE(jsonObject.as_number().to_int64() == 10L);
+        ASSERT_EQ(10L,  jsonObject.template get<long>());
 
-        ASSERT_EQ(10L, jsonObject.as_integer());
-        jsonObject = open_json::ToJson(long(10));
-        ASSERT_EQ(10L, jsonObject.as_integer());
-        jsonObject = open_json::ToJson(std::move(longVal));
-        ASSERT_EQ(longVal, jsonObject.as_integer());
+        const long  longValue = 20L;
+        jsonObject = open_json::ToJson(longValue);
+        ASSERT_EQ(longValue, jsonObject.template get<const long>());
 
-        jsonObject = open_json::ToJson(longVal);
-        ASSERT_TRUE(jsonObject.is_number());
-        ASSERT_TRUE(jsonObject.as_number().is_int64());
-        ASSERT_TRUE(jsonObject.as_number().to_int64() == longVal);
-        ASSERT_EQ(longVal, jsonObject.as_integer());
-
-
-        unsigned long ulongVal = 20L;
+        unsigned long ulongVal = 30L;
         jsonObject = open_json::ToJson(ulongVal);
-        ASSERT_TRUE(jsonObject.is_number());
-        ASSERT_TRUE(jsonObject.as_number().is_uint64());
-        ASSERT_TRUE(jsonObject.as_number().to_uint64() == ulongVal);
-        ASSERT_EQ(ulongVal, jsonObject.as_integer());
+        ASSERT_TRUE(jsonObject.is_number_unsigned());
+        ASSERT_EQ(ulongVal, jsonObject.template get<unsigned long>());
 
+        const unsigned long &ulongVal2 = ulongVal;
+        jsonObject = open_json::ToJson(ulongVal2);
+        ASSERT_EQ(ulongVal2, jsonObject.template get<const unsigned long>());
 
-        const long longVal2 = 10L;
-        jsonObject = open_json::ToJson(longVal2);
-        ASSERT_EQ(longVal2, jsonObject.as_integer());
-        long &longVal3 = longVal;
-        jsonObject = open_json::ToJson(longVal3);
-        ASSERT_EQ(longVal3, jsonObject.as_integer());
-        const long &longVal4 = longVal2;
-        jsonObject = open_json::ToJson(longVal4);
-        ASSERT_EQ(longVal4, jsonObject.as_integer());
-        long const &longValue5 = longVal;
-        jsonObject = open_json::ToJson(longValue5);
-        ASSERT_EQ(longValue5, jsonObject.as_integer());
-
-        long *longPtr = &longVal;
+        const long *longPtr = &longValue;
         jsonObject = open_json::ToJson(longPtr);
-        ASSERT_EQ(*longPtr, jsonObject.as_integer());
-        const long *longPtr2 = &longVal;
-        jsonObject = open_json::ToJson(longPtr2);
-        ASSERT_EQ(*longPtr2, jsonObject.as_integer());
-        long *const longPtr3 = &longVal;
-        jsonObject = open_json::ToJson(longPtr3);
-        ASSERT_EQ(*longPtr3, jsonObject.as_integer());
-        const long *const longPtr4 = &longVal;
-        jsonObject = open_json::ToJson(longPtr4);
-        ASSERT_EQ(*longPtr4, jsonObject.as_integer());
-    }
+        ASSERT_EQ(*longPtr, jsonObject.template get<const long>());
 
+        long const *longPtr2 = &longValue;
+        jsonObject = open_json::ToJson(longPtr2);
+        ASSERT_EQ(*longPtr2, jsonObject.template get<const long>());
+
+        const long * const longPtr3 = &longValue;
+        jsonObject = open_json::ToJson(longPtr3);
+        ASSERT_EQ(*longPtr3, jsonObject.template get<const long>());
+
+        const long * const *longPtr4 = new long*(new long(-40L));
+        jsonObject = open_json::ToJson(longPtr4);
+        ASSERT_EQ(**longPtr4, jsonObject.template get<const long>());
+    }
+/*
     TEST_F(SerializePremitiveTest, PremitiveBool) {
         nlohmann::json jsonObject;
         bool boolVal = true;
