@@ -71,7 +71,7 @@ A modern c++ library to serialize and deserialize c++ objects to and from <a hre
 # Example:
 
 * ## Serializing
-* ### primitive integer
+* ### Primitive integer
 
 <div class="highlight highlight-source-c++ notranslate position-relative overflow-auto" dir="auto">
 <pre>
@@ -79,8 +79,6 @@ A modern c++ library to serialize and deserialize c++ objects to and from <a hre
 
 <div class="pl-c">
 nlohmann::json jsonObject;
-
-//serialize integer
 
 jsonObject = open_json::ToJson(10);
 ASSERT_EQ(10, jsonObject.template get&lt;int&gt;());
@@ -103,5 +101,94 @@ delete ptr2Int;
 
 </div>
 </pre>
+</div>
 
+* ### Primitive double
+<div class="highlight highlight-source-c++ notranslate position-relative overflow-auto" dir="auto">
+<pre>
+<span class="pl-k">#include</span><span class="pl-s"><span class="pl-pds">&lt;</span>open_json.h<span class="pl-pds">&gt;</span></span>
+
+<div class="pl-c">
+nlohmann::json jsonObject;
+
+jsonObject = open_json::ToJson(10.51);
+ASSERT_DOUBLE_EQ(10.51, jsonObject.template get&lt;double&gt;());
+
+double decimalVal = 10.51;
+jsonObject = open_json::ToJson(decimalVal);
+ASSERT_DOUBLE_EQ(decimalVal, jsonObject.template get&lt;double&gt;());
+
+const double &#42;decimalPtr2 = &decimalVal;
+jsonObject = open_json::ToJson(decimalPtr2);
+ASSERT_DOUBLE_EQ(&#42;decimalPtr2, jsonObject.template get&lt;double&gt;());
+
+const double &#42; const &#42;decimalPtr5 = new double&#42;(new double(-30.51));
+jsonObject = open_json::ToJson(decimalPtr5);
+ASSERT_DOUBLE_EQ(&#42;&#42;decimalPtr5, jsonObject.template get&lt;double&gt;());
+delete &#42;decimalPtr5;
+delete decimalPtr5;
+
+</div>
+</pre>
+</div>
+
+* ### Primitive char and char&#42;
+<div class="highlight highlight-source-c++ notranslate position-relative overflow-auto" dir="auto">
+<pre>
+<span class="pl-k">#include</span><span class="pl-s"><span class="pl-pds">&lt;</span>open_json.h<span class="pl-pds">&gt;</span></span>
+
+<div class="pl-c">
+nlohmann::json jsonObject;
+int intVal = 'A';
+char charValue = 'A';
+
+jsonObject = open_json::ToJson(charValue);
+ASSERT_EQ(intVal, jsonObject.template get&lt;int&gt;());
+ASSERT_EQ(charValue, jsonObject.template get&lt;char&gt;());
+
+unsigned char ucharVal = 'A';
+jsonObject = open_json::ToJson(ucharVal);
+ASSERT_EQ(intVal, jsonObject.template get&lt;int&gt;());
+ASSERT_EQ(ucharVal, jsonObject.template get&lt;unsigned char&gt;());
+
+char &#42;ptr1 = "Hello world!";
+jsonObject = open_json::ToJson(ptr1);
+ASSERT_EQ(ptr1, jsonObject.template get&lt;std::string&gt;());
+
+char &#42;&#42;ptr2 = &ptr1;
+jsonObject = open_json::ToJson(ptr2);
+ASSERT_EQ(&#42;ptr2, jsonObject.template get&lt;std::string&gt;());
+
+</div>
+</pre>
+</div>
+
+* ### Primitive string and string&#42;
+<div class="highlight highlight-source-c++ notranslate position-relative overflow-auto" dir="auto">
+<pre>
+<span class="pl-k">#include</span><span class="pl-s"><span class="pl-pds">&lt;</span>open_json.h<span class="pl-pds">&gt;</span></span>
+
+<div class="pl-c">
+nlohmann::json jsonObject;
+
+std::string str = "Hello World!";
+jsonObject = open_json::ToJson(str);
+ASSERT_EQ(0, str.compare(jsonObject.template get&lt;std::string&gt;()));
+
+const std::string str2 = "C++ is awesome!";
+jsonObject = open_json::ToJson(std::move(str2));
+ASSERT_EQ(0, str2.compare(jsonObject.template get&lt;std::string&gt;()));
+
+std::string &#42;str3 = &str;
+jsonObject = open_json::ToJson(str3);
+ASSERT_EQ(0, str3->compare(jsonObject.template get&lt;std::string&gt;()));
+
+std::string &#42;&#42;str7 = new std::string&#42;(new std::string("Hi there!"));
+jsonObject = open_json::ToJson(str7);
+ASSERT_EQ(0, (&#42;str7)->compare(jsonObject.template get&lt;std::string&gt;()));
+delete *str7;
+delete str7;
+
+</div>
+</pre>
 </div>

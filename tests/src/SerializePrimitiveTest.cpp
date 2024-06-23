@@ -232,9 +232,9 @@ namespace open_json_test {
         jsonObject = open_json::ToJson(decimalPtr);
         ASSERT_DOUBLE_EQ(*decimalPtr, jsonObject.template get<double>());
 
-        const double *decialPtr2 = &decimalVal;
-        jsonObject = open_json::ToJson(decialPtr2);
-        ASSERT_DOUBLE_EQ(*decialPtr2, jsonObject.template get<double>());
+        const double *decimalPtr2 = &decimalVal;
+        jsonObject = open_json::ToJson(decimalPtr2);
+        ASSERT_DOUBLE_EQ(*decimalPtr2, jsonObject.template get<double>());
 
         double *const decimalPtr3 = &decimalVal;
         jsonObject = open_json::ToJson(decimalPtr3);
@@ -381,7 +381,6 @@ namespace open_json_test {
 
     TEST_F(SerializePrimitiveTest, STLString) {
         nlohmann::json jsonObject;
-        std::string strVal;
 
         std::string str = "Hello World!";
         jsonObject = open_json::ToJson(std::move(str));
@@ -390,7 +389,7 @@ namespace open_json_test {
         jsonObject = open_json::ToJson(str);
         ASSERT_EQ(0, str.compare(jsonObject.template get<std::string>()));
 
-        const std::string str2 = "C++ is awsome!";
+        const std::string str2 = "C++ is awesome!";
         jsonObject = open_json::ToJson(std::move(str2));
         ASSERT_EQ(0, str2.compare(jsonObject.template get<std::string>()));
 
