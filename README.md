@@ -163,7 +163,7 @@ ASSERT_EQ(&#42;ptr2, jsonObject.template get&lt;std::string&gt;());
 </pre>
 </div>
 
-* ### Primitive string and string&#42;
+* ### string and string&#42;
 <div class="highlight highlight-source-c++ notranslate position-relative overflow-auto" dir="auto">
 <pre>
 <span class="pl-k">#include</span><span class="pl-s"><span class="pl-pds">&lt;</span>open_json.h<span class="pl-pds">&gt;</span></span>
