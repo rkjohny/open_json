@@ -67,3 +67,41 @@ A modern c++ library to serialize and deserialize c++ objects to and from <a hre
         * pacman -S mingw-w64-x86_64-zlib
       * ##### install zstd:
         * pacman -S mingw-w64-x86_64-zstd
+
+# Example:
+
+* ## Serializing
+* ### primitive integer
+
+<div class="highlight highlight-source-c++ notranslate position-relative overflow-auto" dir="auto">
+<pre>
+<span class="pl-k">#include</span><span class="pl-s"><span class="pl-pds">&lt;</span>open_json.h<span class="pl-pds">&gt;</span></span>
+
+<div class="pl-c">
+nlohmann::json jsonObject;
+
+//serialize integer
+
+jsonObject = open_json::ToJson(10);
+ASSERT_EQ(10, jsonObject.template get&lt;int&gt;());
+
+int intValue = 10;
+jsonObject = open_json::ToJson(intValue);
+ASSERT_EQ(intValue, jsonObject.template get&lt;int&gt;());
+
+
+int &#42;ptrInt = new int(-45);
+jsonObject = open_json::ToJson(ptrInt);
+ASSERT_EQ(*ptrInt, jsonObject.template get&lt;int&gt;());
+delete ptrInt;
+
+int &#42;&#42;ptr2Int = new int&#42;(new int(-50));
+jsonObject = open_json::ToJson(ptr2Int);
+ASSERT_EQ(**ptr2Int, jsonObject.template get&lt;int&gt;());
+delete &#42;ptr2Int;
+delete ptr2Int;
+
+</div>
+</pre>
+
+</div>

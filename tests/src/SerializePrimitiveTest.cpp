@@ -42,14 +42,14 @@ namespace open_json_test {
         jsonObject = open_json::ToJson(uint32Value);
         ASSERT_EQ(uint32Value, jsonObject.template get<const uint32_t>());
 
-        int *ptrInt = new int();
+        int *ptrInt = new int(-45);
         jsonObject = open_json::ToJson(ptrInt);
-        ASSERT_EQ(*ptrInt, jsonObject.template get<const int>());
+        ASSERT_EQ(*ptrInt, jsonObject.template get<int>());
         delete ptrInt;
 
         uint32_t *ptrUInt32 = new uint32_t;
         jsonObject = open_json::ToJson(ptrUInt32);
-        ASSERT_EQ(*ptrUInt32, jsonObject.template get<const int>());
+        ASSERT_EQ(*ptrUInt32, jsonObject.template get<uint32_t>());
         delete ptrUInt32;
 
         int **ptr2Int = new int*(new int(-50));
