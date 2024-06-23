@@ -192,3 +192,5 @@ delete str7;
 </div>
 </pre>
 </div>
+
+#### For more test cases of primitive types look into file <a href="./tests/src/SerializePrimitiveTest.cpp">SerializePrimitiveTest.cpp</a>
