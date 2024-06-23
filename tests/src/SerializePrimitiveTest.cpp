@@ -72,7 +72,7 @@ namespace open_json_test {
         ASSERT_TRUE(jsonObject.is_number());
         ASSERT_EQ(10L,  jsonObject.template get<long>());
 
-        const long  longValue = 20;
+        const long longValue = 20;
         jsonObject = open_json::ToJson(longValue);
         ASSERT_EQ(longValue, jsonObject.template get<const long>());
 
@@ -100,6 +100,45 @@ namespace open_json_test {
         const long * const *longPtr4 = new long*(new long(-40L));
         jsonObject = open_json::ToJson(longPtr4);
         ASSERT_EQ(**longPtr4, jsonObject.template get<const long>());
+        delete *longPtr4;
+        delete longPtr4;
+    }
+
+    TEST_F(SerializePrimitiveTest, PremitiveLongLong) {
+        nlohmann::json jsonObject;
+
+        jsonObject = open_json::ToJson(10L);
+        ASSERT_TRUE(jsonObject.is_number());
+        ASSERT_EQ(10L,  jsonObject.template get<long long>());
+
+        const long long longValue = 20;
+        jsonObject = open_json::ToJson(longValue);
+        ASSERT_EQ(longValue, jsonObject.template get<const long long>());
+
+        unsigned long long ulongVal = 30;
+        jsonObject = open_json::ToJson(ulongVal);
+        ASSERT_TRUE(jsonObject.is_number_unsigned());
+        ASSERT_EQ(ulongVal, jsonObject.template get<unsigned long long>());
+
+        const unsigned long long &ulongVal2 = ulongVal;
+        jsonObject = open_json::ToJson(ulongVal2);
+        ASSERT_EQ(ulongVal2, jsonObject.template get<const unsigned long long>());
+
+        const long long *longPtr = &longValue;
+        jsonObject = open_json::ToJson(longPtr);
+        ASSERT_EQ(*longPtr, jsonObject.template get<const long long>());
+
+        long long const *longPtr2 = &longValue;
+        jsonObject = open_json::ToJson(longPtr2);
+        ASSERT_EQ(*longPtr2, jsonObject.template get<const long long>());
+
+        const long long * const longPtr3 = &longValue;
+        jsonObject = open_json::ToJson(longPtr3);
+        ASSERT_EQ(*longPtr3, jsonObject.template get<const long long>());
+
+        const long long * const *longPtr4 = new long long*(new long long(-40L));
+        jsonObject = open_json::ToJson(longPtr4);
+        ASSERT_EQ(**longPtr4, jsonObject.template get<const long long>());
         delete *longPtr4;
         delete longPtr4;
     }
@@ -208,6 +247,58 @@ namespace open_json_test {
         const double * const *decimalPtr5 = new double*(new double(-30.51));
         jsonObject = open_json::ToJson(decimalPtr5);
         ASSERT_DOUBLE_EQ(**decimalPtr5, jsonObject.template get<double>());
+        delete *decimalPtr5;
+        delete decimalPtr5;
+    }
+
+    TEST_F(SerializePrimitiveTest, PremitiveLongDouble) {
+        nlohmann::json jsonObject;
+
+        jsonObject = open_json::ToJson(10.51);
+        ASSERT_DOUBLE_EQ(10.51, jsonObject.template get<double>());
+
+        jsonObject = open_json::ToJson((long double)10.51);
+        ASSERT_DOUBLE_EQ(10.51, jsonObject.template get<double>());
+
+        long double decimalVal = 10.51;
+        jsonObject = open_json::ToJson(decimalVal);
+        ASSERT_DOUBLE_EQ(decimalVal, jsonObject.template get<long double>());
+
+        const long double decimalVal2 = -20.51;
+        jsonObject = open_json::ToJson(decimalVal2);
+        ASSERT_DOUBLE_EQ(decimalVal2, jsonObject.template get<const long double>());
+
+        long double &decimalVal3 = decimalVal;
+        jsonObject = open_json::ToJson(decimalVal3);
+        ASSERT_DOUBLE_EQ(decimalVal3, jsonObject.template get<long double>());
+
+        const long double &decimalVal4 = decimalVal2;
+        jsonObject = open_json::ToJson(decimalVal4);
+        ASSERT_DOUBLE_EQ(decimalVal4, jsonObject.template get<const long double>());
+
+        long double const &decimalValue5 = decimalVal;
+        jsonObject = open_json::ToJson(decimalValue5);
+        ASSERT_DOUBLE_EQ(decimalValue5, jsonObject.template get<const long double>());
+
+        long double *decimalPtr = &decimalVal;
+        jsonObject = open_json::ToJson(decimalPtr);
+        ASSERT_DOUBLE_EQ(*decimalPtr, jsonObject.template get<long double>());
+
+        const long double *decialPtr2 = &decimalVal;
+        jsonObject = open_json::ToJson(decialPtr2);
+        ASSERT_DOUBLE_EQ(*decialPtr2, jsonObject.template get<long double>());
+
+        long double *const decimalPtr3 = &decimalVal;
+        jsonObject = open_json::ToJson(decimalPtr3);
+        ASSERT_DOUBLE_EQ(*decimalPtr3, jsonObject.template get<long double>());
+
+        const long double *const decimalPtr4 = &decimalVal;
+        jsonObject = open_json::ToJson(decimalPtr4);
+        ASSERT_DOUBLE_EQ(*decimalPtr4, jsonObject.template get<long double>());
+
+        const long double * const *decimalPtr5 = new long double*(new long double(-30.51));
+        jsonObject = open_json::ToJson(decimalPtr5);
+        ASSERT_DOUBLE_EQ(**decimalPtr5, jsonObject.template get<long double>());
         delete *decimalPtr5;
         delete decimalPtr5;
     }
