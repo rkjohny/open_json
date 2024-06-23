@@ -184,16 +184,14 @@ namespace open_json {
         typename std::enable_if<Is_Char<T>::Value, nlohmann::json>::type
         static ToJson(const T *object) {
             std::string str = std::string(object);
-            std::string str_t = std::string(std::move(str));
-            return nlohmann::json(std::move(str_t));
+            return nlohmann::json(std::move(str));
         }
 
         template<class T>
         typename std::enable_if<Is_Char<T>::Value, nlohmann::json>::type
         static ToJson(const T *const *object) {
             std::string str = std::string(*object);
-            std::string str_t = std::string(std::move(str));
-            return nlohmann::json(std::move(str_t));
+            return nlohmann::json(std::move(str));
         }
 
         ///////////////// integer ///////////////////////////////////

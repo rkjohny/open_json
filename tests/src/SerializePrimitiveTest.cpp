@@ -73,11 +73,11 @@ namespace open_json_test {
         ASSERT_TRUE(jsonObject.is_number());
         ASSERT_EQ(10L,  jsonObject.template get<long>());
 
-        const long  longValue = 20L;
+        const long  longValue = 20;
         jsonObject = open_json::ToJson(longValue);
         ASSERT_EQ(longValue, jsonObject.template get<const long>());
 
-        unsigned long ulongVal = 30L;
+        unsigned long ulongVal = 30;
         jsonObject = open_json::ToJson(ulongVal);
         ASSERT_TRUE(jsonObject.is_number_unsigned());
         ASSERT_EQ(ulongVal, jsonObject.template get<unsigned long>());
@@ -138,7 +138,7 @@ namespace open_json_test {
     TEST_F(SerializePrimitiveTest, PremitiveFloat) {
         nlohmann::json jsonObject;
 
-        jsonObject = open_json::ToJson(10.51);
+        jsonObject = open_json::ToJson(10.51F);
         ASSERT_TRUE(jsonObject.is_number_float());
         ASSERT_FLOAT_EQ(10.51, jsonObject.template get<float>());
 
@@ -154,184 +154,179 @@ namespace open_json_test {
         jsonObject = open_json::ToJson(decimalPtr);
         ASSERT_FLOAT_EQ(*decimalPtr, jsonObject.template get<float>());
 
-        const float * const *decimalPtr2 = new float*(new float(-30.51));
+        const float * const *decimalPtr2 = new float*(new float(-30.51F));
         jsonObject = open_json::ToJson(decimalPtr2);
         ASSERT_FLOAT_EQ(**decimalPtr2, jsonObject.template get<float>());
         delete *decimalPtr2;
         delete decimalPtr2;
     }
-/*
-    TEST_F(SerializePremitiveTest, PremitiveDouble) {
+
+    TEST_F(SerializePrimitiveTest, PremitiveDouble) {
         nlohmann::json jsonObject;
-        double decimalVal = 10.51;
 
         jsonObject = open_json::ToJson(10.51);
-        ASSERT_DOUBLE_EQ(10.51, jsonObject.as_double());
-        jsonObject = open_json::ToJson(double(10.51));
-        ASSERT_DOUBLE_EQ(10.51, jsonObject.as_double());
-        jsonObject = open_json::ToJson(std::move(decimalVal));
-        ASSERT_DOUBLE_EQ(decimalVal, jsonObject.as_double());
+        ASSERT_DOUBLE_EQ(10.51, jsonObject.template get<double>());
 
+        jsonObject = open_json::ToJson(double(10.51));
+        ASSERT_DOUBLE_EQ(10.51, jsonObject.template get<double>());
+
+        double decimalVal = 10.51;
         jsonObject = open_json::ToJson(decimalVal);
-        ASSERT_DOUBLE_EQ(decimalVal, jsonObject.as_double());
-        const double decimalVal2 = 10.51;
+        ASSERT_DOUBLE_EQ(decimalVal, jsonObject.template get<double>());
+
+        const double decimalVal2 = -20.51;
         jsonObject = open_json::ToJson(decimalVal2);
-        ASSERT_DOUBLE_EQ(decimalVal2, jsonObject.as_double());
+        ASSERT_DOUBLE_EQ(decimalVal2, jsonObject.template get<const double>());
+
         double &decimalVal3 = decimalVal;
         jsonObject = open_json::ToJson(decimalVal3);
-        ASSERT_DOUBLE_EQ(decimalVal3, jsonObject.as_double());
+        ASSERT_DOUBLE_EQ(decimalVal3, jsonObject.template get<double>());
+
         const double &decimalVal4 = decimalVal2;
         jsonObject = open_json::ToJson(decimalVal4);
-        ASSERT_DOUBLE_EQ(decimalVal4, jsonObject.as_double());
+        ASSERT_DOUBLE_EQ(decimalVal4, jsonObject.template get<const double>());
+
         double const &decimalValue5 = decimalVal;
         jsonObject = open_json::ToJson(decimalValue5);
-        ASSERT_DOUBLE_EQ(decimalValue5, jsonObject.as_double());
+        ASSERT_DOUBLE_EQ(decimalValue5, jsonObject.template get<const double>());
 
         double *decimalPtr = &decimalVal;
         jsonObject = open_json::ToJson(decimalPtr);
-        ASSERT_DOUBLE_EQ(*decimalPtr, jsonObject.as_double());
+        ASSERT_DOUBLE_EQ(*decimalPtr, jsonObject.template get<double>());
+
         const double *decialPtr2 = &decimalVal;
         jsonObject = open_json::ToJson(decialPtr2);
-        ASSERT_DOUBLE_EQ(*decialPtr2, jsonObject.as_double());
+        ASSERT_DOUBLE_EQ(*decialPtr2, jsonObject.template get<double>());
+
         double *const decimalPtr3 = &decimalVal;
         jsonObject = open_json::ToJson(decimalPtr3);
-        ASSERT_DOUBLE_EQ(*decimalPtr3, jsonObject.as_double());
+        ASSERT_DOUBLE_EQ(*decimalPtr3, jsonObject.template get<double>());
+
         const double *const decimalPtr4 = &decimalVal;
         jsonObject = open_json::ToJson(decimalPtr4);
-        ASSERT_DOUBLE_EQ(*decimalPtr4, jsonObject.as_double());
+        ASSERT_DOUBLE_EQ(*decimalPtr4, jsonObject.template get<double>());
+
+        const double * const *decimalPtr5 = new double*(new double(-30.51));
+        jsonObject = open_json::ToJson(decimalPtr5);
+        ASSERT_DOUBLE_EQ(**decimalPtr5, jsonObject.template get<double>());
+        delete *decimalPtr5;
+        delete decimalPtr5;
     }
 
-    TEST_F(SerializePremitiveTest, PremitiveChar) {
+    TEST_F(SerializePrimitiveTest, PremitiveChar) {
         nlohmann::json jsonObject;
         int intVal = 'A';
         char charValue = 'A';
 
         jsonObject = open_json::ToJson('A');
-        ASSERT_EQ(65, jsonObject.as_integer());
+        ASSERT_EQ(65, jsonObject.template get<int>());
+        ASSERT_EQ('A', jsonObject.template get<char>());
+
         jsonObject = open_json::ToJson(char('A'));
-        ASSERT_EQ(65, jsonObject.as_integer());
-        jsonObject = open_json::ToJson(std::move(charValue));
-        ASSERT_EQ(intVal, jsonObject.as_integer());
+        ASSERT_EQ(65, jsonObject.template get<int>());
+        ASSERT_EQ('A', jsonObject.template get<char>());
 
         jsonObject = open_json::ToJson(charValue);
-        ASSERT_TRUE(jsonObject.is_number());
-        ASSERT_TRUE(jsonObject.as_number().is_int32());
-        ASSERT_TRUE(jsonObject.as_number().to_int32() == intVal);
-        ASSERT_EQ(intVal, jsonObject.as_integer());
+        ASSERT_EQ(intVal, jsonObject.template get<int>());
+        ASSERT_EQ(charValue, jsonObject.template get<char>());
 
         unsigned char ucharVal = 'A';
         jsonObject = open_json::ToJson(ucharVal);
-        ASSERT_TRUE(jsonObject.is_number());
-        ASSERT_TRUE(jsonObject.as_number().is_int32());
-        ASSERT_TRUE(jsonObject.as_number().to_int32() == intVal);
-        ASSERT_EQ(intVal, jsonObject.as_integer());
+        ASSERT_EQ(intVal, jsonObject.template get<int>());
+        ASSERT_EQ(ucharVal, jsonObject.template get<unsigned char>());
 
-        const char charVal2 = 'A';
-        jsonObject = open_json::ToJson(charVal2);
-        ASSERT_EQ(intVal, jsonObject.as_integer());
-        char &charVal3 = charValue;
-        jsonObject = open_json::ToJson(charVal3);
-        ASSERT_EQ(intVal, jsonObject.as_integer());
-        const char &charVal4 = charVal2;
-        jsonObject = open_json::ToJson(charVal4);
-        ASSERT_EQ(intVal, jsonObject.as_integer());
-        char const &charValue5 = intVal;
-        jsonObject = open_json::ToJson(charValue5);
-        ASSERT_EQ(intVal, jsonObject.as_integer());
+        char *ptr1 = "Hello world!";
+        jsonObject = open_json::ToJson(ptr1);
+        ASSERT_EQ(ptr1, jsonObject.template get<std::string>());
+
+        char **ptr2 = &ptr1;
+        jsonObject = open_json::ToJson(ptr2);
+        ASSERT_EQ(*ptr2, jsonObject.template get<std::string>());
     }
 
-    TEST_F(SerializePremitiveTest, PremitiveCharPtr) {
+    TEST_F(SerializePrimitiveTest, PremitiveCharPtr) {
         nlohmann::json jsonObject;
-        std::string strVal;
-        char *charPtr = strPtr;
+        char *charPtr = "You are awsome!";
 
         jsonObject = open_json::ToJson("Hello World!");
-        strVal = utility::conversions::to_utf8string(jsonObject.as_string());
-        ASSERT_EQ(0, std::string("Hello World!").compare(strVal));
-
-        jsonObject = open_json::ToJson(std::move(charPtr));
-        strVal = utility::conversions::to_utf8string(jsonObject.as_string());
-        ASSERT_EQ(0, std::string(charPtr).compare(strVal));
+        ASSERT_TRUE(jsonObject.is_string());
+        ASSERT_EQ(0, std::string("Hello World!").compare(jsonObject.template get<std::string>()));
 
         jsonObject = open_json::ToJson(charPtr);
-        strVal = utility::conversions::to_utf8string(jsonObject.as_string());
-        ASSERT_EQ(0, std::string(charPtr).compare(strVal));
+        ASSERT_EQ(0, std::string(charPtr).compare(jsonObject.template get<std::string>()));
 
-        const char *charPtr2 = strPtr;
-        jsonObject = open_json::ToJson(std::move(charPtr2));
-        strVal = utility::conversions::to_utf8string(jsonObject.as_string());
-        ASSERT_EQ(0, std::string(charPtr2).compare(strVal));
+        jsonObject = open_json::ToJson(std::move(charPtr));
+        ASSERT_EQ(0, std::string(charPtr).compare(jsonObject.template get<std::string>()));
 
+        const char *charPtr2 = charPtr;
         jsonObject = open_json::ToJson(charPtr2);
-        strVal = utility::conversions::to_utf8string(jsonObject.as_string());
-        ASSERT_EQ(0, std::string(charPtr2).compare(strVal));
+        ASSERT_EQ(0, std::string(charPtr2).compare(jsonObject.template get<std::string>()));
 
-        char *const charPtr3 = strPtr;
-        jsonObject = open_json::ToJson(std::move(charPtr3));
-        strVal = utility::conversions::to_utf8string(jsonObject.as_string());
-        ASSERT_EQ(0, std::string(charPtr3).compare(strVal));
+        jsonObject = open_json::ToJson(std::move(charPtr2));
+        ASSERT_EQ(0, std::string(charPtr2).compare(jsonObject.template get<std::string>()));
 
+        char *const charPtr3 = charPtr;
         jsonObject = open_json::ToJson(charPtr3);
-        strVal = utility::conversions::to_utf8string(jsonObject.as_string());
-        ASSERT_EQ(0, std::string(charPtr3).compare(strVal));
+        ASSERT_EQ(0, std::string(charPtr3).compare(jsonObject.template get<std::string>()));
 
-        const char *const charPtr4 = strPtr;
-        jsonObject = open_json::ToJson(std::move(charPtr4));
-        strVal = utility::conversions::to_utf8string(jsonObject.as_string());
-        ASSERT_EQ(0, std::string(charPtr4).compare(strVal));
+        jsonObject = open_json::ToJson(std::move(charPtr3));
+        ASSERT_EQ(0, std::string(charPtr3).compare(jsonObject.template get<std::string>()));
 
+        const char *const charPtr4 = charPtr;
         jsonObject = open_json::ToJson(charPtr4);
-        strVal = utility::conversions::to_utf8string(jsonObject.as_string());
-        ASSERT_EQ(0, std::string(charPtr4).compare(strVal));
+        ASSERT_EQ(0, std::string(charPtr4).compare(jsonObject.template get<std::string>()));
+
+        jsonObject = open_json::ToJson(std::move(charPtr4));
+        ASSERT_EQ(0, std::string(charPtr4).compare(jsonObject.template get<std::string>()));;
+
 
         jsonObject = open_json::ToJson(*charPtr4);
-        ASSERT_TRUE((int) *charPtr4 == jsonObject.as_integer());
+        ASSERT_EQ(*charPtr4, jsonObject.template get<char>());
+        ASSERT_EQ((int)*charPtr4, jsonObject.template get<int>());
 
         jsonObject = open_json::ToJson(std::move(*charPtr4));
-        ASSERT_TRUE((int) *charPtr4 == jsonObject.as_integer());
+        ASSERT_TRUE(*charPtr4 == jsonObject.template get<char>());
+        ASSERT_TRUE((int) *charPtr4 == jsonObject.template get<int>());
     }
 
-    TEST_F(SerializePremitiveTest, STLString) {
+    TEST_F(SerializePrimitiveTest, STLString) {
         nlohmann::json jsonObject;
         std::string strVal;
 
-        std::string str = "hello world";
+        std::string str = "Hello World!";
         jsonObject = open_json::ToJson(std::move(str));
-        strVal = utility::conversions::to_utf8string(jsonObject.as_string());
-        ASSERT_EQ(0, str.compare(strVal));
+        ASSERT_EQ(0, str.compare(jsonObject.template get<std::string>()));
 
         jsonObject = open_json::ToJson(str);
-        strVal = utility::conversions::to_utf8string(jsonObject.as_string());
-        ASSERT_EQ(0, str.compare(strVal));
+        ASSERT_EQ(0, str.compare(jsonObject.template get<std::string>()));
 
-        const std::string str2 = "hello world";
+        const std::string str2 = "C++ is awsome!";
         jsonObject = open_json::ToJson(std::move(str2));
-        strVal = utility::conversions::to_utf8string(jsonObject.as_string());
-        ASSERT_EQ(0, str2.compare(strVal));
+        ASSERT_EQ(0, str2.compare(jsonObject.template get<std::string>()));
 
         jsonObject = open_json::ToJson(str2);
-        strVal = utility::conversions::to_utf8string(jsonObject.as_string());
-        ASSERT_EQ(0, str2.compare(strVal));
+        ASSERT_EQ(0, str2.compare(jsonObject.template get<std::string>()));
 
         std::string *str3 = &str;
         jsonObject = open_json::ToJson(str3);
-        strVal = utility::conversions::to_utf8string(jsonObject.as_string());
-        ASSERT_EQ(0, str3->compare(strVal));
+        ASSERT_EQ(0, str3->compare(jsonObject.template get<std::string>()));
 
         const std::string *str4 = &str;
         jsonObject = open_json::ToJson(str4);
-        strVal = utility::conversions::to_utf8string(jsonObject.as_string());
-        ASSERT_EQ(0, str4->compare(strVal));
+        ASSERT_EQ(0, str4->compare(jsonObject.template get<std::string>()));
 
         std::string *const str5 = &str;
         jsonObject = open_json::ToJson(str5);
-        strVal = utility::conversions::to_utf8string(jsonObject.as_string());
-        ASSERT_EQ(0, str5->compare(strVal));
+        ASSERT_EQ(0, str5->compare(jsonObject.template get<std::string>()));
 
         const std::string *const str6 = &str;
         jsonObject = open_json::ToJson(str6);
-        strVal = utility::conversions::to_utf8string(jsonObject.as_string());
-        ASSERT_EQ(0, str6->compare(strVal));
+        ASSERT_EQ(0, str6->compare(jsonObject.template get<std::string>()));
+
+        std::string **str7 = new std::string*(new std::string("Hi there!"));
+        jsonObject = open_json::ToJson(str7);
+        ASSERT_EQ(0, (*str7)->compare(jsonObject.template get<std::string>()));
+        delete *str7;
+        delete str7;
     }
-    */
 }
