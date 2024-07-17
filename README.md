@@ -102,7 +102,7 @@ delete *decimalPtr5;
 delete decimalPtr5;
 ````
 
-* ### Primitive char and char*
+* ### Primitive char and char&#42;
 ````
 nlohmann::json jsonObject;
 int intVal = 'A';
@@ -126,7 +126,7 @@ jsonObject = open_json::ToJson(ptr2);
 ASSERT_EQ(*ptr2, jsonObject.template get<std::string>());
 ````
 
-* ### string and string*
+* ### string and string&#42;
 ````
 nlohmann::json jsonObject;
 
@@ -149,3 +149,122 @@ delete *str7;
 delete str7;
 ````
 #### For more test cases of primitive types look into file <a href="./tests/src/SerializePrimitiveTest.cpp">SerializePrimitiveTest.cpp</a>
+
+* ### Vector&lt;int&gt;
+````
+std::vector<int> vecInt;
+
+vecInt.push_back(1);
+vecInt.push_back(2);
+vecInt.push_back(3);
+
+nlohmann::json jsonArr = open_json::ToJson(vecInt);
+ASSERT_TRUE(jsonArr.is_array());
+ASSERT_TRUE(jsonArr.size() == vecInt.size());
+auto itr1 = vecInt.begin();
+for (auto &arrItem: jsonArr) {
+    ASSERT_EQ(*itr1, arrItem.template get<int>());
+    ++itr1;
+}
+````
+
+* ### Vector&lt;double&#42;&gt;&#42;
+````
+std::vector<double *> *m_scores;
+
+m_scores = new vector<double *>;
+m_scores->push_back(new double(9.9));
+m_scores->push_back(new double(10.01));
+m_scores->push_back(new double(10.1));
+            
+nlohmann::json jsonArr = open_json::ToJson(m_scores);
+ASSERT_TRUE(jsonArr.is_array());
+ASSERT_TRUE(jsonArr.size() == m_scores->size());
+auto itr = m_scores->begin();
+for (auto &arrItem: jsonArr) {
+    ASSERT_DOUBLE_EQ(arrItem.template get<double>(), **itr);
+    ++itr;
+}
+
+for (auto p: *m_scores) {
+    delete p;
+}
+delete m_scores;
+````
+
+* ### Vector&lt;std::string&gt;&#42;
+````
+std::vector<std::string> *m_names;
+
+m_names = new std::vector<std::string>();
+m_names->push_back(string("John Carry"));
+m_names->push_back(string("David Jonson"));
+m_names->push_back(string("Emma Martin"));
+
+nlohmann::json jsonArr = open_json::ToJson(m_names);
+ASSERT_TRUE(jsonArr.is_array());
+ASSERT_TRUE(jsonArr.size() == m_names->size());
+auto itr = m_names->begin();
+for (auto &arrItem: jsonArr) {
+    ASSERT_EQ(0, (*itr).compare(arrItem.template get<string>()));
+    ++itr;
+}
+
+delete m_names;
+````
+
+* ### Vector&lt;std::string&#42;&gt;&#42;
+````
+std::vector<std::string *> *m_emails;
+
+m_emails = new std::vector<std::string *>();
+m_emails->push_back(new string("john@sample.com"));
+m_emails->push_back(new string("david@sample.com"));
+m_emails->push_back(new string("emma@sample.com"));
+
+nlohmann::json jsonArr = open_json::ToJson(m_emails);
+ASSERT_TRUE(jsonArr.is_array());
+ASSERT_TRUE(jsonArr.size() == m_emails->size());
+auto itr = m_emails->begin();
+for (auto &arrItem: jsonArr) {
+    ASSERT_EQ(0, (**itr).compare(arrItem.template get<string>()));
+    ++itr;
+}
+
+for (auto p: *m_emails) {
+    delete p;
+}
+delete m_emails;
+````
+
+* ### Vector&lt;char&#42;&gt;
+````
+std::vector<char *> m_cities;
+
+char *p = new char[100];
+strcpy(p, "New York");
+m_cities.push_back(p);
+
+p = new char[100];
+strcpy(p, "Boston");
+m_cities.push_back(p);
+
+p = new char[100];
+strcpy(p, "Paris");
+m_cities.push_back(p);
+
+nlohmann::json jsonArr = open_json::ToJson(m_cities);
+ASSERT_TRUE(jsonArr.is_array());
+ASSERT_TRUE(jsonArr.size() == m_cities.size());
+auto itr = m_cities.begin();
+for (auto &arrItem: jsonArr) {
+    ASSERT_EQ(0, std::string(*itr).compare(arrItem.template get<string>()));
+    ++itr;
+}
+
+for (auto p: m_cities) {
+    delete p;
+}
+````
+#### For more test cases of vector types look into file <a href="./tests/src/SerializeVectorTest.cpp">SerializeVectorTest.cpp</a>
+
