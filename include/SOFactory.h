@@ -124,11 +124,11 @@ namespace open_json {
             return v;
         }
 
-        static std::mutex cm_mutex;
-        static ListCreators cm_objectCreators;
+        static inline std::mutex cm_mutex;
+        static inline ListCreators cm_objectCreators;
 
-        static std::mutex cm_mutexArr;
-        static ListCreatorsArr cm_objectArrayCreators;
+        static inline std::mutex cm_mutexArr;
+        static inline ListCreatorsArr cm_objectArrayCreators;
     };
 
     template<class T>
@@ -142,12 +142,6 @@ namespace open_json {
     protected:
         ClassRegistrar() = default;
     };
-
-    std::mutex SOFactory::cm_mutex;
-    SOFactory::ListCreators SOFactory::cm_objectCreators;
-
-    std::mutex SOFactory::cm_mutexArr;
-    SOFactory::ListCreatorsArr SOFactory::cm_objectArrayCreators;
 }
 
 

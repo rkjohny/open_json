@@ -46,7 +46,11 @@ include_directories(${LIB_OPEN_JSON_INCLUDE_DIR})
 
 set(OPEN_JSON_TEST_SRCS
         ${PROJECT_SOURCE_DIR}/main.cpp
-        ${PROJECT_SOURCE_DIR}/SerializePrimitiveTest.cpp )
+        ${PROJECT_SOURCE_DIR}/SerializePrimitiveTest.cpp
+        ${PROJECT_SOURCE_DIR}/TypeTraitsTest.cpp
+        ${PROJECT_SOURCE_DIR}/SerializeVectorTest.cpp
+
+)
 
 # creating JonTest target
 add_executable(${PROJECT_NAME} ${OPEN_JSON_TEST_SRCS})

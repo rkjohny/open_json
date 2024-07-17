@@ -1,6 +1,7 @@
 #ifndef OPEN_JSON_SERIALIZER_H
 #define OPEN_JSON_SERIALIZER_H
 
+#include <iostream>
 #include "CommonDef.h"
 #include "TypeTraits.h"
 #include "nlohmann/json.hpp"
@@ -332,7 +333,6 @@ namespace open_json {
                     //jsonObject[index++] = ToJson(arrValue);
                 }
             }
-
             return jsonObject;
         }
 
@@ -348,7 +348,6 @@ namespace open_json {
                     jsonObject[index++] = ToJson(arrValue);
                 }
             }
-
             return jsonObject;
         }
 
