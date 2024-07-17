@@ -51,22 +51,6 @@ A modern c++ library to serialize and deserialize c++ objects to and from <a hre
 
 * ### Install boost (installing only boost::optional is sufficient):
   * pacman -S mingw-w64-x86_64-boost
-    * #### install dependencies of boost:
-      * ##### install python:
-        * pacman -S mingw-w64-x86_64-python
-        * pacman -S mingw-w64-x86_64-python-numpy
-      * ##### install bzip2:
-        * pacman -S mingw-w64-x86_64-bzip2
-      * ##### install gcc-libs:
-        * pacman -S mingw-w64-x86_64-gcc-libs
-      * ##### install icu:
-        * pacman -S mingw-w64-x86_64-icu
-      * ##### install xz:
-        * pacman -S mingw-w64-x86_64-xz
-      * ##### install zlib:
-        * pacman -S mingw-w64-x86_64-zlib
-      * ##### install zstd:
-        * pacman -S mingw-w64-x86_64-zstd
 
 # Example:
 
