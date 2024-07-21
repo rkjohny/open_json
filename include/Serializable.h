@@ -17,7 +17,7 @@ namespace open_json {
 
         [[nodiscard]]
         const nlohmann::json ToJson() override {
-            return  serializer::ToJson<T>(reinterpret_cast<const T *>(this));
+            return ToJsonObject<T>(reinterpret_cast<const T *>(this));
         }
 
         void FromJson(const nlohmann::json &jsonObject) override {

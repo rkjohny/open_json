@@ -5,6 +5,8 @@
 #include <type_traits>
 #include <string>
 #include <vector>
+#include <cstdint>
+#include <map>
 
 
 namespace open_json {
@@ -503,12 +505,22 @@ namespace open_json {
     };
 
     template<class T, class Alloc>
+    struct Is_Vector<const std::vector<T, Alloc> > {
+        static const bool Value = true;
+    };
+
+    template<class T, class Alloc>
     struct Is_Vector<std::vector<T, Alloc> &&> {
         static const bool Value = true;
     };
 
     template<class T, class Alloc>
     struct Is_Vector<std::vector<T, Alloc> &> {
+        static const bool Value = true;
+    };
+
+    template<class T, class Alloc>
+    struct Is_Vector<const std::vector<T, Alloc> &> {
         static const bool Value = true;
     };
 
@@ -526,12 +538,22 @@ namespace open_json {
     };
 
     template<class T, class U, class Alloc>
+    struct Is_Map<const std::map<T, U, Alloc> > {
+        static const bool Value = true;
+    };
+
+    template<class T, class U, class Alloc>
     struct Is_Map<std::map<T, U, Alloc> &&> {
         static const bool Value = true;
     };
 
     template<class T, class U, class Alloc>
     struct Is_Map<std::map<T, U, Alloc> &> {
+        static const bool Value = true;
+    };
+
+    template<class T, class U, class Alloc>
+    struct Is_Map<const std::map<T, U, Alloc> &> {
         static const bool Value = true;
     };
 

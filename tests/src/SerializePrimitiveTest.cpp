@@ -319,11 +319,13 @@ namespace open_json_test {
         jsonObject = open_json::ToJson(charValue);
         ASSERT_EQ(intVal, jsonObject.template get<int>());
         ASSERT_EQ(charValue, jsonObject.template get<char>());
+        ASSERT_EQ(charValue, jsonObject.template get<int32_t>());
 
         unsigned char ucharVal = 'A';
         jsonObject = open_json::ToJson(ucharVal);
         ASSERT_EQ(intVal, jsonObject.template get<int>());
         ASSERT_EQ(ucharVal, jsonObject.template get<unsigned char>());
+        ASSERT_EQ(ucharVal, jsonObject.template get<uint32_t>());
     }
 
     TEST_F(SerializePrimitiveTest, STLString) {

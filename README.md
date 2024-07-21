@@ -117,13 +117,16 @@ jsonObject = open_json::ToJson(ucharVal);
 ASSERT_EQ(intVal, jsonObject.template get<int>());
 ASSERT_EQ(ucharVal, jsonObject.template get<unsigned char>());
 
-char *ptr1 = "Hello world!";
-jsonObject = open_json::ToJson(ptr1);
-ASSERT_EQ(ptr1, jsonObject.template get<std::string>());
+jsonObject = open_json::ToJson(charValue);
+ASSERT_EQ(intVal, jsonObject.template get<int>());
+ASSERT_EQ(charValue, jsonObject.template get<char>());
+ASSERT_EQ(charValue, jsonObject.template get<int32_t>());
 
-char **ptr2 = &ptr1;
-jsonObject = open_json::ToJson(ptr2);
-ASSERT_EQ(*ptr2, jsonObject.template get<std::string>());
+unsigned char ucharVal = 'A';
+jsonObject = open_json::ToJson(ucharVal);
+ASSERT_EQ(intVal, jsonObject.template get<int>());
+ASSERT_EQ(ucharVal, jsonObject.template get<unsigned char>());
+ASSERT_EQ(ucharVal, jsonObject.template get<uint32_t>());
 ````
 
 * ### string and string&#42;
@@ -237,34 +240,458 @@ for (auto p: *m_emails) {
 delete m_emails;
 ````
 
-* ### Vector&lt;char&#42;&gt;
+* ### Vector&lt;string&#42;&gt;&#42;&#42;
 ````
-std::vector<char *> m_cities;
+std::vector<std::string *> **m_cities;
 
-char *p = new char[100];
-strcpy(p, "New York");
-m_cities.push_back(p);
+ m_cities = new std::vector<std::string *> * (new std::vector<std::string*>());
 
-p = new char[100];
-strcpy(p, "Boston");
-m_cities.push_back(p);
+std::string *p = new std::string("New York");
+(*m_cities)->push_back(p);
 
-p = new char[100];
-strcpy(p, "Paris");
-m_cities.push_back(p);
+p = new std::string("Boston, USA");
+(*m_cities)->push_back(p);
 
-nlohmann::json jsonArr = open_json::ToJson(m_cities);
+p = new std::string("Paris");
+(*m_cities)->push_back(p);
+
+jsonArr = open_json::ToJson(std::vector<std::string *>(**m_cities));
 ASSERT_TRUE(jsonArr.is_array());
-ASSERT_TRUE(jsonArr.size() == m_cities.size());
-auto itr = m_cities.begin();
+ASSERT_TRUE(jsonArr.size() == (**m_cities).size());
+auto itr = (**m_cities).begin();
 for (auto &arrItem: jsonArr) {
-    ASSERT_EQ(0, std::string(*itr).compare(arrItem.template get<string>()));
+    ASSERT_EQ(0, std::string(**itr).compare(arrItem.template get<string>()));
     ++itr;
 }
 
-for (auto p: m_cities) {
+jsonArr = open_json::ToJson(m_cities);
+ASSERT_TRUE(jsonArr.is_array());
+ASSERT_TRUE(jsonArr.size() == (**m_cities).size());
+itr = (**m_cities).begin();
+for (auto &arrItem: jsonArr) {
+    ASSERT_EQ(0, std::string(**itr).compare(arrItem.template get<string>()));
+    ++itr;
+}
+
+jsonArr = open_json::ToJson(&m_cities);
+ASSERT_TRUE(jsonArr.is_array());
+ASSERT_TRUE(jsonArr.size() == (**m_cities).size());
+itr = (**m_cities).begin();
+for (auto &arrItem: jsonArr) {
+    ASSERT_EQ(0, std::string(**itr).compare(arrItem.template get<string>()));
+    ++itr;
+}
+
+for (auto p: **m_cities) {
     delete p;
 }
+delete *m_cities;
+delete m_cities;
 ````
 #### For more test cases of vector types look into file <a href="./tests/src/SerializeVectorTest.cpp">SerializeVectorTest.cpp</a>
 
+* ### Custom Class
+````
+class Person {
+private:
+    std::string m_name;
+    int m_age;
+    std::vector<double> m_scores;
+
+public:
+    Person() {
+        m_name = "Rezaul Karim";
+        m_age = 43;
+        m_scores.push_back(10.5);
+        m_scores.push_back(20.1);
+        m_scores.push_back(30.9);
+    }
+
+    virtual ~Person() = default;
+
+    const std::string &GetName() const {
+        return m_name;
+    }
+
+    int GetAge() const {
+        return m_age;
+    }
+
+    const std::vector<double> &GetScores() const {
+        return m_scores;
+    }
+
+    static constexpr std::tuple getters = std::make_tuple(
+            open_json::Getter<Person, const std::string &>(&Person::GetName, "name"),
+            open_json::Getter<Person, int>(&Person::GetAge, "age"),
+            open_json::Getter<Person, const std::vector<double> &>(&Person::GetScores, "scores")
+    );
+};
+
+Person person;
+nlohmann::json jsonObject;
+
+jsonObject = open_json::ToJson(person);
+ASSERT_TRUE(jsonObject.is_object());
+ASSERT_EQ(0, person.GetName().compare(jsonObject.at("name").template get<std::string>()));
+ASSERT_EQ(person.GetAge(), jsonObject.at("age").template get<int>());
+ASSERT_TRUE(jsonObject.at("scores").is_array());
+auto itr = person.GetScores().begin();
+for(auto &arrItem : jsonObject.at("scores")) {
+    ASSERT_DOUBLE_EQ(*itr, arrItem.template get<double>());
+    ++itr;
+}
+````
+
+* ### Custom Class Using Macro
+````
+class Student {
+private:
+    std::string m_name;
+    long m_id;
+    std::vector<std::string> m_subjects;
+
+public:
+    Student() {
+        m_name = "Rezaul Karim";
+        m_id = 100;
+        m_subjects.push_back("Math");
+        m_subjects.push_back("Calculus");
+        m_subjects.push_back("Geometry");
+    }
+
+    virtual ~Student() = default;
+
+    const std::string &GetName() const {
+        return m_name;
+    }
+
+    long GetId() const {
+        return m_id;
+    }
+
+    const std::vector<std::string> &GetSubjects() const {
+        return m_subjects;
+    }
+
+    REGISTER_GETTER_START
+    GETTER(Student, const std::string &, "name", &Student::GetName),
+    GETTER(Student, long, "id", &Student::GetId),
+    GETTER(Student, const std::vector<std::string>&, "subjects", &Student::GetSubjects)
+    REGISTER_GETTER_END
+};
+
+Student student;
+nlohmann::json jsonObject;
+
+jsonObject = open_json::ToJson(student);
+ASSERT_TRUE(jsonObject.is_object());
+ASSERT_EQ(0, student.GetName().compare(jsonObject.at("name").template get<std::string>()));
+ASSERT_EQ(student.GetId(), jsonObject.at("id").template get<long>());
+ASSERT_TRUE(jsonObject.at("subjects").is_array());
+auto itr = student.GetSubjects().begin();
+for (auto &arrItem: jsonObject.at("subjects")) {
+    ASSERT_EQ(0,  itr->compare(arrItem.template get<std::string>()));
+    ++itr;
+}
+````
+
+* ### Derived Class
+````
+class BaseClass {
+private:
+    double score;
+    bool is_valid;
+
+public:
+    BaseClass() : score{24.5678}, is_valid{true} {
+    }
+
+    BaseClass(double d, bool b) : score{d}, is_valid{b} {
+    }
+
+    double GetScore() const {
+        return score;
+    }
+
+    bool IsValid() const {
+        return is_valid;
+    }
+
+    REGISTER_GETTER_START
+    GETTER(BaseClass, double, "score", &BaseClass::GetScore),
+    GETTER(BaseClass, bool, "is_valid", &BaseClass::IsValid)
+    REGISTER_GETTER_END
+};
+
+class DerivedClass : public BaseClass {
+private:
+    long id;
+    std::string name;
+
+public:
+    DerivedClass() : BaseClass(), id{10L}, name{"name1"} {
+    }
+
+    long GetId() const {
+        return id;
+    }
+
+    std::string GetName() const {
+        return name;
+    }
+
+    REGISTER_GETTER_INCLUDING_BASE_START(BaseClass)
+    GETTER(DerivedClass, long, "id", &DerivedClass::GetId),
+    GETTER(DerivedClass, std::string, "name", &DerivedClass::GetName)
+    REGISTER_GETTER_INCLUDING_BASE_END
+};
+
+class DerivedClass2 : public DerivedClass {
+private:
+    int code;
+
+public:
+    DerivedClass2() : DerivedClass(), code{200} {
+    }
+
+    int GetCode() const {
+        return code;
+    }
+
+    REGISTER_GETTER_INCLUDING_BASE_START(DerivedClass)
+    GETTER(DerivedClass2, int, "code", &DerivedClass2::GetCode)
+    REGISTER_GETTER_INCLUDING_BASE_END
+};
+
+BaseClass *base = new BaseClass();
+DerivedClass *derived = new DerivedClass();
+DerivedClass2 *derived2 new DerivedClass2();
+
+// BaseClass Test
+nlohmann::json jsonObject = open_json::ToJson(base);
+
+ASSERT_TRUE(jsonObject.is_object());
+ASSERT_DOUBLE_EQ(base->GetScore(), jsonObject.at("score").template get<double>());
+ASSERT_TRUE(base->IsValid() == jsonObject.at("is_valid").template get<bool>());
+
+// DerivedClass Test
+ nlohmann::json jsonObject = open_json::ToJson(derived);
+
+ASSERT_TRUE(jsonObject.is_object());
+ASSERT_DOUBLE_EQ(derived->GetId(), jsonObject.at("id").template get<long>());
+ASSERT_TRUE(0 ==  derived->GetName().compare(jsonObject.at("name").template get<std::string>()));
+ASSERT_DOUBLE_EQ(derived->GetScore(), jsonObject.at("score").template get<double>());
+ASSERT_TRUE(derived->IsValid() == jsonObject.at("is_valid").template get<bool>());
+
+// DerivedClass2 Test
+nlohmann::json jsonObject = open_json::ToJson(derived2);
+
+ASSERT_TRUE(jsonObject.is_object());
+ASSERT_EQ(derived2->GetCode(), jsonObject.at("code").template get<int>());
+ASSERT_DOUBLE_EQ(derived2->GetId(), jsonObject.at("id").template get<long>());
+ASSERT_TRUE(0 ==  derived2->GetName().compare(jsonObject.at("name").template get<std::string>()));
+ASSERT_DOUBLE_EQ(derived2->GetScore(), jsonObject.at("score").template get<double>());
+ASSERT_TRUE(derived2->IsValid() == jsonObject.at("is_valid").template get<bool>());
+        
+delete base;
+delete derived;
+delete derived2;            
+````
+
+* ### Nested Class
+````
+class ClassA {
+private:
+    int id;
+    std::string name;
+
+public:
+    ClassA() = default;
+    virtual ~ClassA() = default;
+
+    ClassA(int id, std::string name) : id{id}, name{name} {
+    }
+
+    int GetId() const {
+        return id;
+    }
+
+    const std::string &GetName() const {
+        return name;
+    }
+
+    REGISTER_GETTER_START
+    GETTER(ClassA, int, "id", &ClassA::GetId),
+    GETTER(ClassA, const std::string&, "name", &ClassA::GetName)
+    REGISTER_GETTER_END
+};
+
+class ClassB {
+private:
+    ClassA m_obj;
+    ClassA *m_objPtr;
+    std::vector<ClassA> m_vecObj;
+    std::vector<ClassA *> *m_vecObjPtr;
+
+public:
+    ClassB() {
+        m_obj = ClassA(2, "object2");
+        m_objPtr = new ClassA(3, "object3");
+        m_vecObj.push_back(ClassA(4, "object4"));
+        m_vecObj.push_back(ClassA(5, "object5"));
+        m_vecObj.push_back(ClassA(6, "object6"));
+        m_vecObjPtr = new std::vector<ClassA *>();
+        m_vecObjPtr->push_back(new ClassA(7, "object7"));
+        m_vecObjPtr->push_back(new ClassA(8, "object8"));
+        m_vecObjPtr->push_back(new ClassA(9, "object9"));
+    }
+
+    virtual ~ClassB() {
+        delete m_objPtr;
+        for (auto p: *m_vecObjPtr) {
+            if (p) {
+                delete p;
+            }
+        }
+        delete m_vecObjPtr;
+    }
+    
+    const ClassA &GetObject() const {
+        return m_obj;
+    }
+
+    const ClassA *GetObjectPtr() const {
+        return m_objPtr;
+    }
+
+    const std::vector <ClassA> &GetVector() const {
+        return m_vecObj;
+    }
+
+    const std::vector<ClassA *> *GetVectorPtr() const {
+        return m_vecObjPtr;
+    }
+
+    // will be ignored in json object
+    const ClassA *GetNullPtrObject() const {
+        return nullptr;
+    }
+
+    // will be ignored in json object
+    const int *GetNullPtrInt() const {
+        return nullptr;
+    }
+
+    REGISTER_GETTER_START
+    GETTER(ClassB, const ClassA&, "object", &ClassB::GetObject),
+    GETTER(ClassB, const ClassA*, "object_ptr", &ClassB::GetObjectPtr),
+    GETTER(ClassB, const std::vector <ClassA>&, "vector", &ClassB::GetVector),
+    GETTER(ClassB, const std::vector<ClassA *>*, "vector_ptr", &ClassB::GetVectorPtr),
+    GETTER(ClassB, const ClassA*, "null_object_ptr", &ClassB::GetNullPtrObject), // will be ignored
+    GETTER(ClassB, const int*, "null_int_ptr", &ClassB::GetNullPtrInt) // will be ignored
+    REGISTER_GETTER_END
+};
+
+class ClassC {
+private:
+    ClassB *objectB;
+
+public:
+    ClassC() {
+        objectB = new ClassB();
+    }
+
+    virtual ~ClassC() {
+        delete objectB;
+    }
+
+    const ClassB *GetObject() const {
+        return objectB;
+    }
+
+    REGISTER_GETTER_START
+    GETTER(ClassC, const ClassB*, "object", &ClassC::GetObject)
+    REGISTER_GETTER_END
+};
+
+static void VerifyClassA(const ClassA &obj, const nlohmann::json &jsonObject) {
+    ASSERT_TRUE(jsonObject.is_object());
+    ASSERT_EQ(obj.GetId(), jsonObject.at("id").template get<int>());
+    ASSERT_EQ(0, obj.GetName().compare(jsonObject.at("name").template get<std::string>()));
+}
+
+static void VerifyClassB(const ClassB &obj, const nlohmann::json &jsonObject) {
+    ASSERT_TRUE(jsonObject.is_object());
+    VerifyClassA(obj.GetObject(), jsonObject.at("object"));
+    VerifyClassA(*obj.GetObjectPtr(), jsonObject.at("object_ptr"));
+
+    const nlohmann::json &jsonVec = jsonObject.at("vector");
+    ASSERT_TRUE(jsonVec.is_array());
+    ASSERT_TRUE(jsonVec.size() == obj.GetVector().size());
+    auto itr = obj.GetVector().begin();
+    for (auto &arrItem: jsonVec) {
+        VerifyClassA(*itr, arrItem);
+        ++itr;
+    }
+
+    const nlohmann::json &jsonVecPtr = jsonObject.at("vector_ptr");
+    ASSERT_TRUE(jsonVecPtr.is_array());
+    ASSERT_TRUE(jsonVecPtr.size() == obj.GetVectorPtr()->size());
+    auto itrp = obj.GetVectorPtr()->begin();
+    for (auto &arrItem: jsonVecPtr) {
+        VerifyClassA(**itrp, arrItem);
+        ++itrp;
+    }
+}
+
+static void VerifyClassC(const ClassC &obj, const nlohmann::json &jsonObject) {
+    ASSERT_TRUE(jsonObject.is_object());
+    VerifyClassB(*obj.GetObject(), jsonObject.at("object"));
+}
+
+
+ClassA *objectA = new ClassA(1, "object1");
+ClassB *objectB = new ClassB();
+ClassC *objectC = new ClassC();
+
+// ClassA Test
+nlohmann::json jsonObject;
+
+jsonObject = open_json::ToJson(std::move(*objectA));
+VerifyClassA(*objectA, jsonObject);
+
+jsonObject = open_json::ToJson(*objectA);
+VerifyClassA(*objectA, jsonObject);
+
+jsonObject = open_json::ToJson(objectA);
+VerifyClassA(*objectA, jsonObject);
+
+// ClassB Test
+nlohmann::json jsonObject;
+
+jsonObject = open_json::ToJson(std::move(*objectB));
+VerifyClassB(*objectB, jsonObject);
+
+jsonObject = open_json::ToJson(*objectB);
+VerifyClassB(*objectB, jsonObject);
+
+jsonObject = open_json::ToJson(objectB);
+VerifyClassB(*objectB, jsonObject);
+
+// ClassC Test
+nlohmann::json jsonObject;
+
+jsonObject = open_json::ToJson(std::move(*objectC));
+VerifyClassC(*objectC, jsonObject);
+
+jsonObject = open_json::ToJson(*objectC);
+VerifyClassC(*objectC, jsonObject);
+
+jsonObject = open_json::ToJson(objectC);
+VerifyClassC(*objectC, jsonObject);
+
+delete objectA;
+delete objectB;
+delete objectC;
+````
