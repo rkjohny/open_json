@@ -23,7 +23,7 @@ namespace open_json_test {
     ASSERT_FALSE(OPERAND<const TYPE&>::Value); \
     ASSERT_FALSE(OPERAND<const TYPE>::Value);
 
-    TEST(TepeTraitsTest, BoolTest) {
+    TEST(TypeTraitsTest, BoolTest) {
         //type: bool
         A_FALSE(bool, Is_Char);
         A_TRUE(bool, Is_Bool); //true
@@ -40,13 +40,13 @@ namespace open_json_test {
         A_FALSE(bool, Is_Double);
         A_FALSE(bool, Is_LongDouble);
         A_FALSE(bool, Is_Decimal);
-        A_TRUE(bool, Is_Premitive); //true
+        A_TRUE(bool, Is_Primitive); //true
         A_FALSE(bool, Is_String);
         A_FALSE(bool, Is_Vector);
         A_FALSE(bool, Is_Class);
     }
 
-    TEST(TepeTraitsTest, CharTest) {
+    TEST(TypeTraitsTest, CharTest) {
         //type: char
         A_TRUE(char, Is_Char); //true
         A_FALSE(char, Is_Bool);
@@ -63,13 +63,13 @@ namespace open_json_test {
         A_FALSE(char, Is_Double);
         A_FALSE(char, Is_LongDouble);
         A_FALSE(char, Is_Decimal);
-        A_TRUE(char, Is_Premitive); //true
+        A_TRUE(char, Is_Primitive); //true
         A_FALSE(char, Is_String);
         A_FALSE(char, Is_Vector);
         A_FALSE(char, Is_Class);
     }
 
-    TEST(TepeTraitsTest, Int8Test) {
+    TEST(TypeTraitsTest, Int8Test) {
         //type: signed char = uint8_t
         A_FALSE(int8_t, Is_Char);
         A_FALSE(int8_t, Is_Bool);
@@ -86,7 +86,7 @@ namespace open_json_test {
         A_FALSE(int8_t, Is_Double);
         A_FALSE(int8_t, Is_LongDouble);
         A_FALSE(int8_t, Is_Decimal);
-        A_TRUE(int8_t, Is_Premitive); //true
+        A_TRUE(int8_t, Is_Primitive); //true
         A_FALSE(int8_t, Is_String);
         A_FALSE(int8_t, Is_Vector);
         A_FALSE(int8_t, Is_Class);
@@ -107,13 +107,13 @@ namespace open_json_test {
         A_FALSE(uint8_t, Is_Double);
         A_FALSE(uint8_t, Is_LongDouble);
         A_FALSE(uint8_t, Is_Decimal);
-        A_TRUE(uint8_t, Is_Premitive); //true
+        A_TRUE(uint8_t, Is_Primitive); //true
         A_FALSE(uint8_t, Is_String);
         A_FALSE(uint8_t, Is_Vector);
         A_FALSE(uint8_t, Is_Class);
     }
 
-    TEST(TepeTraitsTest, Int16Test) {
+    TEST(TypeTraitsTest, Int16Test) {
         //type: signed short int = int16_t
         A_FALSE(int16_t, Is_Char);
         A_FALSE(int16_t, Is_Bool);
@@ -130,7 +130,7 @@ namespace open_json_test {
         A_FALSE(int16_t, Is_Double);
         A_FALSE(int16_t, Is_LongDouble);
         A_FALSE(int16_t, Is_Decimal);
-        A_TRUE(int16_t, Is_Premitive); //true
+        A_TRUE(int16_t, Is_Primitive); //true
         A_FALSE(int16_t, Is_String);
         A_FALSE(int16_t, Is_Vector);
         A_FALSE(int16_t, Is_Class);
@@ -151,13 +151,13 @@ namespace open_json_test {
         A_FALSE(uint16_t, Is_Double);
         A_FALSE(uint16_t, Is_LongDouble);
         A_FALSE(uint16_t, Is_Decimal);
-        A_TRUE(uint16_t, Is_Premitive); //true
+        A_TRUE(uint16_t, Is_Primitive); //true
         A_FALSE(uint16_t, Is_String);
         A_FALSE(uint16_t, Is_Vector);
         A_FALSE(uint16_t, Is_Class);
     }
 
-    TEST(TepeTraitsTest, Int32Test) {
+    TEST(TypeTraitsTest, Int32Test) {
         //type: signed int = int32_t
         A_FALSE(int32_t, Is_Char);
         A_FALSE(int32_t, Is_Bool);
@@ -174,7 +174,7 @@ namespace open_json_test {
         A_FALSE(int32_t, Is_Double);
         A_FALSE(int32_t, Is_LongDouble);
         A_FALSE(int32_t, Is_Decimal);
-        A_TRUE(int32_t, Is_Premitive); //true
+        A_TRUE(int32_t, Is_Primitive); //true
         A_FALSE(int32_t, Is_String);
         A_FALSE(int32_t, Is_Vector);
         A_FALSE(int32_t, Is_Class);
@@ -195,13 +195,15 @@ namespace open_json_test {
         A_FALSE(uint32_t, Is_Double);
         A_FALSE(uint32_t, Is_LongDouble);
         A_FALSE(uint32_t, Is_Decimal);
-        A_TRUE(uint32_t, Is_Premitive); //true
+        A_TRUE(uint32_t, Is_Primitive); //true
         A_FALSE(uint32_t, Is_String);
         A_FALSE(uint32_t, Is_Vector);
         A_FALSE(uint32_t, Is_Class);
     }
 
-    TEST(TepeTraitsTest, Int64Test) {
+
+
+    TEST(TypeTraitsTest, Int64Test) {
         /**
          * type: in 64 bit WORD SIZE signed long int = int64_t
          * in 32 bit WORD SIZE signed long long int = int64_t
@@ -221,7 +223,7 @@ namespace open_json_test {
         A_FALSE(int64_t, Is_Double);
         A_FALSE(int64_t, Is_LongDouble);
         A_FALSE(int64_t, Is_Decimal);
-        A_TRUE(int64_t, Is_Premitive); //true
+        A_TRUE(int64_t, Is_Primitive); //true
         A_FALSE(int64_t, Is_String);
         A_FALSE(int64_t, Is_Vector);
         A_FALSE(int64_t, Is_Class);
@@ -245,7 +247,7 @@ namespace open_json_test {
         A_FALSE(uint64_t, Is_Double);
         A_FALSE(uint64_t, Is_LongDouble);
         A_FALSE(uint64_t, Is_Decimal);
-        A_TRUE(uint64_t, Is_Premitive); //true
+        A_TRUE(uint64_t, Is_Primitive); //true
         A_FALSE(uint64_t, Is_String);
         A_FALSE(uint64_t, Is_Vector);
         A_FALSE(uint64_t, Is_Class);
@@ -273,7 +275,7 @@ namespace open_json_test {
         A_FALSE(long long, Is_Double);
         A_FALSE(long long, Is_LongDouble);
         A_FALSE(long long, Is_Decimal);
-        A_TRUE(long long, Is_Premitive); //true
+        A_TRUE(long long, Is_Primitive); //true
         A_FALSE(long long, Is_String);
         A_FALSE(long long, Is_Vector);
         A_FALSE(long long, Is_Class);
@@ -294,7 +296,7 @@ namespace open_json_test {
         A_FALSE(unsigned long long, Is_Double);
         A_FALSE(unsigned long long, Is_LongDouble);
         A_FALSE(unsigned long long, Is_Decimal);
-        A_TRUE(unsigned long long, Is_Premitive); //true
+        A_TRUE(unsigned long long, Is_Primitive); //true
         A_FALSE(unsigned long long, Is_String);
         A_FALSE(unsigned long long, Is_Vector);
         A_FALSE(unsigned long long, Is_Class);
@@ -316,7 +318,7 @@ namespace open_json_test {
         A_FALSE(long, Is_Double);
         A_FALSE(long, Is_LongDouble);
         A_FALSE(long, Is_Decimal);
-        A_TRUE(long, Is_Premitive); //true
+        A_TRUE(long, Is_Primitive); //true
         A_FALSE(long, Is_String);
         A_FALSE(long, Is_Vector);
         A_FALSE(long, Is_Class);
@@ -336,7 +338,7 @@ namespace open_json_test {
         A_FALSE(unsigned long, Is_Double);
         A_FALSE(unsigned long, Is_LongDouble);
         A_FALSE(unsigned long, Is_Decimal);
-        A_TRUE(unsigned long, Is_Premitive); //true
+        A_TRUE(unsigned long, Is_Primitive); //true
         A_FALSE(unsigned long, Is_String);
         A_FALSE(unsigned long, Is_Vector);
         A_FALSE(unsigned long long, Is_Class);
@@ -361,7 +363,7 @@ namespace open_json_test {
         A_FALSE(float, Is_Double);
         A_FALSE(float, Is_LongDouble);
         A_TRUE(float, Is_Decimal); //true
-        A_TRUE(float, Is_Premitive); //true
+        A_TRUE(float, Is_Primitive); //true
         A_FALSE(float, Is_String);
         A_FALSE(float, Is_Vector);
         A_FALSE(float, Is_Class);
@@ -384,7 +386,7 @@ namespace open_json_test {
         A_TRUE(double, Is_Double); //true
         A_FALSE(double, Is_LongDouble);
         A_TRUE(double, Is_Decimal); //true
-        A_TRUE(double, Is_Premitive); //true
+        A_TRUE(double, Is_Primitive); //true
         A_FALSE(double, Is_String);
         A_FALSE(double, Is_Vector);
         A_FALSE(double, Is_Class);
@@ -407,7 +409,7 @@ namespace open_json_test {
         A_FALSE(long double, Is_Double);
         A_TRUE(long double, Is_LongDouble); //true
         A_TRUE(long double, Is_Decimal); //true
-        A_TRUE(long double, Is_Premitive); //true
+        A_TRUE(long double, Is_Primitive); //true
         A_FALSE(long double, Is_String);
         A_FALSE(long double, Is_Vector);
         A_FALSE(long double, Is_Class);
@@ -430,7 +432,7 @@ namespace open_json_test {
         A_FALSE(std::string, Is_Double);
         A_FALSE(std::string, Is_LongDouble);
         A_FALSE(std::string, Is_Decimal);
-        A_TRUE(std::string, Is_Premitive); //true
+        A_FALSE(std::string, Is_Primitive);
         A_TRUE(std::string, Is_String); //true
         A_FALSE(std::string, Is_Vector);
         A_FALSE(std::string, Is_Class); //false since std::string has been treaded as primitive

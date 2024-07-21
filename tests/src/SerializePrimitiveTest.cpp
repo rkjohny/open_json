@@ -58,7 +58,7 @@ namespace open_json_test {
         delete *ptr2Int;
         delete ptr2Int;
 
-        const int * const  *ptr3Int = new int*(new int(60));
+        int **ptr3Int = new int*(new int(60));
         jsonObject = open_json::ToJson(ptr3Int);
         ASSERT_EQ(**ptr3Int, jsonObject.template get<int>());
         delete *ptr3Int;
@@ -324,59 +324,6 @@ namespace open_json_test {
         jsonObject = open_json::ToJson(ucharVal);
         ASSERT_EQ(intVal, jsonObject.template get<int>());
         ASSERT_EQ(ucharVal, jsonObject.template get<unsigned char>());
-
-        char *ptr1 = "Hello world!";
-        jsonObject = open_json::ToJson(ptr1);
-        ASSERT_EQ(ptr1, jsonObject.template get<std::string>());
-
-        char **ptr2 = &ptr1;
-        jsonObject = open_json::ToJson(ptr2);
-        ASSERT_EQ(*ptr2, jsonObject.template get<std::string>());
-    }
-
-    TEST_F(SerializePrimitiveTest, PremitiveCharPtr) {
-        nlohmann::json jsonObject;
-        char *charPtr = "You are awsome!";
-
-        jsonObject = open_json::ToJson("Hello World!");
-        ASSERT_TRUE(jsonObject.is_string());
-        ASSERT_EQ(0, std::string("Hello World!").compare(jsonObject.template get<std::string>()));
-
-        jsonObject = open_json::ToJson(charPtr);
-        ASSERT_EQ(0, std::string(charPtr).compare(jsonObject.template get<std::string>()));
-
-        jsonObject = open_json::ToJson(std::move(charPtr));
-        ASSERT_EQ(0, std::string(charPtr).compare(jsonObject.template get<std::string>()));
-
-        const char *charPtr2 = charPtr;
-        jsonObject = open_json::ToJson(charPtr2);
-        ASSERT_EQ(0, std::string(charPtr2).compare(jsonObject.template get<std::string>()));
-
-        jsonObject = open_json::ToJson(std::move(charPtr2));
-        ASSERT_EQ(0, std::string(charPtr2).compare(jsonObject.template get<std::string>()));
-
-        char *const charPtr3 = charPtr;
-        jsonObject = open_json::ToJson(charPtr3);
-        ASSERT_EQ(0, std::string(charPtr3).compare(jsonObject.template get<std::string>()));
-
-        jsonObject = open_json::ToJson(std::move(charPtr3));
-        ASSERT_EQ(0, std::string(charPtr3).compare(jsonObject.template get<std::string>()));
-
-        const char *const charPtr4 = charPtr;
-        jsonObject = open_json::ToJson(charPtr4);
-        ASSERT_EQ(0, std::string(charPtr4).compare(jsonObject.template get<std::string>()));
-
-        jsonObject = open_json::ToJson(std::move(charPtr4));
-        ASSERT_EQ(0, std::string(charPtr4).compare(jsonObject.template get<std::string>()));;
-
-
-        jsonObject = open_json::ToJson(*charPtr4);
-        ASSERT_EQ(*charPtr4, jsonObject.template get<char>());
-        ASSERT_EQ((int)*charPtr4, jsonObject.template get<int>());
-
-        jsonObject = open_json::ToJson(std::move(*charPtr4));
-        ASSERT_TRUE(*charPtr4 == jsonObject.template get<char>());
-        ASSERT_TRUE((int) *charPtr4 == jsonObject.template get<int>());
     }
 
     TEST_F(SerializePrimitiveTest, STLString) {

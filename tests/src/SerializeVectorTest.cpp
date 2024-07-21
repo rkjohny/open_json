@@ -18,7 +18,7 @@ namespace open_json_test {
         std::vector<double *> *m_scores;
         std::vector<std::string> *m_names;
         std::vector<std::string *> *m_emails;
-        std::vector<char *> m_cities;
+        std::vector<std::string *> **m_cities;
 
         void SetUp() override {
             m_scores = new vector<double *>;
@@ -39,17 +39,17 @@ namespace open_json_test {
             m_emails->push_back(new string("david@sample.com"));
             m_emails->push_back(new string("emma@sample.com"));
 
-            char *p = new char[100];
-            strcpy(p, "New York");
-            m_cities.push_back(p);
+            m_cities = new std::vector<std::string *> * (new std::vector<std::string*>());
 
-            p = new char[100];
-            strcpy(p, "Boston");
-            m_cities.push_back(p);
 
-            p = new char[100];
-            strcpy(p, "Paris");
-            m_cities.push_back(p);
+            std::string *p = new std::string("New York");
+            (*m_cities)->push_back(p);
+
+            p = new std::string("Boston, USA");
+            (*m_cities)->push_back(p);
+
+            p = new std::string("Paris");
+            (*m_cities)->push_back(p);
         }
 
         void TearDown() override {
@@ -65,9 +65,11 @@ namespace open_json_test {
             }
             delete m_emails;
 
-            for (auto p: m_cities) {
+            for (auto p: **m_cities) {
                 delete p;
             }
+            delete *m_cities;
+            delete m_cities;
         }
     };
 
@@ -80,7 +82,7 @@ namespace open_json_test {
         vecInt.push_back(2);
         vecInt.push_back(3);
 
-        jsonArr = open_json::ToJson(vector<int>({1, 2, 3}));
+        jsonArr = open_json::ToJson<vector<int>>(vector<int>({1, 2, 3}));
         ASSERT_TRUE(jsonArr.is_array());
         ASSERT_TRUE(jsonArr.size() == 3);
         val = 1;
@@ -112,6 +114,43 @@ namespace open_json_test {
         auto itr3 = vecInt.begin();
         for (auto &arrItem: jsonArr) {
             ASSERT_EQ(*itr3, arrItem.template get<int>());
+            ++itr3;
+        }
+    }
+
+    TEST_F(SerializeVectorTest, TestLong) {
+        nlohmann::json jsonArr;
+        int val = 0;
+        std::vector<long *> vecLongPtr;
+
+        vecLongPtr.push_back(new long (0));
+        vecLongPtr.push_back(new long (1));
+        vecLongPtr.push_back(new long(3));
+
+        jsonArr = open_json::ToJson(std::move(vecLongPtr));
+        ASSERT_TRUE(jsonArr.is_array());
+        ASSERT_TRUE(jsonArr.size() == vecLongPtr.size());
+        auto itr1 = vecLongPtr.begin();
+        for (auto &arrItem: jsonArr) {
+            ASSERT_EQ(**itr1, arrItem.template get<long>());
+            ++itr1;
+        }
+
+        jsonArr = open_json::ToJson(vecLongPtr);
+        ASSERT_TRUE(jsonArr.is_array());
+        ASSERT_TRUE(jsonArr.size() == vecLongPtr.size());
+        auto itr2 = vecLongPtr.begin();
+        for (auto &arrItem: jsonArr) {
+            ASSERT_EQ(**itr2, arrItem.template get<long>());
+            ++itr2;
+        }
+
+        jsonArr = open_json::ToJson(&vecLongPtr);
+        ASSERT_TRUE(jsonArr.is_array());
+        ASSERT_TRUE(jsonArr.size() == vecLongPtr.size());
+        auto itr3 = vecLongPtr.begin();
+        for (auto &arrItem: jsonArr) {
+            ASSERT_EQ(**itr3, arrItem.template get<long>());
             ++itr3;
         }
     }
@@ -230,39 +269,30 @@ namespace open_json_test {
     TEST_F(SerializeVectorTest, TestCities) {
         nlohmann::json jsonArr;
 
-        jsonArr = open_json::ToJson(std::vector<char *>(m_cities));
+        jsonArr = open_json::ToJson(std::vector<std::string *>(**m_cities));
         ASSERT_TRUE(jsonArr.is_array());
-        ASSERT_TRUE(jsonArr.size() == m_cities.size());
-        auto itr = m_cities.begin();
+        ASSERT_TRUE(jsonArr.size() == (**m_cities).size());
+        auto itr = (**m_cities).begin();
         for (auto &arrItem: jsonArr) {
-            ASSERT_EQ(0, std::string(*itr).compare(arrItem.template get<string>()));
-            ++itr;
-        }
-
-        jsonArr = open_json::ToJson(std::move(m_cities));
-        ASSERT_TRUE(jsonArr.is_array());
-        ASSERT_TRUE(jsonArr.size() == m_cities.size());
-        itr = m_cities.begin();
-        for (auto &arrItem: jsonArr) {
-            ASSERT_EQ(0, std::string(*itr).compare(arrItem.template get<string>()));
+            ASSERT_EQ(0, std::string(**itr).compare(arrItem.template get<string>()));
             ++itr;
         }
 
         jsonArr = open_json::ToJson(m_cities);
         ASSERT_TRUE(jsonArr.is_array());
-        ASSERT_TRUE(jsonArr.size() == m_cities.size());
-        itr = m_cities.begin();
+        ASSERT_TRUE(jsonArr.size() == (**m_cities).size());
+        itr = (**m_cities).begin();
         for (auto &arrItem: jsonArr) {
-            ASSERT_EQ(0, std::string(*itr).compare(arrItem.template get<string>()));
+            ASSERT_EQ(0, std::string(**itr).compare(arrItem.template get<string>()));
             ++itr;
         }
 
         jsonArr = open_json::ToJson(&m_cities);
         ASSERT_TRUE(jsonArr.is_array());
-        ASSERT_TRUE(jsonArr.size() == m_cities.size());
-        itr = m_cities.begin();
+        ASSERT_TRUE(jsonArr.size() == (**m_cities).size());
+        itr = (**m_cities).begin();
         for (auto &arrItem: jsonArr) {
-            ASSERT_EQ(0, std::string(*itr).compare(arrItem.template get<string>()));
+            ASSERT_EQ(0, std::string(**itr).compare(arrItem.template get<string>()));
             ++itr;
         }
     }

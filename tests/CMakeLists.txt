@@ -49,6 +49,7 @@ set(OPEN_JSON_TEST_SRCS
         ${PROJECT_SOURCE_DIR}/SerializePrimitiveTest.cpp
         ${PROJECT_SOURCE_DIR}/TypeTraitsTest.cpp
         ${PROJECT_SOURCE_DIR}/SerializeVectorTest.cpp
+        ${PROJECT_SOURCE_DIR}/SerializeCustomObjectTest.cpp
 
 )
 

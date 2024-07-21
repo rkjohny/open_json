@@ -20,15 +20,13 @@
 
 
 namespace open_json {
-
-    /************************** Serializing to Json String *************************/
-
-
     template<class T>
     [[nodiscard]]
-    static nlohmann::json ToJson(const T &&object) {
-        return  serializer::ToJson(object);
-    }
+    static nlohmann::json ToJson(const T &object);
+
+    template<class T>
+    static void FromJson(T &object, const nlohmann::json &jsonObject);
+
 
     template<class T>
     [[nodiscard]]
@@ -36,38 +34,11 @@ namespace open_json {
         return serializer::ToJson(object);
     }
 
-    template<class T>
-    [[nodiscard]]
-    static nlohmann::json ToJson(const T *object) {
-        return serializer::ToJson(object);
-    }
-
-    template<class T>
-    [[nodiscard]]
-    static nlohmann::json ToJson(const T *const *object) {
-        return serializer::ToJson(object);
-    }
-
-
-    /************************** Deserializing to CPP object from Json String *************************/
-
-
 
     template<class T>
     static void FromJson(T &object, const nlohmann::json &jsonObject) {
         deserializer::FromJson(object, jsonObject);
     }
-
-    template<class T>
-    static void FromJson(const T *object, const nlohmann::json &jsonObject) {
-        deserializer::FromJson(object, jsonObject);
-    }
-
-    template<class T>
-    static void FromJson(const T *const *object, const nlohmann::json &jsonObject) {
-        deserializer::FromJson(object, jsonObject);
-    }
-
 }
 
 #endif //OPEN_JSON_OPEN_JSON_H
