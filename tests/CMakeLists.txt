@@ -44,22 +44,12 @@ include_directories(${PROJECT_INCLUDE_DIR})
 include_directories(${LIB_OPEN_JSON_INCLUDE_DIR})
 
 
-set(OPEN_JSON_TEST_SRCS
-        ${PROJECT_SOURCE_DIR}/main.cpp
-        ${PROJECT_SOURCE_DIR}/SerializePrimitiveTest.cpp
-        ${PROJECT_SOURCE_DIR}/TypeTraitsTest.cpp
-        ${PROJECT_SOURCE_DIR}/SerializeVectorTest.cpp
-        ${PROJECT_SOURCE_DIR}/SerializeCustomObjectTest.cpp
-        ${PROJECT_SOURCE_DIR}/PersonClassTest.cpp
-        ${PROJECT_SOURCE_DIR}/StudentClassTest.cpp
-        ${PROJECT_SOURCE_DIR}/SerializeDerivedClassTest.cpp
-        ${PROJECT_SOURCE_DIR}/SerializeNestedObjectTest.cpp
-        ${PROJECT_SOURCE_DIR}/SerializePointerTest.cpp
-        ${PROJECT_SOURCE_DIR}/SerializeConstantTest.cpp
-)
+file(GLOB OPEN_JSON_TEST_HEADER ${PROJECT_INCLUDE_DIR}/*.h)
+file(GLOB OPEN_JSON_TEST_SRCS ${PROJECT_SOURCE_DIR}/*.cpp)
+
 
 # creating JonTest target
-add_executable(${PROJECT_NAME} ${OPEN_JSON_TEST_SRCS})
+add_executable(${PROJECT_NAME} ${OPEN_JSON_TEST_HEADER} ${OPEN_JSON_TEST_SRCS})
 
 
 #if (OPEN_JSON_FOUND)
