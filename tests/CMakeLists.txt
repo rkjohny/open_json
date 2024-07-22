@@ -54,6 +54,8 @@ set(OPEN_JSON_TEST_SRCS
         ${PROJECT_SOURCE_DIR}/StudentClassTest.cpp
         ${PROJECT_SOURCE_DIR}/SerializeDerivedClassTest.cpp
         ${PROJECT_SOURCE_DIR}/SerializeNestedObjectTest.cpp
+        ${PROJECT_SOURCE_DIR}/SerializePointerTest.cpp
+        ${PROJECT_SOURCE_DIR}/SerializeConstantTest.cpp
 )
 
 # creating JonTest target
