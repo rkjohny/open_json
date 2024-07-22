@@ -17,19 +17,19 @@ namespace open_json {
 
         [[nodiscard]]
         const nlohmann::json ToJson() override {
-            return ToJsonObject<T>(reinterpret_cast<const T *>(this));
+            return serializer::ToJsonObject(reinterpret_cast<const T *>(this));
         }
 
-        void FromJson(const nlohmann::json &jsonObject) override {
-            deserializer::FromJson<T>(reinterpret_cast<T *> (this), jsonObject);
-        }
+//        void FromJson(const nlohmann::json &jsonObject) override {
+//            deserializer::FromJson(reinterpret_cast<T *> (this), jsonObject);
+//        }
 
 
         REGISTER_GETTER_INCLUDING_BASE_START(AbstractSerializable)
         REGISTER_GETTER_INCLUDING_BASE_END
 
-        REGISTER_SETTER_INCLUDING_BASE_START(AbstractSerializable)
-        REGISTER_SETTER_INCLUDING_BASE_END
+//        REGISTER_SETTER_INCLUDING_BASE_START(AbstractSerializable)
+//        REGISTER_SETTER_INCLUDING_BASE_END
     };
 
 }

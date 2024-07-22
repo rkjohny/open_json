@@ -15,7 +15,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../build)
 
 # setting header and source file location
 set(PROJECT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
-set(PROJECT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 set(LIB_OPEN_JSON_INCLUDE_DIR, ${CMAKE_CURRENT_SOURCE_DIR}/../include)
 
@@ -45,7 +44,7 @@ include_directories(${LIB_OPEN_JSON_INCLUDE_DIR})
 
 
 file(GLOB OPEN_JSON_TEST_HEADER ${PROJECT_INCLUDE_DIR}/*.h)
-file(GLOB OPEN_JSON_TEST_SRCS ${PROJECT_SOURCE_DIR}/*.cpp)
+file(GLOB OPEN_JSON_TEST_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/serialize/*.cpp)
 
 
 # creating JonTest target

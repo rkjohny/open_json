@@ -102,7 +102,7 @@ delete *decimalPtr5;
 delete decimalPtr5;
 ````
 
-* ### Primitive char and char&#42;
+* ### Primitive char
 ````
 nlohmann::json jsonObject;
 int intVal = 'A';
@@ -129,7 +129,7 @@ ASSERT_EQ(ucharVal, jsonObject.template get<unsigned char>());
 ASSERT_EQ(ucharVal, jsonObject.template get<uint32_t>());
 ````
 
-* ### string and string&#42;
+* ### string and string
 ````
 nlohmann::json jsonObject;
 
@@ -291,6 +291,183 @@ delete m_cities;
 #### For more test cases of vector types look into file <a href="./tests/src/SerializeVectorTest.cpp">SerializeVectorTest.cpp</a>
 
 * ### Custom Class
+* #### You must declare a static public std::tuple member named 'getters' inside the class which contains the list of getters those will be serialized. 
+
+There are three ways to declare the std::tuple filed
+
+* #### Use macro
+````
+#include <string>
+#include "open_json.h"
+
+class ClassA {
+  private:
+    int id;
+    std::string name;
+    
+  public:
+    int GetId() const {
+      return id;
+    }
+    
+    const std::string &GetName() const {
+      return name;
+    }
+    
+    REGISTER_GETTER_START
+    GETTER(ClassA, int, "id", &ClassA::GetId),
+    GETTER(ClassA, const std::string&, "name", &ClassA::GetName)
+    REGISTER_GETTER_END
+}
+````
+Here the two getter methods will be registered with the keys "id" and "name" respectively. 
+* To serialize:
+````
+ClassA a;
+nlohmann::json jsonObject = open_json::ToJson(a);
+````
+Now value of id and name can be accessed as follows:
+````
+int id = jsonObject.at("id").template get<int>();
+std::string name = jsonObject.at("name").template get<std::string>();
+````
+
+* #### Use macro and Extending Serializable class:
+````
+#include <string>
+#include "open_json.h"
+
+class ClassB : open_json::Serializable<ClassB> {
+    private:
+        int id;
+        std::string name;
+
+    public:
+        int GetId() const {
+            return id;
+        }
+
+        const std::string &GetName() const {
+            return name;
+        }
+
+        REGISTER_GETTER_START
+        GETTER(ClassB, int, "id", &ClassB::GetId),
+        GETTER(ClassB, const std::string&, "name", &ClassB::GetName)
+        REGISTER_GETTER_END
+    };
+````
+* To serialize:
+````
+ClassB b;
+nlohmann::json jsonObject = b.ToJson();
+````
+or including getters in base class Serializable 
+````
+class ClassB : public open_json::Serializable<ClassB> {
+private:
+    int id = 100;
+    std::string name = "Rezaul karim";
+
+public:
+    ClassB() = default;
+
+    int GetId() const {
+        return id;
+    }
+
+    const std::string &GetName() const {
+        return name;
+    }
+
+    REGISTER_GETTER_INCLUDING_BASE_START(open_json::Serializable<ClassB>)
+    GETTER(ClassB, int, "id", &ClassB::GetId),
+    GETTER(ClassB, const std::string&, "name", &ClassB::GetName)
+    REGISTER_GETTER_INCLUDING_BASE_END
+};
+
+````
+Value of id and name can be accessed as the same way mentioned above
+
+* #### Declaring a tuple of getters:
+````
+class ClassC {
+private:
+    int id;
+    std::string name;
+
+public:
+    int GetId() const {
+        return id;
+    }
+
+    const std::string &GetName() const {
+        return name;
+    }
+
+    static constexpr std::tuple getters = std::make_tuple(
+            open_json::Getter<ClassC, int>(&ClassC::GetId, "id"),
+            open_json::Getter<ClassC, const std::string &>(&ClassC::GetName, "name")
+    );
+};
+````
+Here the name of the tuple member which is "getters" is important. The register macro declares the tuple inside.
+* To Serialize:
+````
+ClassC c;
+nlohmann::json jsonObject = open_json::ToJson(c);
+````
+
+* #### Serializing empty class:
+Even the class is an empty class you need to declare the tuple 'getters' with empty getters list
+````
+class SerializeEmptyClass2 {
+public:
+    SerializeEmptyClass2() = default;
+
+    REGISTER_GETTER_START
+    REGISTER_GETTER_END
+};
+
+
+using Type = typename open_json::Remove_CVR<SerializeEmptyClass2>::Type;
+auto getters = Type::getters;
+const size_t lengthGetter = std::tuple_size<decltype(getters)>::value;
+
+ASSERT_TRUE(lengthGetter == 0);
+
+SerializeEmptyClass2 emptyObject;
+nlohmann::json jsonbObject = open_json::ToJson(emptyObject);
+
+ASSERT_FALSE(jsonbObject.is_null());
+ASSERT_TRUE(jsonbObject.is_object());
+ASSERT_TRUE(jsonbObject.begin() == jsonbObject.end());
+
+````
+or extending Serializable class which actually declares the 'getters'
+````
+class SerializeEmptyClass : public open_json::Serializable<SerializeEmptyClass> {
+public:
+    SerializeEmptyClass() = default;
+};
+
+
+using Type = typename open_json::Remove_CVR<SerializeEmptyClass>::Type;
+auto getters = Type::getters;
+const size_t lengthGetter = std::tuple_size<decltype(getters)>::value;
+
+ASSERT_TRUE(lengthGetter == 0);
+
+SerializeEmptyClass emptyObject;
+nlohmann::json jsonbObject = emptyObject.ToJson();
+
+ASSERT_FALSE(jsonbObject.is_null());
+ASSERT_TRUE(jsonbObject.is_object());
+ASSERT_TRUE(jsonbObject.begin() == jsonbObject.end());
+
+````
+
+* ### Serialize custom class
 ````
 class Person {
 private:
@@ -694,4 +871,17 @@ VerifyClassC(*objectC, jsonObject);
 delete objectA;
 delete objectB;
 delete objectC;
+````
+
+* ### Serializing enum
+````
+enum EnumTest {
+    A = 10,
+    B = 20,
+    C = 30,
+};
+
+EnumTest enm = EnumTest::B;
+nlohmann::json jsonObject = open_json::ToJson(enm);
+ASSERT_TRUE(jsonObject.template get<int>() == static_cast<int>(EnumTest::B));
 ````

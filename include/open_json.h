@@ -27,13 +27,13 @@ namespace open_json {
     template<class T>
     [[nodiscard]]
     static nlohmann::json ToJson(const T &object) {
-        return ToJsonObject(object);
+        return serializer::ToJsonObject(object);
     }
 
-    template<class T>
-    static void FromJson(T &object, const nlohmann::json &jsonObject) {
-        deserializer::FromJson(object, jsonObject);
-    }
+//    template<class T>
+//    static void FromJson(T &object, const nlohmann::json &jsonObject) {
+//        deserializer::FromJson(object, jsonObject);
+//    }
 }
 
 #endif //OPEN_JSON_OPEN_JSON_H

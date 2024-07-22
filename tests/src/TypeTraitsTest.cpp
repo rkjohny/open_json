@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include "../../include/TypeTraits.h"
 #include <string>
+#include "../../include/open_json.h"
 
 using namespace std;
 using namespace open_json;
