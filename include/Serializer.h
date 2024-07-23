@@ -237,6 +237,22 @@ namespace open_json {
             return jsonObject;
         }
 
+        ////////////////// Map ///////////////////////////////
+        template<class T>
+        typename std::enable_if<Is_Map<T>::Value && !Is_Pointer<T>::Value, nlohmann::json>::type
+        static ToJsonObject(const T &object) {
+            nlohmann::json jsonObject = nlohmann::json::object();
+
+            auto itr = object.begin();
+            while(itr != object.end()) {
+                auto &key = itr->first;
+                auto &value = itr->second;
+                jsonObject[ToJsonObject(key)] = ToJsonObject(value);
+                ++itr;
+            }
+            return jsonObject;
+        }
+
         ////////////////// Pointer ///////////////////////////////
         template<class T>
         typename std::enable_if<Is_Pointer<T>::Value && !Is_Array<T>::Value, nlohmann::json>::type

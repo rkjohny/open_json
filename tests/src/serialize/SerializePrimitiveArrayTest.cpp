@@ -101,6 +101,18 @@ namespace open_json_test {
                 ASSERT_EQ(0, strArray[i++].compare(arrItem.template get<std::string>()));
             }
 
+            std::string *strPtr = new std::string[] {"Hi there!", "How are you?", "How is going?"};
+
+            jsonObject = open_json::ToJson(strPtr, 3);
+            ASSERT_TRUE(jsonObject.is_array());
+            ASSERT_TRUE(jsonObject.size() == 3);
+            i = 0;
+            for (auto &arrItem: jsonObject) {
+                ASSERT_EQ(0, strPtr[i++].compare(arrItem.template get<std::string>()));
+            }
+            delete[] strPtr;
+
+
             std::string *strPtrArray[] = {new std::string("Hi there!"), new std::string("How are you?"), new std::string("How is going?")};
             jsonObject = open_json::ToJson(strArray, 3);
             ASSERT_TRUE(jsonObject.is_array());
