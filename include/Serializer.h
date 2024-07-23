@@ -226,16 +226,15 @@ namespace open_json {
         template<class T>
         typename std::enable_if<Is_Pointer<T>::Value && !Is_Array<T>::Value, nlohmann::json>::type
         static ToJsonObject(const T &object, const std::size_t &length) {
+            nlohmann::json jsonObject = nlohmann::json::array();
             if (object) {
-                nlohmann::json jsonObject = nlohmann::json::array();
                 if (length > 0) {
                     for (std::size_t i = 0; i < length; ++i) {
                         jsonObject.push_back(ToJsonObject(object[i]));
                     }
                 }
-                return jsonObject;
             }
-            return {};
+            return jsonObject;
         }
 
         ////////////////// Pointer ///////////////////////////////

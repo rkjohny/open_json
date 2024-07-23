@@ -57,6 +57,8 @@ A modern c++ library to serialize and deserialize c++ objects to and from <a hre
 * ## Serializing
 * ### Primitive integer
 ````
+#include "open_json.h"
+
 nlohmann::json jsonObject;
 
 jsonObject = open_json::ToJson(10);
@@ -297,9 +299,6 @@ There are three ways to declare the std::tuple filed
 
 * #### Use macro
 ````
-#include <string>
-#include "open_json.h"
-
 class ClassA {
   private:
     int id;
@@ -334,9 +333,6 @@ std::string name = jsonObject.at("name").template get<std::string>();
 
 * #### Use macro and Extending Serializable class:
 ````
-#include <string>
-#include "open_json.h"
-
 class ClassB : open_json::Serializable {
     private:
         int id;
