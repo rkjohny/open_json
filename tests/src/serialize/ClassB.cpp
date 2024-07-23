@@ -4,7 +4,7 @@
 
 namespace open_json_test {
 
-    class ClassB : public open_json::Serializable<ClassB> {
+    class ClassB : public open_json::Serializable {
     private:
         int id = 100;
         std::string name = "Rezaul karim";
@@ -20,7 +20,12 @@ namespace open_json_test {
             return name;
         }
 
-        REGISTER_GETTER_INCLUDING_BASE_START(open_json::Serializable<ClassB>)
+        [[nodiscard]]
+        const nlohmann::json ToJson() override {
+            return open_json::serializer::ToJsonObject(this);
+        }
+
+        REGISTER_GETTER_INCLUDING_BASE_START(open_json::Serializable)
         GETTER(ClassB, int, "id", &ClassB::GetId),
         GETTER(ClassB, const std::string&, "name", &ClassB::GetName)
         REGISTER_GETTER_INCLUDING_BASE_END

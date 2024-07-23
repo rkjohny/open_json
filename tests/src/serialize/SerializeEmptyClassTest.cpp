@@ -7,9 +7,14 @@
 namespace open_json_test {
     namespace serialize {
 
-        class SerializeEmptyClass : public open_json::Serializable<SerializeEmptyClass> {
+        class SerializeEmptyClass : public open_json::Serializable {
         public:
             SerializeEmptyClass() = default;
+
+            [[nodiscard]]
+            const nlohmann::json ToJson() override {
+                return open_json::serializer::ToJsonObject(this);
+            }
         };
 
         TEST(SerializeEmptyClass, EmptyObject) {

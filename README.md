@@ -337,7 +337,7 @@ std::string name = jsonObject.at("name").template get<std::string>();
 #include <string>
 #include "open_json.h"
 
-class ClassB : open_json::Serializable<ClassB> {
+class ClassB : open_json::Serializable {
     private:
         int id;
         std::string name;
@@ -351,20 +351,25 @@ class ClassB : open_json::Serializable<ClassB> {
             return name;
         }
 
+        [[nodiscard]]
+        const nlohmann::json ToJson() override {
+          return open_json::serializer::ToJsonObject(this);
+        }
+            
         REGISTER_GETTER_START
         GETTER(ClassB, int, "id", &ClassB::GetId),
         GETTER(ClassB, const std::string&, "name", &ClassB::GetName)
         REGISTER_GETTER_END
     };
 ````
-* To serialize:
+* You need to overwrite the ToJson method as above. Just copy and paste the ToJson method in your class. To serialize:
 ````
 ClassB b;
 nlohmann::json jsonObject = b.ToJson();
 ````
 or including getters in base class Serializable 
 ````
-class ClassB : public open_json::Serializable<ClassB> {
+class ClassB : public open_json::Serializable {
 private:
     int id = 100;
     std::string name = "Rezaul karim";
@@ -379,8 +384,13 @@ public:
     const std::string &GetName() const {
         return name;
     }
-
-    REGISTER_GETTER_INCLUDING_BASE_START(open_json::Serializable<ClassB>)
+    
+    [[nodiscard]]
+    const nlohmann::json ToJson() override {
+        return open_json::serializer::ToJsonObject(this);
+    }
+            
+    REGISTER_GETTER_INCLUDING_BASE_START(open_json::Serializable)
     GETTER(ClassB, int, "id", &ClassB::GetId),
     GETTER(ClassB, const std::string&, "name", &ClassB::GetName)
     REGISTER_GETTER_INCLUDING_BASE_END
@@ -446,9 +456,14 @@ ASSERT_TRUE(jsonbObject.begin() == jsonbObject.end());
 ````
 or extending Serializable class which actually declares the 'getters'
 ````
-class SerializeEmptyClass : public open_json::Serializable<SerializeEmptyClass> {
+class SerializeEmptyClass : public open_json::Serializable {
 public:
     SerializeEmptyClass() = default;
+    
+    [[nodiscard]]
+    const nlohmann::json ToJson() override {
+        return open_json::serializer::ToJsonObject(this);
+    }
 };
 
 
@@ -674,6 +689,140 @@ ASSERT_TRUE(derived2->IsValid() == jsonObject.at("is_valid").template get<bool>(
 delete base;
 delete derived;
 delete derived2;            
+````
+
+* ### Derived Class Extending Serializable
+````
+class BaseClass2 : public open_json::Serializable {
+private:
+    double score;
+    bool is_valid;
+
+public:
+    BaseClass2() : score{24.5678}, is_valid{true} {
+    }
+
+    [[nodiscard]]
+    const nlohmann::json ToJson() override {
+        return open_json::serializer::ToJsonObject(this);
+    }
+
+    double GetScore() const {
+        return score;
+    }
+
+    bool IsValid() const {
+        return is_valid;
+    }
+
+    REGISTER_GETTER_INCLUDING_BASE_START(open_json::Serializable)
+    GETTER(BaseClass2, double, "score", &BaseClass2::GetScore),
+    GETTER(BaseClass2, bool, "is_valid", &BaseClass2::IsValid)
+    REGISTER_GETTER_INCLUDING_BASE_END
+};
+
+class DerivedClass2 : public BaseClass2 {
+private:
+    long id;
+    std::string name;
+
+public:
+    DerivedClass2() : BaseClass2(), id{ 10 }, name{"name1"} {
+    }
+
+    [[nodiscard]]
+    const nlohmann::json ToJson() override {
+        return open_json::serializer::ToJsonObject(this);
+    }
+
+    long GetId() const {
+        return id;
+    }
+
+    std::string GetName() const {
+        return name;
+    }
+
+    REGISTER_GETTER_INCLUDING_BASE_START(BaseClass2)
+    GETTER(DerivedClass2, long, "id", &DerivedClass2::GetId),
+    GETTER(DerivedClass2, std::string, "name", &DerivedClass2::GetName)
+    REGISTER_GETTER_INCLUDING_BASE_END
+};
+
+class DerivedClass3 : public DerivedClass2 {
+private:
+    int code;
+
+public:
+    DerivedClass3() : DerivedClass2(), code{200} {
+    }
+
+    [[nodiscard]]
+    const nlohmann::json ToJson() override {
+        return open_json::serializer::ToJsonObject(this);
+    }
+
+    int GetCode() const {
+        return code;
+    }
+
+    REGISTER_GETTER_INCLUDING_BASE_START(DerivedClass2)
+    GETTER(DerivedClass3, int, "code", &DerivedClass3::GetCode)
+    REGISTER_GETTER_INCLUDING_BASE_END
+};
+
+class SerializeDerivedClassTest2 : public ::testing::Test {
+public:
+    BaseClass2 *base2;
+    DerivedClass2 *derived2;
+    DerivedClass3 *derived3;
+
+    void SetUp() override {
+        base2 = new BaseClass2();
+        derived2 = new DerivedClass2();
+        derived3 = new DerivedClass3();
+    }
+
+    void TearDown() override {
+        delete base2;
+        delete derived2;
+        delete derived3;
+    }
+};
+
+BaseClass2 *base2 = new BaseClass2();
+DerivedClass2 *derived2 = new DerivedClass2();
+DerivedClass3* derived3 = new DerivedClass3();
+
+// Base class      
+nlohmann::json jsonObject = base2->ToJson();
+
+ASSERT_TRUE(jsonObject.is_object());
+ASSERT_DOUBLE_EQ(base2->GetScore(), jsonObject.at("score").template get<double>());
+ASSERT_TRUE(base2->IsValid() == jsonObject.at("is_valid").template get<bool>()); 
+
+// Derived2 class
+nlohmann::json jsonObject = derived2->ToJson();
+
+ASSERT_TRUE(jsonObject.is_object());
+ASSERT_DOUBLE_EQ(derived2->GetId(), jsonObject.at("id").template get<long>());
+ASSERT_TRUE(0 == derived2->GetName().compare(jsonObject.at("name").template get<std::string>()));
+ASSERT_DOUBLE_EQ(derived2->GetScore(), jsonObject.at("score").template get<double>());
+ASSERT_TRUE(derived2->IsValid() == jsonObject.at("is_valid").template get<bool>());
+            
+// Derived3 class
+nlohmann::json jsonObject = derived3->ToJson();
+
+ASSERT_TRUE(jsonObject.is_object());
+ASSERT_EQ(derived3->GetCode(), jsonObject.at("code").template get<int>());
+ASSERT_DOUBLE_EQ(derived3->GetId(), jsonObject.at("id").template get<long>());
+ASSERT_TRUE(0 == derived3->GetName().compare(jsonObject.at("name").template get<std::string>()));
+ASSERT_DOUBLE_EQ(derived3->GetScore(), jsonObject.at("score").template get<double>());
+ASSERT_TRUE(derived3->IsValid() == jsonObject.at("is_valid").template get<bool>());
+
+delete base2;
+delete derived2;
+delete derived3;      
 ````
 
 * ### Nested Class

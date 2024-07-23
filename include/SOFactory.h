@@ -4,7 +4,7 @@
 #include <mutex>
 
 #include "CommonDef.h"
-#include "AbstractSerializable.h"
+#include "Serializable.h"
 #include "StringUtils.h"
 
 
@@ -30,8 +30,8 @@ namespace open_json {
 
     public:
 
-        static std::shared_ptr<AbstractSerializable> CreateObject(const std::string &key) {
-            std::shared_ptr<AbstractSerializable> p = nullptr;
+        static std::shared_ptr<Serializable> CreateObject(const std::string &key) {
+            std::shared_ptr<Serializable> p = nullptr;
             std::string lwKey = key;
             StringUtils::ToLower(lwKey);
 
@@ -45,9 +45,9 @@ namespace open_json {
             return p;
         }
 
-        static std::vector<std::shared_ptr<AbstractSerializable>>
+        static std::vector<std::shared_ptr<Serializable>>
         CreateObjectArray(const std::string &key, const std::size_t size) {
-            std::vector<std::shared_ptr<AbstractSerializable>> v;
+            std::vector<std::shared_ptr<Serializable>> v;
             std::string lwKey = key;
             StringUtils::ToLower(lwKey);
 
@@ -62,8 +62,8 @@ namespace open_json {
 
         template<class T>
         static void Register(const std::string &key) {
-            static_assert(std::is_base_of<AbstractSerializable, T>::value,
-                          "T must be derived from AbstractSerializable");
+            static_assert(std::is_base_of<Serializable, T>::value,
+                          "T must be derived from Serializable");
             std::string lwKey = key;
             StringUtils::ToLower(lwKey);
 
@@ -78,8 +78,8 @@ namespace open_json {
 
         template<class T>
         static void UnRegister(const std::string &key) {
-            static_assert(std::is_base_of<AbstractSerializable, T>::value,
-                          "T must be derived from AbstractSerializable");
+            static_assert(std::is_base_of<Serializable, T>::value,
+                          "T must be derived from Serializable");
             std::string lwKey = key;
             StringUtils::ToLower(lwKey);
 
@@ -102,22 +102,22 @@ namespace open_json {
         static void Clear();
 
     protected:
-        typedef std::shared_ptr<AbstractSerializable> (*FunPtr)(void);
+        typedef std::shared_ptr<Serializable> (*FunPtr)(void);
 
         typedef std::map<std::string, FunPtr> ListCreators;
 
-        typedef std::vector<std::shared_ptr<AbstractSerializable>> (*FunPtrArr)(const size_t&);
+        typedef std::vector<std::shared_ptr<Serializable>> (*FunPtrArr)(const size_t&);
 
         typedef std::map<std::string, FunPtrArr> ListCreatorsArr;
 
         template<class T>
-        static std::shared_ptr<AbstractSerializable> Create() {
+        static std::shared_ptr<Serializable> Create() {
             return std::make_shared<T>();
         }
 
         template<class T>
-        static std::vector<std::shared_ptr<AbstractSerializable>> CreateArray(const size_t &size) {
-            std::vector<std::shared_ptr<AbstractSerializable>> v;
+        static std::vector<std::shared_ptr<Serializable>> CreateArray(const size_t &size) {
+            std::vector<std::shared_ptr<Serializable>> v;
             for (size_t i = 0; i < size; ++i) {
                 v.push_back(std::make_shared<T>());
             }

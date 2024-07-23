@@ -2,34 +2,27 @@
 #define OPEN_JSON_SERIALIZABLE_H
 
 #include <nlohmann/json.hpp>
-#include "AbstractSerializable.h"
-#include "Serializer.h"
-#include "Deserializer.h"
+#include "GetterSetterDef.h"
 
 namespace open_json {
 
-    template<class T>
-    class Serializable : public AbstractSerializable {
+    class Serializable {
     public:
         Serializable() = default;
 
         virtual ~Serializable() = default;
 
         [[nodiscard]]
-        const nlohmann::json ToJson() override {
-            return serializer::ToJsonObject(reinterpret_cast<const T *>(this));
-        }
+        virtual const nlohmann::json ToJson() = 0;
 
-//        void FromJson(const nlohmann::json &jsonObject) override {
-//            deserializer::FromJson(reinterpret_cast<T *> (this), jsonObject);
-//        }
+//        virtual void FromJson(const nlohmann::json &) = 0;
 
 
-        REGISTER_GETTER_INCLUDING_BASE_START(AbstractSerializable)
-        REGISTER_GETTER_INCLUDING_BASE_END
+        REGISTER_GETTER_START
+        REGISTER_GETTER_END
 
-//        REGISTER_SETTER_INCLUDING_BASE_START(AbstractSerializable)
-//        REGISTER_SETTER_INCLUDING_BASE_END
+//        REGISTER_SETTER_START
+//        REGISTER_SETTER_END
     };
 
 }
