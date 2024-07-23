@@ -297,7 +297,7 @@ delete m_cities;
 
 There are three ways to declare the std::tuple filed
 
-* #### Use macro
+* ### Use macro
 ````
 class ClassA {
   private:
@@ -331,7 +331,7 @@ int id = jsonObject.at("id").template get<int>();
 std::string name = jsonObject.at("name").template get<std::string>();
 ````
 
-* #### Use macro and Extending Serializable class:
+* ### Use macro and Extending Serializable class:
 ````
 class ClassB : open_json::Serializable {
     private:
@@ -395,7 +395,7 @@ public:
 ````
 Value of id and name can be accessed as the same way mentioned above
 
-* #### Declaring a tuple of getters:
+* ### Declaring a tuple of getters:
 ````
 class ClassC {
 private:
@@ -424,7 +424,7 @@ ClassC c;
 nlohmann::json jsonObject = open_json::ToJson(c);
 ````
 
-* #### Serializing empty class:
+* ### Serializing empty class:
 Even the class is an empty class you need to declare the tuple 'getters' with empty getters list
 ````
 class SerializeEmptyClass2 {
@@ -1032,7 +1032,7 @@ ASSERT_TRUE(jsonObject.template get<int>() == static_cast<int>(EnumTest::B));
 ````
 
 * ### Serializing array
-* Integer array
+* ### Integer array
 ````
 nlohmann::json jsonObject;
 
@@ -1079,8 +1079,8 @@ for (auto p: intArrayPtr) {
 }
 ````
 
-* Char array
-* #### string literal will be treated as character array;
+* ### Char array
+* ### string literal will be treated as character array;
 ````
 nlohmann::json jsonObject;
 
@@ -1104,7 +1104,7 @@ for (auto &arrItem: jsonObject) {
 }
 ````
 
-* std::string array
+* ### std::string array
 ````
 nlohmann::json jsonObject;
 
@@ -1140,7 +1140,7 @@ for (auto &arrItem: jsonObject) {
 delete[] strArrayPtr;
 ````
 
-* Custom object array
+* ### Custom object array
 ````
 class Value {
 private:
