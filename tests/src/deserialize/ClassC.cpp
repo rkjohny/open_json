@@ -38,8 +38,18 @@ namespace open_json_test::serialize {
         jsonObject["name"] = "David Backham";
 
         DeserializeClassC c = open_json::FromJson<DeserializeClassC>(jsonObject);
-
         ASSERT_EQ(jsonObject.at("id").template get<int>(), c.GetId());
         ASSERT_EQ(0, jsonObject.at("name").template get<std::string>().compare(c.GetName()));
+
+        DeserializeClassC *p = open_json::FromJson<DeserializeClassC*>(jsonObject);
+        ASSERT_EQ(jsonObject.at("id").template get<int>(), p->GetId());
+        ASSERT_EQ(0, jsonObject.at("name").template get<std::string>().compare(p->GetName()));
+        delete p;
+
+        DeserializeClassC **pp = open_json::FromJson<DeserializeClassC**>(jsonObject);
+        ASSERT_EQ(jsonObject.at("id").template get<int>(), (*pp)->GetId());
+        ASSERT_EQ(0, jsonObject.at("name").template get<std::string>().compare((*pp)->GetName()));
+        delete *pp;
+        delete pp;
     }
 }

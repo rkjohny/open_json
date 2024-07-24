@@ -27,8 +27,20 @@ namespace open_json_test::serialize {
     TEST(SerializeClassA, Serialize) {
         SerializeClassA a;
         nlohmann::json jsonObject = open_json::ToJson(a);
-
         ASSERT_EQ(a.GetId(), jsonObject.at("id").template get<int>());
         ASSERT_EQ(0, a.GetName().compare(jsonObject.at("name").template get<std::string>()));
+
+        SerializeClassA *p = new SerializeClassA();
+        jsonObject = open_json::ToJson(p);
+        ASSERT_EQ(p->GetId(), jsonObject.at("id").template get<int>());
+        ASSERT_EQ(0, p->GetName().compare(jsonObject.at("name").template get<std::string>()));
+        delete p;
+
+        SerializeClassA **pp = new SerializeClassA*(new SerializeClassA());
+        jsonObject = open_json::ToJson(pp);
+        ASSERT_EQ((*pp)->GetId(), jsonObject.at("id").template get<int>());
+        ASSERT_EQ(0, (*pp)->GetName().compare(jsonObject.at("name").template get<std::string>()));
+        delete *pp;
+        delete pp;
     }
 }

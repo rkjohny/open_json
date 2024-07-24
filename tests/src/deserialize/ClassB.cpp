@@ -43,7 +43,6 @@ namespace open_json_test::serialize {
     TEST(DeserializeClassB, Test) {
         DeserializeClassB b;
         nlohmann::json jsonObject = open_json::ToJson(b);
-
         ASSERT_EQ(b.GetId(), jsonObject.at("id").template get<int>());
         ASSERT_EQ(0, b.GetName().compare(jsonObject.at("name").template get<std::string>()));
 
@@ -51,8 +50,20 @@ namespace open_json_test::serialize {
         jsonObject["id"] = 200;
         jsonObject["name"] = "David Jonson";
 
-        DeserializeClassB c = open_json::FromJson<DeserializeClassB>(jsonObject);
-        ASSERT_EQ(jsonObject.at("id").template get<int>(), c.GetId());
-        ASSERT_EQ(0, jsonObject.at("name").template get<std::string>().compare(c.GetName()));
+        DeserializeClassB b2 = open_json::FromJson<DeserializeClassB>(jsonObject);
+        ASSERT_EQ(jsonObject.at("id").template get<int>(), b2.GetId());
+        ASSERT_EQ(0, jsonObject.at("name").template get<std::string>().compare(b2.GetName()));
+
+        DeserializeClassB *p = open_json::FromJson<DeserializeClassB*>(jsonObject);
+        ASSERT_EQ(jsonObject.at("id").template get<int>(), p->GetId());
+        ASSERT_EQ(0, jsonObject.at("name").template get<std::string>().compare(p->GetName()));
+        delete p;
+
+        DeserializeClassB **pp = open_json::FromJson<DeserializeClassB**>(jsonObject);
+        ASSERT_EQ(jsonObject.at("id").template get<int>(), (*pp)->GetId());
+        ASSERT_EQ(0, jsonObject.at("name").template get<std::string>().compare((*pp)->GetName()));
+        delete *pp;
+        delete pp;
+
     }
 }
