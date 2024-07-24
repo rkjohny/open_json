@@ -10,10 +10,6 @@ namespace open_json_test::serialize {
     public:
         SerializeEmptyClass() = default;
 
-        [[nodiscard]]
-        const nlohmann::json ToJson() override {
-            return open_json::serializer::ToJsonObject(this);
-        }
     };
 
     TEST(SerializeEmptyClass, EmptyObject) {
@@ -24,7 +20,7 @@ namespace open_json_test::serialize {
         ASSERT_TRUE(lengthGetter == 0);
 
         SerializeEmptyClass emptyObject;
-        nlohmann::json jsonbObject = emptyObject.ToJson();
+        nlohmann::json jsonbObject = open_json::ToJson(emptyObject);
 
         ASSERT_FALSE(jsonbObject.is_null());
         ASSERT_TRUE(jsonbObject.is_object());

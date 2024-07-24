@@ -12,17 +12,11 @@ namespace open_json {
 
         virtual ~Serializable() = default;
 
-        [[nodiscard]]
-        virtual const nlohmann::json ToJson() = 0;
-
-//        virtual void FromJson(const nlohmann::json &) = 0;
-
-
         REGISTER_GETTER_START
         REGISTER_GETTER_END
 
-//        REGISTER_SETTER_START
-//        REGISTER_SETTER_END
+        REGISTER_SETTER_START
+        REGISTER_SETTER_END
     };
 
 }

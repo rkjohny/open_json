@@ -20,10 +20,6 @@ namespace open_json_test::serialize {
             return name;
         }
 
-        [[nodiscard]]
-        const nlohmann::json ToJson() override {
-            return open_json::serializer::ToJsonObject(this);
-        }
 
         REGISTER_GETTER_INCLUDING_BASE_START(open_json::Serializable)
         GETTER(SerializeClassB, int, "id", &SerializeClassB::GetId),
@@ -33,7 +29,7 @@ namespace open_json_test::serialize {
 
     TEST(SerializeClassB, Test) {
         SerializeClassB b;
-        nlohmann::json jsonObject = b.ToJson();
+        nlohmann::json jsonObject = open_json::ToJson(b);
 
         ASSERT_EQ(b.GetId(), jsonObject.at("id").template get<int>());
         ASSERT_EQ(0, b.GetName().compare(jsonObject.at("name").template get<std::string>()));
