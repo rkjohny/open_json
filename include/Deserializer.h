@@ -189,7 +189,7 @@ namespace open_json::deserializer {
     template<class T>
     typename std::enable_if<std::is_reference<T>::value || std::is_const<T>::value || Is_Array<T>::Value, T>::type
     FromJsonObject(nlohmann::json &) {
-        static_assert(true, "constant object cannot be constructed");
+        static_assert(true, "constant or reference object cannot be constructed");
     }
 
     /**
@@ -198,7 +198,7 @@ namespace open_json::deserializer {
     template<class T, size_t length>
     typename std::enable_if<std::is_reference<T>::value || std::is_const<T>::value || Is_Array<T>::Value, T>::type
     FromJsonObject(nlohmann::json &) {
-        static_assert(true, "constant object cannot be constructed");
+        static_assert(true, "constant or reference object cannot be constructed");
     }
 
 
