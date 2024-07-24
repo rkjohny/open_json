@@ -8,9 +8,9 @@ namespace open_json {
     class Setter {
     public:
         using Class = ClassT;
-        using Type = ArgT;
+        using ArgType = ArgT;
 
-        typedef void (Class::*SetterPtr)(ArgT);
+        typedef void (Class::*SetterPtr)(ArgType);
 
         SetterPtr fp;
         const char *name;

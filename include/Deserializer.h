@@ -131,7 +131,7 @@ namespace open_json::deserializer {
 
         using DerivedObjectType = typename Remove_CVR<typename decltype(setter)::Class>::Type;
 
-        using ArgT = typename decltype( setter )::Type;
+        using ArgT = typename decltype( setter )::ArgType;
 
         auto name = setter.name;
         auto fp = setter.fp;
@@ -144,7 +144,12 @@ namespace open_json::deserializer {
             if (!jsonValue.is_null()) {
                 found = true;
                 // BaseObjectType and DerivedObjectType can be same type
+
                 SetData<BaseObjectType, DerivedObjectType, ArgT>(object, fp, jsonValue);
+
+//                using Type = typename Remove_CVR<ArgT>::Type;
+//                Type var = FromJsonObject<Type>(jsonObject);
+//                (object.*fp)(var);
             }
         }
 
