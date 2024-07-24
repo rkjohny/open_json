@@ -78,7 +78,6 @@ namespace open_json_test {
             jsonObject = open_json::ToJson(longValue);
             ASSERT_EQ(longValue, jsonObject.template get<const long>());
 
-
             const long long longLongValue = 20;
             jsonObject = open_json::ToJson(longLongValue);
             ASSERT_EQ(longLongValue, jsonObject.template get<const long>());
