@@ -24,36 +24,6 @@ namespace open_json {
 
 
     /**
- * make "long int" as Int64 in 64 bit word size system and Int32 in 32 bit word size system.
- */
-#if 0
-#if WORD_SIZE == 32
-
-    template<>
-    struct Is_Int32_Type<long int> {
-        static const bool Value = true;
-    };
-
-    template<>
-    struct Is_Int32_Type<unsigned long int> {
-        static const bool Value = true;
-    };
-
-#elif WORD_SIZE == 64
-
-    template<>
-    struct Is_Int64_Type<long int> {
-        static const bool Value = true;
-    };
-
-    template<>
-    struct Is_UInt64_Type<unsigned long int> {
-        static const bool Value = true;
-    };
-#endif
-#endif
-
-    /**
      * Type check for pointer
      */
     template<class T>
@@ -127,6 +97,27 @@ namespace open_json {
         typedef typename Remove_CVR<T>::Type U;
     public:
         static constexpr bool Value = Is_Char_Type<U>::Value;
+    };
+
+    /**
+     * type unsigned char, it may vary among platforms
+     */
+    template<class T>
+    struct Is_UChar_Type {
+        static const bool Value = false;
+    };
+
+    template<>
+    struct Is_UChar_Type<unsigned char> {
+        static const bool Value = true;
+    };
+
+    template<class T>
+    struct Is_UChar {
+    private:
+        typedef typename Remove_CVR<T>::Type U;
+    public:
+        static constexpr bool Value = Is_UChar_Type<U>::Value;
     };
 
     /**

@@ -308,7 +308,7 @@ namespace open_json_test {
         TEST_F(SerializePrimitiveTest, PremitiveChar) {
             nlohmann::json jsonObject;
             int intVal = 'A';
-            char charValue = 'A';
+            signed char charValue = 'A';
 
             jsonObject = open_json::ToJson('A');
             ASSERT_EQ(65, jsonObject.template get<int>());
@@ -320,14 +320,24 @@ namespace open_json_test {
 
             jsonObject = open_json::ToJson(charValue);
             ASSERT_EQ(intVal, jsonObject.template get<int>());
-            ASSERT_EQ(charValue, jsonObject.template get<char>());
-            ASSERT_EQ(charValue, jsonObject.template get<int32_t>());
+            ASSERT_EQ(charValue, jsonObject.template get<signed char>());
+            ASSERT_EQ(charValue, jsonObject.template get<int8_t>());
 
-            unsigned char ucharVal = 'A';
+            char charValue2 = 'B';
+            int intValue2 = 'B';
+            jsonObject = open_json::ToJson(charValue2);
+            ASSERT_EQ(intValue2, jsonObject.template get<int8_t>());
+            ASSERT_EQ(intValue2, jsonObject.template get<int>());
+            ASSERT_EQ(charValue2, jsonObject.template get<char>());
+            ASSERT_EQ(charValue2, jsonObject.template get<int8_t>());
+
+            unsigned char ucharVal = 'C';
+            unsigned int uintValue = 'C';
             jsonObject = open_json::ToJson(ucharVal);
-            ASSERT_EQ(intVal, jsonObject.template get<int>());
+            ASSERT_EQ(uintValue, jsonObject.template get<uint8_t>());
+            ASSERT_EQ(uintValue, jsonObject.template get<unsigned int>());
             ASSERT_EQ(ucharVal, jsonObject.template get<unsigned char>());
-            ASSERT_EQ(ucharVal, jsonObject.template get<uint32_t>());
+            ASSERT_EQ(ucharVal, jsonObject.template get<uint8_t>());
         }
 
         TEST_F(SerializePrimitiveTest, STLString) {

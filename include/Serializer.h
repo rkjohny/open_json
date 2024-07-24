@@ -130,10 +130,11 @@ namespace open_json {
         }
 
         ///////////////// char ///////////////////////////////////
+        // TODO: why it is needed? it should be covered by Is_Int8
         template<class T>
         typename std::enable_if<Is_Char<T>::Value && !Is_Pointer<T>::Value, nlohmann::json>::type
         static ToJsonObject(const T &object) {
-            return nlohmann::json(static_cast<int32_t> (object));
+            return nlohmann::json(static_cast<int8_t> (object));
         }
 
         /////////////////////// std::string //////////////////////////////////////
@@ -244,7 +245,7 @@ namespace open_json {
             nlohmann::json jsonObject = nlohmann::json::object();
 
             auto itr = object.begin();
-            while(itr != object.end()) {
+            while (itr != object.end()) {
                 auto &key = itr->first;
                 auto &value = itr->second;
                 jsonObject[ToJsonObject(key)] = ToJsonObject(value);

@@ -44,7 +44,7 @@ namespace open_json {
 
 //    template<class T>
 //    static void FromJson(T &object, const nlohmann::json &jsonObject) {
-//        deserializer::FromJson(object, jsonObject);
+//        deserializer::FromJsonObject(object, jsonObject);
 //    }
 }
 
