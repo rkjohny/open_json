@@ -44,7 +44,7 @@ include_directories(${LIB_OPEN_JSON_INCLUDE_DIR})
 
 
 file(GLOB OPEN_JSON_TEST_HEADER ${PROJECT_INCLUDE_DIR}/*.h)
-file(GLOB OPEN_JSON_TEST_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/serialize/*.cpp)
+file(GLOB OPEN_JSON_TEST_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/serialize/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/deserialize/*.cpp)
 
 
 # creating JonTest target

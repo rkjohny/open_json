@@ -2,9 +2,9 @@
 #include <string>
 #include "../../../include/open_json.h"
 
-namespace open_json_test {
+namespace open_json_test::serialize {
 
-    class ClassC {
+    class SerializeClassC {
     private:
         int id = 100;
         std::string name = "Rezaul karim";
@@ -19,13 +19,13 @@ namespace open_json_test {
         }
 
         static constexpr std::tuple getters = std::make_tuple(
-                open_json::Getter<ClassC, int>(&ClassC::GetId, "id"),
-                open_json::Getter<ClassC, const std::string &>(&ClassC::GetName, "name")
+                open_json::Getter<SerializeClassC, int>(&SerializeClassC::GetId, "id"),
+                open_json::Getter<SerializeClassC, const std::string &>(&SerializeClassC::GetName, "name")
         );
     };
 
-    TEST(ClassC, Test) {
-    ClassC c;
+    TEST(SerializeClassC, Test) {
+    SerializeClassC c;
     nlohmann::json jsonObject = open_json::ToJson(c);
 
     ASSERT_EQ(c.GetId(), jsonObject.at("id").template get<int>());

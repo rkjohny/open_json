@@ -2,15 +2,15 @@
 #include <string>
 #include "../../../include/open_json.h"
 
-namespace open_json_test {
+namespace open_json_test::serialize {
 
-    class ClassD : public open_json::Serializable {
+    class SerializeClassD : public open_json::Serializable {
     private:
         int id = 100;
         std::string name = "Rezaul karim";
 
     public:
-        ClassD() = default;
+        SerializeClassD() = default;
 
         int GetId() const {
             return id;
@@ -26,13 +26,13 @@ namespace open_json_test {
         }
 
         REGISTER_GETTER_START
-        GETTER(ClassD, int, "id", &ClassD::GetId),
-        GETTER(ClassD, const std::string&, "name", &ClassD::GetName)
+        GETTER(SerializeClassD, int, "id", &SerializeClassD::GetId),
+        GETTER(SerializeClassD, const std::string&, "name", &SerializeClassD::GetName)
         REGISTER_GETTER_END
     };
 
-    TEST(ClassD, Test) {
-        ClassD b;
+    TEST(SerializeClassD, Test) {
+        SerializeClassD b;
         nlohmann::json jsonObject = b.ToJson();
 
         ASSERT_EQ(b.GetId(), jsonObject.at("id").template get<int>());

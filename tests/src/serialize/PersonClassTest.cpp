@@ -7,7 +7,7 @@
 #include "../../../include/open_json.h"
 
 
-namespace open_json_test {
+namespace open_json_test::serialize {
     namespace serialize {
 
         class Person {
