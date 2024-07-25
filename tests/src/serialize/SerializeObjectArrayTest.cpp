@@ -2,25 +2,25 @@
 #include "../../../include/open_json.h"
 
 
-namespace open_json_test::serialize {
+namespace open_json_test::serialize::array_of_object {
 
-    class Value1 {
+    class Value {
     private:
         double score;
         std::string grade;
 
     public:
-        Value1() = default;
+        Value() = default;
 
-        Value1(double score, std::string grade) : score(score), grade(grade) {
+        Value(double score, std::string grade) : score(score), grade(grade) {
         }
 
-        Value1(Value1 &&v) {
+        Value(Value &&v) {
             this->score = std::move(v.score);
             this->grade = std::move(v.grade);
         }
 
-        Value1(const Value1 &v) {
+        Value(const Value &v) {
             this->score = v.score;
             this->grade = v.grade;
         }
@@ -41,14 +41,14 @@ namespace open_json_test::serialize {
             return grade;
         }
 
-        void operator=(const Value1 &v) {
+        void operator=(const Value &v) {
             this->score = v.score;
             this->grade = v.grade;
         }
 
         REGISTER_GETTER_START
-        GETTER(Value1, double, "score", &Value1::GetScore),
-        GETTER(Value1, const std::string&, "grade", &Value1::GetGrade)
+        GETTER(Value, double, "score", &Value::GetScore),
+        GETTER(Value, const std::string&, "grade", &Value::GetGrade)
         REGISTER_GETTER_END
     };
 
@@ -70,7 +70,7 @@ namespace open_json_test::serialize {
     TEST_F(SerializeObjectArrayTest, ObjectArray) {
         nlohmann::json jsonObject;
 
-        Value1 valueArr[3] = {{80, "A+"},
+        Value valueArr[3] = {{80, "A+"},
                              {70, "A"},
                              {60, "A-"}};
 
@@ -85,7 +85,7 @@ namespace open_json_test::serialize {
             ++i;
         }
 
-        Value1 *ptrArr1 = new Value1[]{{80, "A+"},
+        Value *ptrArr1 = new Value[]{{80, "A+"},
                                      {70, "A"},
                                      {60, "A-"}};
 
@@ -100,7 +100,7 @@ namespace open_json_test::serialize {
         }
         delete[] ptrArr1;
 
-        Value1 **ptrArr2 = new Value1 *[]{new Value1(80, "A+"), new Value1(70, "A"), new Value1(60, "A-")};
+        Value **ptrArr2 = new Value *[]{new Value(80, "A+"), new Value(70, "A"), new Value(60, "A-")};
         jsonObject = open_json::ToJson(ptrArr2, 3);
         ASSERT_TRUE(jsonObject.is_array());
         ASSERT_TRUE(jsonObject.size() == 3);
@@ -112,7 +112,7 @@ namespace open_json_test::serialize {
         }
         delete[] ptrArr2;
 
-        Value1 *ptrArr3[3] = {new Value1(80, "A+"), new Value1(70, "A"), new Value1(60, "A-")};
+        Value *ptrArr3[3] = {new Value(80, "A+"), new Value(70, "A"), new Value(60, "A-")};
         jsonObject = open_json::ToJson(ptrArr3, 3);
         ASSERT_TRUE(jsonObject.is_array());
         ASSERT_TRUE(jsonObject.size() == 3);

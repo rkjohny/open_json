@@ -3,7 +3,7 @@
 #include "../../../include/open_json.h"
 
 
-namespace open_json_test::deserialize {
+namespace open_json_test::deserialize::primitive_types {
 
     class DeserializePrimitiveTest : public ::testing::Test {
     public:

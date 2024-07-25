@@ -146,10 +146,6 @@ namespace open_json::deserializer {
                 // BaseObjectType and DerivedObjectType can be same type
 
                 SetData<BaseObjectType, DerivedObjectType, ArgT>(object, fp, jsonValue);
-
-//                using Type = typename Remove_CVR<ArgT>::Type;
-//                Type var = FromJsonObject<Type>(jsonObject);
-//                (object.*fp)(var);
             }
         }
 

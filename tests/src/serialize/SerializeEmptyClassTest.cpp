@@ -4,7 +4,7 @@
 #include "../../../include/open_json.h"
 
 
-namespace open_json_test::serialize {
+namespace open_json_test::serialize::empty_class::without_getters {
 
     class SerializeEmptyClass : public open_json::Serializable {
     public:

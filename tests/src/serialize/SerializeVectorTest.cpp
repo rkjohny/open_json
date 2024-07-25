@@ -4,7 +4,7 @@
 #include "../../../include/open_json.h"
 
 
-namespace open_json_test::serialize {
+namespace open_json_test::serialize::vector_test {
 
     class SerializeVectorTest : public ::testing::Test {
     public:

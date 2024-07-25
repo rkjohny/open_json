@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "../../../include/open_json.h"
 
-namespace open_json_test::serialize {
+namespace open_json_test::serialize::enum_test {
 
     enum EnumTest {
         A = 10,

@@ -5,7 +5,7 @@
 
 
 // deserializing an object containing another object
-namespace open_json_test::serialize {
+namespace open_json_test::serialize::nested_class {
 
     class ClassA {
     private:

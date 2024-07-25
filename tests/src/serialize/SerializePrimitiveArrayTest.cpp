@@ -2,7 +2,7 @@
 #include "../../../include/open_json.h"
 
 
-namespace open_json_test::serialize {
+namespace open_json_test::serialize::array_of_primitive_type {
 
     class SerializePrimitiveArrayTest : public ::testing::Test {
     public:

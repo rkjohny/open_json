@@ -2,25 +2,25 @@
 #include "../../../include/open_json.h"
 
 
-namespace open_json_test::serialize {
+namespace open_json_test::serialize::vector_of_object {
 
-    class Value2 {
+    class Value {
     private:
         double score;
         std::string grade;
 
     public:
-        Value2() = default;
+        Value() = default;
 
-        Value2(double score, std::string grade) : score(score), grade(grade) {
+        Value(double score, std::string grade) : score(score), grade(grade) {
         }
 
-        Value2(Value2 &&v) {
+        Value(Value &&v) {
             this->score = std::move(v.score);
             this->grade = std::move(v.grade);
         }
 
-        Value2(const Value2 &v) {
+        Value(const Value &v) {
             this->score = v.score;
             this->grade = v.grade;
         }
@@ -41,19 +41,19 @@ namespace open_json_test::serialize {
             return grade;
         }
 
-        void operator=(const Value2 &v) {
+        void operator=(const Value &v) {
             this->score = v.score;
             this->grade = v.grade;
         }
 
-        void operator=(const Value2 &&v) {
+        void operator=(const Value &&v) {
             this->score = std::move(v.score);
             this->grade = std::move(v.grade);
         }
 
         REGISTER_GETTER_START
-        GETTER(Value2, double, "score", &Value2::GetScore),
-        GETTER(Value2, const std::string&, "grade", &Value2::GetGrade)
+        GETTER(Value, double, "score", &Value::GetScore),
+        GETTER(Value, const std::string&, "grade", &Value::GetGrade)
         REGISTER_GETTER_END
     };
 
@@ -63,32 +63,32 @@ namespace open_json_test::serialize {
 
         virtual ~SerializeObjectVectorTest() = default;
 
-        std::vector<Value2> vec;
-        std::vector<Value2*> vecPtr;
-        std::vector<Value2**> **vecPtrPtr;
+        std::vector<Value> vec;
+        std::vector<Value*> vecPtr;
+        std::vector<Value**> **vecPtrPtr;
 
         void SetUp() override {
             vec.push_back({80, "A+"});
             vec.push_back({70, "A-"});
             vec.push_back({60, "A"});
 
-            vecPtr.push_back(new Value2{80, "A+"});
-            vecPtr.push_back(new Value2{70, "A-"});
-            vecPtr.push_back(new Value2{60, "A"});
+            vecPtr.push_back(new Value{80, "A+"});
+            vecPtr.push_back(new Value{70, "A-"});
+            vecPtr.push_back(new Value{60, "A"});
 
-            vecPtrPtr = new std::vector<Value2 **> *;
-            *vecPtrPtr = new std::vector<Value2**>;
+            vecPtrPtr = new std::vector<Value **> *;
+            *vecPtrPtr = new std::vector<Value**>;
 
-            Value2 ** v = new Value2*;
-            *v = new Value2{80, "A+"};
+            Value ** v = new Value*;
+            *v = new Value{80, "A+"};
             (*vecPtrPtr)->push_back(v);
 
-            v = new Value2*;
-            *v = new Value2{70, "A-"};
+            v = new Value*;
+            *v = new Value{70, "A-"};
             (*vecPtrPtr)->push_back(v);
 
-            v = new Value2*;
-            *v = new Value2{60, "A"};
+            v = new Value*;
+            *v = new Value{60, "A"};
             (*vecPtrPtr)->push_back(v);
         }
 
@@ -107,7 +107,7 @@ namespace open_json_test::serialize {
 
     }; // class SerializeObjectVectorTest
 
-    void check(const Value2 &v, const nlohmann::json &jsonObject) {
+    void check(const Value &v, const nlohmann::json &jsonObject) {
         ASSERT_EQ(v.GetScore(), jsonObject["score"].template get<double>());
         ASSERT_EQ(0, v.GetGrade().compare(jsonObject["grade"].template get<std::string>()));
     }
