@@ -53,70 +53,144 @@ namespace open_json::deserializer {
     static FromJsonObject(const nlohmann::json &jsonObject);
 
     template<class T>
+    typename std::enable_if<Is_Enum<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject);
+
+    template<class T>
     typename std::enable_if<Is_Bool<T>::Value && !Is_Pointer<T>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject);
+
+    template<class T>
+    typename std::enable_if<Is_Bool<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject);
 
     template<class T>
     typename std::enable_if<Is_Char<T>::Value && !Is_Pointer<T>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject);
 
     template<class T>
+    typename std::enable_if<Is_Char<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject);
+
+    template<class T>
     typename std::enable_if<Is_Int8<T>::Value && !Is_Pointer<T>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject);
+
+    template<class T>
+    typename std::enable_if<Is_Int8<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject);
 
     template<class T>
     typename std::enable_if<Is_UInt8<T>::Value && !Is_Pointer<T>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject);
 
     template<class T>
+    typename std::enable_if<Is_UInt8<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject);
+
+    template<class T>
     typename std::enable_if<Is_Int16<T>::Value && !Is_Pointer<T>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject);
+
+    template<class T>
+    typename std::enable_if<Is_Int16<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject);
 
     template<class T>
     typename std::enable_if<Is_UInt16<T>::Value && !Is_Pointer<T>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject);
 
     template<class T>
+    typename std::enable_if<Is_UInt16<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject);
+
+    template<class T>
     typename std::enable_if<Is_Int32<T>::Value && !Is_Pointer<T>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject);
+
+    template<class T>
+    typename std::enable_if<Is_Int32<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject);
 
     template<class T>
     typename std::enable_if<Is_UInt32<T>::Value && !Is_Pointer<T>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject);
 
     template<class T>
+    typename std::enable_if<Is_UInt32<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject);
+
+    template<class T>
     typename std::enable_if<Is_Int64<T>::Value && !Is_Pointer<T>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject);
+
+    template<class T>
+    typename std::enable_if<Is_Int64<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject);
 
     template<class T>
     typename std::enable_if<Is_UInt64<T>::Value && !Is_Pointer<T>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject);
 
     template<class T>
+    typename std::enable_if<Is_UInt64<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject);
+
+    template<class T>
     typename std::enable_if<Is_Float<T>::Value && !Is_Pointer<T>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject);
+
+    template<class T>
+    typename std::enable_if<Is_Float<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject);
 
     template<class T>
     typename std::enable_if<Is_Double<T>::Value && !Is_Pointer<T>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject);
 
     template<class T>
+    typename std::enable_if<Is_Double<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject);
+
+    template<class T>
     typename std::enable_if<Is_LongDouble<T>::Value && !Is_Pointer<T>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject);
+
+    template<class T>
+    typename std::enable_if<Is_LongDouble<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject);
 
     template<class T>
     typename std::enable_if<Is_String<T>::Value && !Is_Pointer<T>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject);
 
     template<class T>
+    typename std::enable_if<Is_String<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject);
+
+    template<class T>
     typename std::enable_if<Is_Class<T>::Value && !Is_Pointer<T>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject);
+
+    template<class T>
+    typename std::enable_if<Is_Class<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject);
 
     template<class T>
     typename std::enable_if<Is_Vector<T>::Value && !Is_Pointer<T>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject);
 
+    template<class T>
+    typename std::enable_if<Is_Vector<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject);
 
+    template<class T>
+    typename std::enable_if<Is_Pointer<T>::Value && Is_Pointer<typename Remove_CVRP<T>::Type>::Value, T>::type
+    static FromJsonObject(const nlohmann::json &jsonObject);
+
+    template<class T>
+    typename std::enable_if<Is_Pointer<T>::Value && !Is_Pointer<typename Remove_CVRP<T>::Type>::Value, T>::type
+    static FromJsonObject(const nlohmann::json &jsonObject);
 
     /**
      * calls the setter method with rvalue type argument
@@ -251,6 +325,12 @@ namespace open_json::deserializer {
         return static_cast<T>(jsonObject.template get<int32_t>());
     }
 
+    template<class T>
+    typename std::enable_if<Is_Enum<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject) {
+        object = static_cast<T>(jsonObject.template get<int32_t>());
+    }
+
     /*********************************************************************************
      * object type: bool
      *********************************************************************************/
@@ -258,6 +338,12 @@ namespace open_json::deserializer {
     typename std::enable_if<Is_Bool<T>::Value && !Is_Pointer<T>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject) {
         return static_cast<bool>(jsonObject.template get<bool>());
+    }
+
+    template<class T>
+    typename std::enable_if<Is_Bool<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject) {
+        object = static_cast<bool>(jsonObject.template get<bool>());
     }
 
     /*********************************************************************************
@@ -269,6 +355,12 @@ namespace open_json::deserializer {
         return static_cast<char>(jsonObject.template get<char>());
     }
 
+    template<class T>
+    typename std::enable_if<Is_Char<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject) {
+        object = static_cast<char>(jsonObject.template get<char>());
+    }
+
     /***********************************************************************************
      * object type: int8_t
      ***********************************************************************************/
@@ -276,6 +368,12 @@ namespace open_json::deserializer {
     typename std::enable_if<Is_Int8<T>::Value && !Is_Pointer<T>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject) {
         return static_cast<int32_t>(jsonObject.template get<int8_t>());
+    }
+
+    template<class T>
+    typename std::enable_if<Is_Int8<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject) {
+        object = static_cast<int32_t>(jsonObject.template get<int8_t>());
     }
 
     /***********************************************************************************
@@ -287,6 +385,12 @@ namespace open_json::deserializer {
         return static_cast<int32_t>(jsonObject.template get<uint8_t>());
     }
 
+    template<class T>
+    typename std::enable_if<Is_UInt8<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject) {
+        object = static_cast<int32_t>(jsonObject.template get<uint8_t>());
+    }
+
     /***********************************************************************************
      * object type: int16_t
      ***********************************************************************************/
@@ -294,6 +398,12 @@ namespace open_json::deserializer {
     typename std::enable_if<Is_Int16<T>::Value && !Is_Pointer<T>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject) {
         return static_cast<int32_t>(jsonObject.template get<int16_t>());
+    }
+
+    template<class T>
+    typename std::enable_if<Is_Int16<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject) {
+        object = static_cast<int32_t>(jsonObject.template get<int16_t>());
     }
 
     /***********************************************************************************
@@ -305,6 +415,12 @@ namespace open_json::deserializer {
         return static_cast<int32_t>(jsonObject.template get<uint16_t>());
     }
 
+    template<class T>
+    typename std::enable_if<Is_UInt16<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject) {
+        object = static_cast<int32_t>(jsonObject.template get<uint16_t>());
+    }
+
     /***********************************************************************************
      * object type: int32_t
      ***********************************************************************************/
@@ -312,6 +428,12 @@ namespace open_json::deserializer {
     typename std::enable_if<Is_Int32<T>::Value && !Is_Pointer<T>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject) {
         return static_cast<int32_t>(jsonObject.template get<int32_t>());
+    }
+
+    template<class T>
+    typename std::enable_if<Is_Int32<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject) {
+        object = static_cast<int32_t>(jsonObject.template get<int32_t>());
     }
 
     /***********************************************************************************
@@ -323,6 +445,12 @@ namespace open_json::deserializer {
         return static_cast<uint32_t>(jsonObject.template get<uint32_t>());
     }
 
+    template<class T>
+    typename std::enable_if<Is_UInt32<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject) {
+        object = static_cast<uint32_t>(jsonObject.template get<uint32_t>());
+    }
+
     /***********************************************************************************
      * object type: int64_t
      ***********************************************************************************/
@@ -330,6 +458,12 @@ namespace open_json::deserializer {
     typename std::enable_if<Is_Int64<T>::Value && !Is_Pointer<T>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject) {
         return static_cast<int64_t>(jsonObject.template get<int64_t>());
+    }
+
+    template<class T>
+    typename std::enable_if<Is_Int64<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject) {
+        object = static_cast<int64_t>(jsonObject.template get<int64_t>());
     }
 
     /***********************************************************************************
@@ -341,6 +475,12 @@ namespace open_json::deserializer {
         return static_cast<uint64_t>(jsonObject.template get<uint64_t>());
     }
 
+    template<class T>
+    typename std::enable_if<Is_UInt64<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject) {
+        object = static_cast<uint64_t>(jsonObject.template get<uint64_t>());
+    }
+
     /***********************************************************************************
      * object type: float
      ***********************************************************************************/
@@ -348,6 +488,12 @@ namespace open_json::deserializer {
     typename std::enable_if<Is_Float<T>::Value && !Is_Pointer<T>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject) {
         return static_cast<double_t>(jsonObject.template get<float_t>());
+    }
+
+    template<class T>
+    typename std::enable_if<Is_Float<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject) {
+        object = static_cast<double_t>(jsonObject.template get<float_t>());
     }
 
     /***********************************************************************************
@@ -359,6 +505,12 @@ namespace open_json::deserializer {
         return static_cast<double_t>(jsonObject.template get<double_t>());
     }
 
+    template<class T>
+    typename std::enable_if<Is_Double<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject) {
+        object = static_cast<double_t>(jsonObject.template get<double_t>());
+    }
+
     /***********************************************************************************
      * object type: long double
      ***********************************************************************************/
@@ -368,6 +520,12 @@ namespace open_json::deserializer {
         return static_cast<double_t>(jsonObject.template get<long double>());
     }
 
+    template<class T>
+    typename std::enable_if<Is_LongDouble<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject) {
+        object = static_cast<double_t>(jsonObject.template get<long double>());
+    }
+
     /***********************************************************************************
      * object type: std::string
      ***********************************************************************************/
@@ -375,6 +533,12 @@ namespace open_json::deserializer {
     typename std::enable_if<Is_String<T>::Value && !Is_Pointer<T>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject) {
         return jsonObject.template get<std::string>();
+    }
+
+    template<class T>
+    typename std::enable_if<Is_String<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject) {
+        object = jsonObject.template get<std::string>();
     }
 
 
@@ -395,6 +559,17 @@ namespace open_json::deserializer {
         return object;
     }
 
+    template<class T>
+    typename std::enable_if<Is_Class<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject) {
+        using Type = typename Remove_CVR<T>::Type;
+        auto setters = Type::setters;
+        const auto length = std::tuple_size<decltype(setters)>::value;
+        if (length > 0) {
+            Deserialize<length>(object, jsonObject);
+        }
+    }
+
     /***********************************************************************************
      * object type: std::vector<T>
      ***********************************************************************************/
@@ -410,6 +585,40 @@ namespace open_json::deserializer {
             vec.push_back(FromJsonObject<ValueType>(arrItem));
         }
         return vec;
+    }
+
+    template<class T>
+    typename std::enable_if<Is_Vector<T>::Value && !Is_Pointer<T>::Value, void>::type
+    static FromJsonObject(T &object, const nlohmann::json &jsonObject) {
+        using Type = typename Remove_CVR<T>::Type;
+        typedef typename Type::value_type ValueType;
+
+        for (const auto &arrItem: jsonObject) {
+            object.push_back(FromJsonObject<ValueType>(arrItem));
+        }
+    }
+
+    /***********************************************************************************
+     * object type: Pointer
+     ***********************************************************************************/
+    template<class T>
+    typename std::enable_if<Is_Pointer<T>::Value && Is_Pointer<typename Remove_CVRP<T>::Type>::Value, T>::type
+    static FromJsonObject(const nlohmann::json &jsonObject) {
+        using Pointer = typename Remove_CVR<T>::Type;
+        using Type = typename Remove_CVRP<Pointer>::Type;
+        Pointer p = new Type();
+        *p = FromJsonObject<Type>(jsonObject);
+        return p;
+    }
+
+    template<class T>
+    typename std::enable_if<Is_Pointer<T>::Value && !Is_Pointer<typename Remove_CVRP<T>::Type>::Value, T>::type
+    static FromJsonObject(const nlohmann::json &jsonObject) {
+        using Pointer = typename Remove_CVR<T>::Type;
+        using Type = typename Remove_CVRP<Pointer>::Type;
+        Pointer p = new Type();
+        FromJsonObject(*p, jsonObject);
+        return p;
     }
 }
 
