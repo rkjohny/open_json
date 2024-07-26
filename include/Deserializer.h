@@ -10,7 +10,18 @@
 namespace open_json::deserializer {
 
     template<class T, class B, class ArgT>
+    static void SetData(T &object, void (B::*SetterPtr)(ArgT &&), const nlohmann::json &jsonObject);
+
+//    template<class T, class B, class ArgT>
+//    static void SetData(T &object, void (B::*SetterPtr)(ArgT &), const nlohmann::json &jsonObject);
+
+    template<class T, class B, class ArgT>
     static void SetData(T &object, void (B::*SetterPtr)(ArgT), const nlohmann::json &jsonObject);
+
+//    template<class T, class B, class ArgT>
+//    static void SetData(T &object, void (B::*SetterPtr)(const ArgT &), const nlohmann::json &jsonObject);
+
+
 
     template<size_t iteration, class T>
     static void DoDeserialize(T *object, const nlohmann::json &jsonObject);
@@ -26,6 +37,8 @@ namespace open_json::deserializer {
     template<size_t iteration, class T>
     typename std::enable_if<(iteration == 0), void>::type
     static Deserialize(T &, const nlohmann::json &);
+
+
 
     template<class T>
     typename std::enable_if<std::is_reference<T>::value || std::is_const<T>::value || Is_Array<T>::Value, T>::type
@@ -46,10 +59,6 @@ namespace open_json::deserializer {
     template<class T>
     typename std::enable_if<Is_Char<T>::Value && !Is_Pointer<T>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject);
-
-//    template<class T>
-//    typename std::enable_if<Is_UChar<T>::Value && !Is_Pointer<T>::Value, T>::type
-//    static FromJsonObject(const nlohmann::json &jsonObject);
 
     template<class T>
     typename std::enable_if<Is_Int8<T>::Value && !Is_Pointer<T>::Value, T>::type
@@ -104,20 +113,56 @@ namespace open_json::deserializer {
     static FromJsonObject(const nlohmann::json &jsonObject);
 
     template<class T>
-    typename std::enable_if<Is_Pointer<T>::Value, T>::type
+    typename std::enable_if<Is_Vector<T>::Value && !Is_Pointer<T>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject);
 
+
+
+    /**
+     * calls the setter method with rvalue type argument
+     */
+    template<class T, class B, class ArgT>
+    static void SetData(T &object, void (B::*SetterPtr)(ArgT &&), const nlohmann::json &jsonObject) {
+        using Type = typename Remove_CVR<ArgT>::Type;
+
+        Type var = FromJsonObject<Type>(jsonObject);
+        (object.*SetterPtr)(std::move(var));
+    }
 
     /**
      * calls the setter method with value type argument
      */
-    template<class B, class D, class ArgT>
-    static void SetData(B &object, void (D::*SetterPtr)(ArgT), const nlohmann::json &jsonObject) {
+//    template<class T, class B, class ArgT>
+//    static void SetData(T &object, void (B::*SetterPtr)(ArgT &), const nlohmann::json &jsonObject) {
+//        using Type = typename Remove_CVR<ArgT>::Type;
+//
+//        Type var = FromJsonObject<Type>(jsonObject);
+//        (object.*SetterPtr)(var);
+//    }
+
+    /**
+     * calls the setter method with value type argument
+     */
+    template<class T, class B, class ArgT>
+    static void SetData(T &object, void (B::*SetterPtr)(ArgT), const nlohmann::json &jsonObject) {
         using Type = typename Remove_CVR<ArgT>::Type;
 
         Type var = FromJsonObject<Type>(jsonObject);
         (object.*SetterPtr)(var);
     }
+
+
+    /**
+    * calls the setter method with value type argument
+    */
+//    template<class T, class B, class ArgT>
+//    static void SetData(T &object, void (B::*SetterPtr)(const ArgT &), const nlohmann::json &jsonObject) {
+//        using Type = typename Remove_CVR<ArgT>::Type;
+//
+//        Type var = FromJsonObject<Type>(jsonObject);
+//        (object.*SetterPtr)(var);
+//    }
+
 
     /**
      * get the setter at tuple position referenced by iteration.
@@ -125,32 +170,23 @@ namespace open_json::deserializer {
      */
     template<size_t iteration, class T>
     static void DoDeserialize(T &object, const nlohmann::json &jsonObject) {
-        using BaseObjectType = typename Remove_CVR<T>::Type;
-        auto setters = BaseObjectType::setters;
+        using DerivedType = typename Remove_CVR<T>::Type;
+        auto setters = DerivedType::setters;
         auto setter = std::get<iteration>(setters);
 
-        using DerivedObjectType = typename Remove_CVR<typename decltype(setter)::Class>::Type;
-
-        using ArgT = typename decltype( setter )::ArgType;
+        using BaseType = typename Remove_CVR<typename decltype(setter)::Class>::Type;
+        //using ArgT = typename decltype( setter )::ArgType;
 
         auto name = setter.name;
         auto fp = setter.fp;
-
-        bool found = false;
 
         if (jsonObject.template contains<nlohmann::json>(name)) {
             const auto &jsonValue = jsonObject.template at<nlohmann::json>(name);
 
             if (!jsonValue.is_null()) {
-                found = true;
                 // BaseObjectType and DerivedObjectType can be same type
-
-                SetData<BaseObjectType, DerivedObjectType, ArgT>(object, fp, jsonValue);
+                SetData<DerivedType, BaseType>(object, fp, jsonValue);
             }
-        }
-
-        if (!found) {
-            //value is null and will be ignored.
         }
     }
 
@@ -183,21 +219,24 @@ namespace open_json::deserializer {
     static Deserialize(T &, const nlohmann::json &) {
     }
 
-
     /**
-     * object is constant reference, return error
+     * object is pointer, constant or reference, return error
      */
     template<class T>
-    typename std::enable_if<std::is_reference<T>::value || std::is_const<T>::value || Is_Array<T>::Value, T>::type
+    typename std::enable_if<
+            std::is_pointer<T>::value || std::is_lvalue_reference<T>::value || std::is_reference<T>::value ||
+            std::is_const<T>::value || Is_Array<T>::Value, T>::type
     FromJsonObject(nlohmann::json &) {
         static_assert(true, "constant or reference object cannot be constructed");
     }
 
     /**
-     * object is constant reference, return error
+     * object is pointer, constant or reference, return error
      */
     template<class T, size_t length>
-    typename std::enable_if<std::is_reference<T>::value || std::is_const<T>::value || Is_Array<T>::Value, T>::type
+    typename std::enable_if<
+            std::is_pointer<T>::value || std::is_lvalue_reference<T>::value || std::is_reference<T>::value ||
+            std::is_const<T>::value || Is_Array<T>::Value, T>::type
     FromJsonObject(nlohmann::json &) {
         static_assert(true, "constant or reference object cannot be constructed");
     }
@@ -229,15 +268,6 @@ namespace open_json::deserializer {
     static FromJsonObject(const nlohmann::json &jsonObject) {
         return static_cast<char>(jsonObject.template get<char>());
     }
-
-    /*********************************************************************************
-     * object type: unsigned char
-     *********************************************************************************/
-//    template<class T>
-//    typename std::enable_if<Is_UChar<T>::Value && !Is_Pointer<T>::Value, T>::type
-//    static FromJsonObject(const nlohmann::json &jsonObject) {
-//        return static_cast<unsigned char>(jsonObject.template get<unsigned char>());
-//    }
 
     /***********************************************************************************
      * object type: int8_t
@@ -349,7 +379,7 @@ namespace open_json::deserializer {
 
 
     /***********************************************************************************
-     * object type: custom class*
+     * object type: custom class
      ***********************************************************************************/
     template<class T>
     typename std::enable_if<Is_Class<T>::Value && !Is_Pointer<T>::Value, T>::type
@@ -365,20 +395,22 @@ namespace open_json::deserializer {
         return object;
     }
 
-
     /***********************************************************************************
-     * object type: pointer
+     * object type: std::vector<T>
      ***********************************************************************************/
     template<class T>
-    typename std::enable_if<Is_Pointer<T>::Value, T>::type
+    typename std::enable_if<Is_Vector<T>::Value && !Is_Pointer<T>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject) {
-        using Pointer = typename Remove_CVR<T>::Type;
-        using Type = typename Remove_CVRP<Pointer>::Type;
-        Pointer tp = new Type();
-        *tp = FromJsonObject<Type>(jsonObject);
-        return tp;
+        using Type = typename Remove_CVR<T>::Type;
+        typedef typename Type::value_type ValueType;
+
+        Type vec = Type();
+
+        for (const auto &arrItem: jsonObject) {
+            vec.push_back(FromJsonObject<ValueType>(arrItem));
+        }
+        return vec;
     }
 }
-
 
 #endif //OPEN_JSON_DESERIALIZER_H
