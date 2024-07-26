@@ -14,7 +14,7 @@ namespace open_json_test::deserialize::primitive_pointer {
         std::vector<std::string*> *members;
         std::vector<std::string**> **subjects;
         std::vector<int***> ***points;
-
+        std::vector<std::string ***> ***cities;
 
     public:
         PrimitivePointerTest() {
@@ -56,6 +56,12 @@ namespace open_json_test::deserialize::primitive_pointer {
             delete **points;
             delete *points;
             delete points;
+
+            for (auto p : ***cities) {
+                delete **p;
+                delete *p;
+                delete p;
+            }
         }
 
         long* GetId() const {
@@ -122,6 +128,14 @@ namespace open_json_test::deserialize::primitive_pointer {
             points = p;
         }
 
+        std::vector<std::string ***> ***GetCities() const {
+            return cities;
+        }
+
+        void SetCities(std::vector<std::string ***> ***c) {
+            cities = c;
+        }
+
         REGISTER_GETTER_START
         GETTER(PrimitivePointerTest, long*, "id", &PrimitivePointerTest::GetId),
         GETTER(PrimitivePointerTest, std::string*, "name", &PrimitivePointerTest::GetName),
@@ -130,7 +144,8 @@ namespace open_json_test::deserialize::primitive_pointer {
         GETTER(PrimitivePointerTest, std::vector<int*>*, "codes", &PrimitivePointerTest::GetCodes),
         GETTER(PrimitivePointerTest, std::vector<std::string*>*, "members", &PrimitivePointerTest::GetMembers),
         GETTER(PrimitivePointerTest, std::vector<std::string**>**, "subjects", &PrimitivePointerTest::GetSubjects),
-        GETTER(PrimitivePointerTest, std::vector<int***>***, "points", &PrimitivePointerTest::GetPoints)
+        GETTER(PrimitivePointerTest, std::vector<int***>***, "points", &PrimitivePointerTest::GetPoints),
+        GETTER(PrimitivePointerTest, std::vector<std::string***>***, "cities", &PrimitivePointerTest::GetCities)
         REGISTER_GETTER_END
 
         REGISTER_SETTER_START
@@ -141,7 +156,8 @@ namespace open_json_test::deserialize::primitive_pointer {
         SETTER(PrimitivePointerTest, std::vector<int*>*, "codes", &PrimitivePointerTest::SetCodes),
         SETTER(PrimitivePointerTest, std::vector<std::string*>*, "members", &PrimitivePointerTest::SetMembers),
         SETTER(PrimitivePointerTest, std::vector<std::string**>**, "subjects", &PrimitivePointerTest::SetSubjects),
-        SETTER(PrimitivePointerTest, std::vector<int***>***, "points", &PrimitivePointerTest::SetPoints)
+        SETTER(PrimitivePointerTest, std::vector<int***>***, "points", &PrimitivePointerTest::SetPoints),
+        SETTER(PrimitivePointerTest, std::vector<std::string***>***, "cities", &PrimitivePointerTest::SetCities)
         REGISTER_SETTER_END
     };
 
@@ -176,6 +192,11 @@ namespace open_json_test::deserialize::primitive_pointer {
             new int**(new int*(new int(3)))
         })));
 
+        p->SetCities(new std::vector<std::string***>**(new std::vector<std::string***>*(new std::vector<std::string***>{
+                new std::string**(new std::string*(new std::string("New York"))),
+                new std::string**(new std::string*(new std::string("Paris"))),
+                new std::string**(new std::string*(new std::string("London")))
+        })));
 
         nlohmann::json jsonObject = open_json::ToJson(p);
         ASSERT_EQ(*p->GetId(), jsonObject["id"].template get<long>());
@@ -205,6 +226,11 @@ namespace open_json_test::deserialize::primitive_pointer {
         ASSERT_TRUE(jsonObject["points"][0] == 1);
         ASSERT_TRUE(jsonObject["points"][1] == 2);
         ASSERT_TRUE(jsonObject["points"][2] == 3);
+
+        ASSERT_TRUE(jsonObject["cities"].is_array());
+        ASSERT_TRUE(jsonObject["cities"][0].template get<std::string>().compare("New York") == 0);
+        ASSERT_TRUE(jsonObject["cities"][1].template get<std::string>().compare("Paris") == 0);
+        ASSERT_TRUE(jsonObject["cities"][2].template get<std::string>().compare("London") == 0);
         delete p;
     }
 
@@ -236,6 +262,11 @@ namespace open_json_test::deserialize::primitive_pointer {
         jsonObject["points"][1] = 2;
         jsonObject["points"][2] = 3;
 
+        jsonObject["cities"] = nlohmann::json::array();
+        jsonObject["cities"][0] = "New York";
+        jsonObject["cities"][1] = "Paris";
+        jsonObject["cities"][2] = "London";
+
         PrimitivePointerTest a = open_json::FromJson<PrimitivePointerTest>(jsonObject);
         ASSERT_EQ(jsonObject.at("id").template get<long>(), *a.GetId());
         ASSERT_EQ(0, jsonObject.at("name").template get<std::string>().compare(*a.GetName()));
@@ -262,6 +293,11 @@ namespace open_json_test::deserialize::primitive_pointer {
         ASSERT_TRUE(***(***a.GetPoints())[1] == 2);
         ASSERT_TRUE(***(***a.GetPoints())[2] == 3);
 
+        ASSERT_TRUE((***a.GetCities()).size() == 3);
+        ASSERT_TRUE((***(***a.GetCities())[0]).compare("New York") == 0);
+        ASSERT_TRUE((***(***a.GetCities())[1]).compare("Paris") == 0);
+        ASSERT_TRUE((***(***a.GetCities())[2]).compare("London") == 0);
+
         PrimitivePointerTest *p = open_json::FromJson<PrimitivePointerTest*>(jsonObject);
         ASSERT_EQ(jsonObject.at("id").template get<long>(), *p->GetId());
         ASSERT_EQ(0, jsonObject.at("name").template get<std::string>().compare(*p->GetName()));
@@ -287,6 +323,11 @@ namespace open_json_test::deserialize::primitive_pointer {
         ASSERT_TRUE(***(***p->GetPoints())[0] == 1);
         ASSERT_TRUE(***(***p->GetPoints())[1] == 2);
         ASSERT_TRUE(***(***p->GetPoints())[2] == 3);
+
+        ASSERT_TRUE((***p->GetCities()).size() == 3);
+        ASSERT_TRUE((***(***p->GetCities())[0]).compare("New York") == 0);
+        ASSERT_TRUE((***(***p->GetCities())[1]).compare("Paris") == 0);
+        ASSERT_TRUE((***(***p->GetCities())[2]).compare("London") == 0);
         delete p;
 
         PrimitivePointerTest **pp = open_json::FromJson<PrimitivePointerTest**>(jsonObject);
@@ -314,6 +355,11 @@ namespace open_json_test::deserialize::primitive_pointer {
         ASSERT_TRUE(***(***(*pp)->GetPoints())[0] == 1);
         ASSERT_TRUE(***(***(*pp)->GetPoints())[1] == 2);
         ASSERT_TRUE(***(***(*pp)->GetPoints())[2] == 3);
+
+        ASSERT_TRUE((***(*pp)->GetCities()).size() == 3);
+        ASSERT_TRUE((***(***(*pp)->GetCities())[0]).compare("New York") == 0);
+        ASSERT_TRUE((***(***(*pp)->GetCities())[1]).compare("Paris") == 0);
+        ASSERT_TRUE((***(***(*pp)->GetCities())[2]).compare("London") == 0);
         delete *pp;
         delete pp;
 
@@ -337,6 +383,11 @@ namespace open_json_test::deserialize::primitive_pointer {
         ASSERT_TRUE(***(***(**ppp)->GetPoints())[0] == 1);
         ASSERT_TRUE(***(***(**ppp)->GetPoints())[1] == 2);
         ASSERT_TRUE(***(***(**ppp)->GetPoints())[2] == 3);
+
+        ASSERT_TRUE((***(**ppp)->GetCities()).size() == 3);
+        ASSERT_TRUE((***(***(**ppp)->GetCities())[0]).compare("New York") == 0);
+        ASSERT_TRUE((***(***(**ppp)->GetCities())[1]).compare("Paris") == 0);
+        ASSERT_TRUE((***(***(**ppp)->GetCities())[2]).compare("London") == 0);
         delete **ppp;
         delete *ppp;
         delete ppp;
