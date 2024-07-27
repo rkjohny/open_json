@@ -10,16 +10,24 @@
 namespace open_json::deserializer {
 
     template<class T, class B, class ArgT>
+    //typename std::enable_if<std::is_rvalue_reference<T>::value, void>::type
     static void SetData(T &object, void (B::*SetterPtr)(ArgT &&), const nlohmann::json &jsonObject);
 
-//    template<class T, class B, class ArgT>
-//    static void SetData(T &object, void (B::*SetterPtr)(ArgT &), const nlohmann::json &jsonObject);
+    template<class T, class B, class ArgT>
+    typename std::enable_if<!Is_Const<ArgT>::Value && !Is_Pointer<ArgT>::Value, void>::type
+    static SetData(T &object, void (B::*SetterPtr)(ArgT), const nlohmann::json &jsonObject);
 
     template<class T, class B, class ArgT>
-    static void SetData(T &object, void (B::*SetterPtr)(ArgT), const nlohmann::json &jsonObject);
+    typename std::enable_if<!Is_Const<ArgT>::Value && Is_Pointer<ArgT>::Value, void>::type
+    static SetData(T &object, void (B::*SetterPtr)(ArgT), const nlohmann::json &jsonObject);
 
-//    template<class T, class B, class ArgT>
-//    static void SetData(T &object, void (B::*SetterPtr)(const ArgT &), const nlohmann::json &jsonObject);
+    template<class T, class B, class ArgT>
+    typename std::enable_if<Is_Const<ArgT>::Value && !Is_Pointer<ArgT>::Value, void>::type
+    static SetData(T &object, void (B::*SetterPtr)(ArgT), const nlohmann::json &jsonObject);
+
+    template<class T, class B, class ArgT>
+    typename std::enable_if<Is_Const<ArgT>::Value && Is_Pointer<ArgT>::Value, void>::type
+    static SetData(T &object, void (B::*SetterPtr)(ArgT), const nlohmann::json &jsonObject);
 
 
 
@@ -192,10 +200,11 @@ namespace open_json::deserializer {
     typename std::enable_if<Is_Pointer<T>::Value && !Is_Pointer<typename Remove_CVRP<T>::Type>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject);
 
-    /**
-     * calls the setter method with rvalue type argument
-     */
+
+
+
     template<class T, class B, class ArgT>
+    //typename std::enable_if<std::is_rvalue_reference<T>::value, void>::type
     static void SetData(T &object, void (B::*SetterPtr)(ArgT &&), const nlohmann::json &jsonObject) {
         using Type = typename Remove_CVR<ArgT>::Type;
 
@@ -203,39 +212,41 @@ namespace open_json::deserializer {
         (object.*SetterPtr)(std::move(var));
     }
 
-    /**
-     * calls the setter method with value type argument
-     */
-//    template<class T, class B, class ArgT>
-//    static void SetData(T &object, void (B::*SetterPtr)(ArgT &), const nlohmann::json &jsonObject) {
-//        using Type = typename Remove_CVR<ArgT>::Type;
-//
-//        Type var = FromJsonObject<Type>(jsonObject);
-//        (object.*SetterPtr)(var);
-//    }
-
-    /**
-     * calls the setter method with value type argument
-     */
     template<class T, class B, class ArgT>
-    static void SetData(T &object, void (B::*SetterPtr)(ArgT), const nlohmann::json &jsonObject) {
+    typename std::enable_if<!Is_Const<ArgT>::Value && !Is_Pointer<ArgT>::Value, void>::type
+    static SetData(T &object, void (B::*SetterPtr)(ArgT), const nlohmann::json &jsonObject) {
         using Type = typename Remove_CVR<ArgT>::Type;
 
         Type var = FromJsonObject<Type>(jsonObject);
         (object.*SetterPtr)(var);
     }
 
+    template<class T, class B, class ArgT>
+    typename std::enable_if<!Is_Const<ArgT>::Value && Is_Pointer<ArgT>::Value, void>::type
+    static SetData(T &object, void (B::*SetterPtr)(ArgT), const nlohmann::json &jsonObject) {
+        using Type = typename Remove_CVR<ArgT>::Type;
 
-    /**
-    * calls the setter method with value type argument
-    */
-//    template<class T, class B, class ArgT>
-//    static void SetData(T &object, void (B::*SetterPtr)(const ArgT &), const nlohmann::json &jsonObject) {
-//        using Type = typename Remove_CVR<ArgT>::Type;
-//
-//        Type var = FromJsonObject<Type>(jsonObject);
-//        (object.*SetterPtr)(var);
-//    }
+        Type var = FromJsonObject<Type>(jsonObject);
+        (object.*SetterPtr)(var);
+    }
+
+    template<class T, class B, class ArgT>
+    typename std::enable_if<Is_Const<ArgT>::Value && !Is_Pointer<ArgT>::Value, void>::type
+    static SetData(T &object, void (B::*SetterPtr)(ArgT), const nlohmann::json &jsonObject) {
+        using Type = typename Remove_CVR<ArgT>::Type;
+
+        Type var = FromJsonObject<Type>(jsonObject);
+        (object.*SetterPtr)(var);
+    }
+
+    template<class T, class B, class ArgT>
+    typename std::enable_if<Is_Const<ArgT>::Value && Is_Pointer<ArgT>::Value, void>::type
+    static SetData(T &object, void (B::*SetterPtr)(ArgT), const nlohmann::json &jsonObject) {
+        using Type = typename Remove_CVR<ArgT>::Type;
+
+        Type var = FromJsonObject<Type>(jsonObject);
+        (object.*SetterPtr)(const_cast<ArgT>(var));
+    }
 
 
     /**

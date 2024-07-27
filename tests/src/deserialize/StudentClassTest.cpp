@@ -6,7 +6,7 @@
 #include "../../../include/open_json.h"
 
 
-namespace open_json_test::deserialize::student {
+namespace open_json_test::deserialize::student::no_constant {
 
     class Student {
     private:
@@ -25,11 +25,11 @@ namespace open_json_test::deserialize::student {
 
         virtual ~Student() = default;
 
-        const std::string &GetName() const {
+        std::string GetName() const {
             return m_name;
         }
 
-        void SetName(const std::string &name) {
+        void SetName(std::string name) {
             this->m_name = name;
         }
 
@@ -37,29 +37,29 @@ namespace open_json_test::deserialize::student {
             return m_id;
         }
 
-        void SetId(const long &id) {
+        void SetId(long id) {
             this->m_id = id;
         }
 
-        const std::vector<std::string> &GetSubjects() const {
+        std::vector<std::string> GetSubjects() const {
             return m_subjects;
         }
 
-        void SetSubjects(const std::vector<std::string> &subjects) {
+        void SetSubjects(std::vector<std::string> subjects) {
             m_subjects = subjects;
         }
 
         REGISTER_GETTER_START
-        GETTER(Student, const std::string &, "name", &Student::GetName),
+        GETTER(Student, std::string, "name", &Student::GetName),
         GETTER(Student, long, "id", &Student::GetId),
-        GETTER(Student, const std::vector<std::string>&, "subjects", &Student::GetSubjects)
+        GETTER(Student, std::vector<std::string>, "subjects", &Student::GetSubjects)
         REGISTER_GETTER_END
 
 
         REGISTER_SETTER_START
-        SETTER(Student, const std::string &, "name", &Student::SetName),
-        SETTER(Student, const long&, "id", &Student::SetId),
-        SETTER(Student, const std::vector<std::string>&, "subjects", &Student::SetSubjects)
+        SETTER(Student, std::string, "name", &Student::SetName),
+        SETTER(Student, long, "id", &Student::SetId),
+        SETTER(Student, std::vector<std::string>, "subjects", &Student::SetSubjects)
         REGISTER_SETTER_END
     };
 
@@ -84,11 +84,13 @@ namespace open_json_test::deserialize::student {
         ASSERT_TRUE(jsonObject.is_object());
         ASSERT_EQ(0, student.GetName().compare(jsonObject.at("name").template get<std::string>()));
         ASSERT_EQ(student.GetId(), jsonObject.at("id").template get<long>());
+
         ASSERT_TRUE(jsonObject.at("subjects").is_array());
-        auto itr = student.GetSubjects().begin();
+        auto v = student.GetSubjects();
+        auto itr2 = v.begin();
         for (auto &arrItem: jsonObject.at("subjects")) {
-            ASSERT_EQ(0, itr->compare(arrItem.template get<std::string>()));
-            ++itr;
+            ASSERT_EQ(0, itr2->compare(arrItem.template get<std::string>()));
+            ++itr2;
         }
     }
     TEST_F(DeserializeStudentTest, DeserializeStudentClassTest) {
@@ -105,10 +107,6 @@ namespace open_json_test::deserialize::student {
         ASSERT_EQ(200, student.GetId());
         ASSERT_EQ(0, std::string("David Jonson").compare(student.GetName()));
         ASSERT_TRUE(student.GetSubjects().size() == 3);
-
-//        std::cout << student.GetSubjects()[0] << std::endl;
-//        std::cout << student.GetSubjects()[1] << std::endl;
-//        std::cout << student.GetSubjects()[2] << std::endl;
 
         ASSERT_EQ(0, std::string("Physics").compare(student.GetSubjects()[0]));
         ASSERT_EQ(0, std::string("Chemistry").compare(student.GetSubjects()[1]));

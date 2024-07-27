@@ -11,17 +11,66 @@
 
 namespace open_json {
 
-
-    template<class T>
+    // base class to remove const, volatile and reference qualifiers at all levels
+    template <typename T>
     struct Remove_CVR {
-        typedef typename std::remove_const<typename std::remove_volatile<typename std::remove_cv<typename std::remove_reference<T>::type>::type>::type>::type Type;
+        using Type = std::remove_cv_t<std::remove_reference_t<T>>;
     };
 
-    template<class T>
+    template <typename T>
+    struct Remove_CVR<T*> {
+        using Type = typename Remove_CVR<std::remove_cv_t<std::remove_reference_t<T>>>::Type*;
+    };
+
+    // Helper alias template
+    template <typename T>
+    using Remove_CVR_T = typename Remove_CVR<T>::Type;
+
+    // base class to remove const, volatile and reference at all levels, and removes top level pointer qualifiers
+    template <typename T>
     struct Remove_CVRP {
-        typedef typename std::remove_const<typename std::remove_volatile<typename std::remove_cv<typename std::remove_pointer<typename std::remove_reference<T>::type>::type>::type>::type>::type Type;
+        using Type = std::remove_pointer_t<Remove_CVR_T<T>>;
+    };
+    
+    // Helper alias template
+    template <typename T>
+    using Remove_CVRP_T = typename Remove_CVRP<T>::Type;
+
+
+    // Base class to remove volatile, references, and pointers at all levels
+    template <typename T>
+    struct Remove_VRP {
+        using Type = std::remove_volatile_t<std::remove_reference_t<T>>;
     };
 
+    // Specialization to handle pointers
+    template <typename T>
+    struct Remove_VRP<T*> {
+        using Type = typename Remove_VRP<std::remove_volatile_t<std::remove_reference_t<T>>>::Type;
+    };
+
+    // Specialization to handle pointers to volatile
+    template <typename T>
+    struct Remove_VRP<volatile T*> {
+        using Type = typename Remove_VRP<T>::Type;
+    };
+
+    // Helper alias template
+    template <typename T>
+    using Remove_VRP_T = typename Remove_VRP<T>::Type;
+
+    
+
+    /**
+     * Type check for const
+     */
+    template<class T>
+    struct Is_Const {
+    private:
+        typedef typename Remove_VRP<T>::Type U;
+    public:
+        static constexpr bool Value = std::is_const<U>::value;
+    };
 
     /**
      * Type check for pointer
