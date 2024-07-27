@@ -213,7 +213,6 @@ namespace open_json::deserializer {
         (object.*SetterPtr)(var);
     }
 
-
     template<class T, class B, class ArgT>
     typename std::enable_if<Is_Const<ArgT>::Value && Is_Pointer<ArgT>::Value, void>::type
     static SetData(T &object, void (B::*SetterPtr)(ArgT), const nlohmann::json &jsonObject) {
