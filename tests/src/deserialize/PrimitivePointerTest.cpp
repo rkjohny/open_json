@@ -2,7 +2,7 @@
 #include <string>
 #include "../../../include/open_json.h"
 
-namespace open_json_test::deserialize::primitive_pointer {
+namespace open_json_test::deserialize::primitive_pointer::non_constant {
 
     class PrimitivePointerTest {
     private:

@@ -40,13 +40,13 @@ namespace open_json::deserializer {
     static Deserialize(T &, const nlohmann::json &);
 
 
-    template<class T>
-    typename std::enable_if<std::is_reference<T>::value || std::is_const<T>::value || Is_Array<T>::Value, T>::type
-    FromJsonObject(nlohmann::json &);
-
-    template<class T, size_t length>
-    typename std::enable_if<std::is_reference<T>::value || std::is_const<T>::value || Is_Array<T>::Value, T>::type
-    FromJsonObject(nlohmann::json &);
+//    template<class T>
+//    typename std::enable_if<std::is_reference<T>::value || std::is_const<T>::value || Is_Array<T>::Value, T>::type
+//    FromJsonObject(nlohmann::json &);
+//
+//    template<class T, size_t length>
+//    typename std::enable_if<std::is_reference<T>::value || std::is_const<T>::value || Is_Array<T>::Value, T>::type
+//    FromJsonObject(nlohmann::json &);
 
     template<class T>
     typename std::enable_if<Is_Enum<T>::Value && !Is_Pointer<T>::Value, T>::type
@@ -278,27 +278,27 @@ namespace open_json::deserializer {
     static Deserialize(T &, const nlohmann::json &) {
     }
 
-    /**
-     * object is pointer, constant or reference, return error
-     */
-    template<class T>
-    typename std::enable_if<
-            std::is_pointer<T>::value || std::is_lvalue_reference<T>::value || std::is_reference<T>::value ||
-            std::is_const<T>::value || Is_Array<T>::Value, T>::type
-    FromJsonObject(nlohmann::json &) {
-        static_assert(true, "constant or reference object cannot be constructed");
-    }
-
-    /**
-     * object is pointer, constant or reference, return error
-     */
-    template<class T, size_t length>
-    typename std::enable_if<
-            std::is_pointer<T>::value || std::is_lvalue_reference<T>::value || std::is_reference<T>::value ||
-            std::is_const<T>::value || Is_Array<T>::Value, T>::type
-    FromJsonObject(nlohmann::json &) {
-        static_assert(true, "constant or reference object cannot be constructed");
-    }
+//    /**
+//     * object is pointer, constant or reference, return error
+//     */
+//    template<class T>
+//    typename std::enable_if<
+//            std::is_pointer<T>::value || std::is_rvalue_reference<T>::value || std::is_reference<T>::value ||
+//            std::is_const<T>::value || Is_Array<T>::Value, T>::type
+//    FromJsonObject(nlohmann::json &) {
+//        static_assert(true, "constant or reference object cannot be constructed");
+//    }
+//
+//    /**
+//     * object is pointer, constant or reference, return error
+//     */
+//    template<class T, size_t length>
+//    typename std::enable_if<
+//            std::is_pointer<T>::value || std::is_rvalue_reference<T>::value || std::is_reference<T>::value ||
+//            std::is_const<T>::value || Is_Array<T>::Value, T>::type
+//    FromJsonObject(nlohmann::json &) {
+//        static_assert(true, "constant or reference object cannot be constructed");
+//    }
 
 
     /********************************************************************************

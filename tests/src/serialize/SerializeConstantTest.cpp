@@ -33,6 +33,9 @@ namespace open_json_test::serialize::constant_test {
         }
 
         void TearDown() override {
+            delete *name;
+            delete name;
+
             for (auto p: *m_scores) {
                 delete *p;
                 delete p;
