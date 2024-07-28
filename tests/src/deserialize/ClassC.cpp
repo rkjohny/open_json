@@ -7,8 +7,6 @@ namespace open_json_test::deserialize::simple_class {
 
     class ClassC {
     private:
-        NON_COPY_NON_MOVE_ABLE(ClassC)
-
         int id;
         std::string name;
 
