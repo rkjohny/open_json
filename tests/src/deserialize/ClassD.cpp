@@ -5,44 +5,56 @@
 
 namespace open_json_test::deserialize::simple_class {
 
-    class ClassA {
+    class ClassD {
     private:
         int id;
         std::string name;
+        int *code;
 
     public:
-        ClassA() {
-            std::cout << "inside ClassA()" << std::endl;
+        ClassD() {
+            std::cout << "inside ClassD()" << std::endl;
             id = 100;
             name = "Rezaul karim";
         }
 
-        ClassA(ClassA &obj) {
-            std::cout << "inside ClassA(ClassA &obj)" << std::endl;
-            id = obj.id;
-            name = obj.name;
+        virtual ~ClassD() {
+            delete code;
         }
 
-        ClassA(ClassA &&obj) {
-            std::cout << "inside ClassA(ClassA &&obj)" << std::endl;
+        ClassD(ClassD &obj) {
+            std::cout << "inside ClassD(ClassD &obj)" << std::endl;
+            id = obj.id;
+            name = obj.name;
+            code = new int();
+            *code = *obj.code;
+        }
+
+        ClassD(ClassD &&obj) {
+            std::cout << "inside ClassD(ClassD &&obj)" << std::endl;
             id = std::move(obj.id);
             name = std::move(obj.name);
+            code = new int();
+            *code = std::move(*obj.code);
         }
 
-        ClassA& operator=(ClassA &obj) {
-            std::cout << "inside ClassA& operator=(ClassA &obj)" << std::endl;
+        ClassD& operator=(ClassD &obj) {
+            std::cout << "inside ClassD& operator=(ClassD &obj)" << std::endl;
             id = obj.id;
             name = obj.name;
+            code = new int();
+            *code = *obj.code;
             return *this;
         }
 
-        ClassA& operator=(ClassA &&obj) {
-            std::cout << "inside ClassA& operator=(ClassA &&obj)" << std::endl;
+        ClassD& operator=(ClassD &&obj) {
+            std::cout << "inside ClassD& operator=(ClassD &&obj)" << std::endl;
             id = std::move(obj.id);
             name = std::move(obj.name);
+            code = new int();
+            *code = std::move(*obj.code);
             return *this;
         }
-
 
         int GetId() const {
             return id;
@@ -60,29 +72,42 @@ namespace open_json_test::deserialize::simple_class {
             this->name = name;
         }
 
+        int *GetCode() const {
+            return code;
+        }
+
+        void SetCode(int *c) {
+            code = c;
+        }
+
         REGISTER_SETTER_START
-        SETTER(ClassA, const int, "id", &ClassA::SetId),
-        SETTER(ClassA, const std::string&, "name", &ClassA::SetName)
+        SETTER(ClassD, const int, "id", &ClassD::SetId),
+        SETTER(ClassD, const std::string&, "name", &ClassD::SetName),
+        SETTER(ClassD, int *, "code", &ClassD::SetCode)
         REGISTER_GETTER_END
     };
 
-    TEST(ClassA, Test) {
+    TEST(ClassD, Test) {
         nlohmann::json jsonObject = nlohmann::json::object();
         jsonObject["id"] = 200;
         jsonObject["name"] = "David Jonson";
+        jsonObject["code"] = 100;
 
-        ClassA a = open_json::FromJson<ClassA>(jsonObject);
+        ClassD a = open_json::FromJson<ClassD>(jsonObject);
         ASSERT_EQ(jsonObject.at("id").template get<int>(), a.GetId());
         ASSERT_EQ(0, jsonObject.at("name").template get<std::string>().compare(a.GetName()));
+        ASSERT_EQ(100, *a.GetCode());
 
-        ClassA *p = open_json::FromJson<ClassA*>(jsonObject);
+        ClassD *p = open_json::FromJson<ClassD*>(jsonObject);
         ASSERT_EQ(jsonObject.at("id").template get<int>(), p->GetId());
         ASSERT_EQ(0, jsonObject.at("name").template get<std::string>().compare(p->GetName()));
+        ASSERT_EQ(100, *p->GetCode());
         delete p;
 
-        ClassA **pp = open_json::FromJson<ClassA**>(jsonObject);
+        ClassD **pp = open_json::FromJson<ClassD**>(jsonObject);
         ASSERT_EQ(jsonObject.at("id").template get<int>(), (*pp)->GetId());
         ASSERT_EQ(0, jsonObject.at("name").template get<std::string>().compare((*pp)->GetName()));
+        ASSERT_EQ(100, *(*pp)->GetCode());
         delete *pp;
         delete pp;
     }

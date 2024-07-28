@@ -1,15 +1,23 @@
 #include <gtest/gtest.h>
 #include <string>
+#include "../../include/CommonDef.h"
 #include "../../../include/open_json.h"
 
 namespace open_json_test::deserialize::simple_class {
 
     class ClassC {
     private:
-        int id = 100;
-        std::string name = "Rezaul karim";
+        NON_COPY_NON_MOVE_ABLE(ClassC)
+
+        int id;
+        std::string name;
 
     public:
+        ClassC() {
+            id = 100;
+            name = "Rezaul karim";
+        }
+
         int GetId() const {
             return id;
         }

@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 #include <string>
+#include "../../include/CommonDef.h"
 #include "../../../include/open_json.h"
 
 namespace open_json_test::deserialize::rvalue_reference {

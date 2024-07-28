@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <string>
+#include "../../include/CommonDef.h"
 #include "../../../include/open_json.h"
 
 namespace open_json_test::deserialize::primitive_pointer::constant {
