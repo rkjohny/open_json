@@ -7,86 +7,34 @@ namespace open_json_test::deserialize::simple_class {
 
     class ClassD {
     private:
-        int id;
-        std::string name;
+        int *id;
+        std::string *name;
         int *code;
         int **age;
 
     public:
-        ClassD() {
-            std::cout << "inside ClassD()" << std::endl;
-            id = 100;
-            name = "Rezaul karim";
-        }
-
         virtual ~ClassD() {
+            delete id;
+            delete name;
             delete code;
+            delete *age;
+            delete age;
         }
 
-        ClassD(ClassD &obj) {
-            std::cout << "inside ClassD(ClassD &obj)" << std::endl;
-            id = obj.id;
-            name = obj.name;
-            code = new int();
-            *code = *obj.code;
-
-            age = new int*;
-            *age = new int;
-            **age = **obj.age;
-        }
-
-        ClassD(ClassD &&obj) {
-            std::cout << "inside ClassD(ClassD &&obj)" << std::endl;
-            id = std::move(obj.id);
-            name = std::move(obj.name);
-            code = new int();
-            *code = std::move(*obj.code);
-
-            age = new int*;
-            *age = new int;
-            **age = std::move(**obj.age);
-        }
-
-        ClassD& operator=(ClassD &obj) {
-            std::cout << "inside ClassD& operator=(ClassD &obj)" << std::endl;
-            id = obj.id;
-            name = obj.name;
-            code = new int();
-            *code = *obj.code;
-
-            age = new int*;
-            *age = new int;
-            **age = **obj.age;
-            return *this;
-        }
-
-        ClassD& operator=(ClassD &&obj) {
-            std::cout << "inside ClassD& operator=(ClassD &&obj)" << std::endl;
-            id = std::move(obj.id);
-            name = std::move(obj.name);
-            code = new int();
-            *code = std::move(*obj.code);
-
-            age = new int*;
-            *age = new int;
-            **age = std::move(**obj.age);
-            return *this;
-        }
-
-        int GetId() const {
+        int* GetId() const {
             return id;
         }
 
-        const std::string &GetName() const {
+        const std::string *GetName() const {
             return name;
         }
 
-        void SetId(const int id) {
-            this->id = id;
+        void SetId(const int *id) {
+            this->id = const_cast<int*>(id);
         }
 
-        void SetName(const std::string &name) {
-            this->name = name;
+        void SetName(const std::string *name) {
+            this->name = const_cast<std::string*>(name);
         }
 
         int *GetCode() const {
@@ -106,8 +54,8 @@ namespace open_json_test::deserialize::simple_class {
         }
 
         REGISTER_SETTER_START
-        SETTER(ClassD, const int, "id", &ClassD::SetId),
-        SETTER(ClassD, const std::string&, "name", &ClassD::SetName),
+        SETTER(ClassD, const int*, "id", &ClassD::SetId),
+        SETTER(ClassD, const std::string*, "name", &ClassD::SetName),
         SETTER(ClassD, const int *, "code", &ClassD::SetCode),
         SETTER(ClassD, const int * const*, "age", &ClassD::SetAge)
         REGISTER_GETTER_END
@@ -121,21 +69,21 @@ namespace open_json_test::deserialize::simple_class {
         jsonObject["age"] = 50;
 
         ClassD a = open_json::FromJson<ClassD>(jsonObject);
-        ASSERT_EQ(jsonObject.at("id").template get<int>(), a.GetId());
-        ASSERT_EQ(0, jsonObject.at("name").template get<std::string>().compare(a.GetName()));
+        ASSERT_EQ(jsonObject.at("id").template get<int>(), *a.GetId());
+        ASSERT_EQ(0, jsonObject.at("name").template get<std::string>().compare(*a.GetName()));
         ASSERT_EQ(100, *a.GetCode());
         ASSERT_EQ(50, **a.GetAge());
 
         ClassD *p = open_json::FromJson<ClassD*>(jsonObject);
-        ASSERT_EQ(jsonObject.at("id").template get<int>(), p->GetId());
-        ASSERT_EQ(0, jsonObject.at("name").template get<std::string>().compare(p->GetName()));
+        ASSERT_EQ(jsonObject.at("id").template get<int>(), *p->GetId());
+        ASSERT_EQ(0, jsonObject.at("name").template get<std::string>().compare(*p->GetName()));
         ASSERT_EQ(100, *p->GetCode());
         ASSERT_EQ(50, **p->GetAge());
         delete p;
 
         ClassD **pp = open_json::FromJson<ClassD**>(jsonObject);
-        ASSERT_EQ(jsonObject.at("id").template get<int>(), (*pp)->GetId());
-        ASSERT_EQ(0, jsonObject.at("name").template get<std::string>().compare((*pp)->GetName()));
+        ASSERT_EQ(jsonObject.at("id").template get<int>(), *(*pp)->GetId());
+        ASSERT_EQ(0, jsonObject.at("name").template get<std::string>().compare(*(*pp)->GetName()));
         ASSERT_EQ(100, *(*pp)->GetCode());
         ASSERT_EQ(50, **(*pp)->GetAge());
         delete *pp;

@@ -16,9 +16,11 @@ namespace open_json_test::deserialize::nested {
         int GetScore() const {
             return score;
         }
-        void SetScore(const int &s) {
-            score = s;
+
+        void SetScore(const int &score) {
+            this->score = score;
         }
+
         REGISTER_SETTER_START
         SETTER(BaseClass, const int&, "score", &BaseClass::SetScore)
         REGISTER_SETTER_END
@@ -30,20 +32,24 @@ namespace open_json_test::deserialize::nested {
         int code;
 
     public:
-        const BaseClass &GetBase() const {
+        const BaseClass& GetBase() const {
             return base;
         }
-        void SetBase(const BaseClass &b) {
-            this->base = b;
+
+        void SetBase(BaseClass &base) {
+            this->base = base;
         }
+
         int GetCode() const {
             return code;
         }
-        void SetCode(const int &n) {
-            code = n;
+
+        void SetCode(const int &code) {
+            this->code = code;
         }
+
         REGISTER_SETTER_START
-        SETTER(NestedClass, const BaseClass &, "base", &NestedClass::SetBase),
+        SETTER(NestedClass, BaseClass &, "base", &NestedClass::SetBase),
         SETTER(NestedClass, const int&, "code", &NestedClass::SetCode)
         REGISTER_SETTER_END
     };
@@ -57,23 +63,27 @@ namespace open_json_test::deserialize::nested {
         const NestedClass& GetNested() const {
             return nested;
         }
-        void SetNested(const NestedClass &n) {
+
+        void SetNested(NestedClass &n) {
             nested = n;
         }
+
         int GetAge() const {
             return age;
         }
-        void SetAge(const int &a) {
-            age = a;
+
+        void SetAge(const int &age) {
+            this->age = age;
         }
+
         REGISTER_SETTER_START
-        SETTER(NestedClass2, const NestedClass&, "nested", &NestedClass2::SetNested),
+        SETTER(NestedClass2, NestedClass&, "nested", &NestedClass2::SetNested),
         SETTER(NestedClass2, const int&, "age", &NestedClass2::SetAge)
         REGISTER_SETTER_END
 
     };
 
-    class DeserializeNestedObjectTest : public ::testing::Test {
+    class DeserializeNestedObjectTest1 : public ::testing::Test {
     public:
         void SetUp() override {
         }
@@ -82,7 +92,7 @@ namespace open_json_test::deserialize::nested {
         }
     };
     
-    TEST_F(DeserializeNestedObjectTest, NestedTest) {
+    TEST_F(DeserializeNestedObjectTest1, NestedTest) {
         nlohmann::json jsonNested = nlohmann::json::object();
         jsonNested["base"] = nlohmann::json::object();
         jsonNested["code"] = 100;

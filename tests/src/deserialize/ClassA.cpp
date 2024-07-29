@@ -12,41 +12,9 @@ namespace open_json_test::deserialize::simple_class {
 
     public:
         ClassA() {
-            std::cout << "inside ClassA()" << std::endl;
             id = 100;
             name = "Rezaul karim";
         }
-
-        ClassA(ClassA &obj) {
-            std::cout << "inside ClassA(ClassA &obj)" << std::endl;
-            std::cout << "copy constructor should not be called" << std::endl;
-            id = obj.id;
-            name = obj.name;
-        }
-
-        ClassA(ClassA &&obj) {
-            std::cout << "inside ClassA(ClassA &&obj)" << std::endl;
-            std::cout << "move constructor should not be called" << std::endl;
-            id = std::move(obj.id);
-            name = std::move(obj.name);
-        }
-
-        ClassA& operator=(ClassA &obj) {
-            std::cout << "inside ClassA& operator=(ClassA &obj)" << std::endl;
-            std::cout << "assign operator should not be called" << std::endl;
-            id = obj.id;
-            name = obj.name;
-            return *this;
-        }
-
-        ClassA& operator=(ClassA &&obj) {
-            std::cout << "inside ClassA& operator=(ClassA &&obj)" << std::endl;
-            std::cout << "assign operator should not be called" << std::endl;
-            id = std::move(obj.id);
-            name = std::move(obj.name);
-            return *this;
-        }
-
 
         int GetId() const {
             return id;
