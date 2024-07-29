@@ -113,12 +113,12 @@ namespace open_json_test::deserialize::nested::derived::pointer {
         }
 
         // Derived1
-        DerivedClass1* GetDerived1() const {
+        const DerivedClass1* GetDerived1() const {
             return derived1;
         }
 
-        void SetDerived1(DerivedClass1 *derived1) {
-            this->derived1 = derived1;
+        void SetDerived1(const DerivedClass1 *derived1) {
+            this->derived1 = const_cast<DerivedClass1 *>(derived1);
         }
 
         // Derived2
@@ -132,7 +132,7 @@ namespace open_json_test::deserialize::nested::derived::pointer {
 
         REGISTER_SETTER_START
         SETTER(NestedClass, BaseClass *, "base", &NestedClass::SetBase),
-        SETTER(NestedClass, DerivedClass1 *, "derived1", &NestedClass::SetDerived1),
+        SETTER(NestedClass, const DerivedClass1 *, "derived1", &NestedClass::SetDerived1),
         SETTER(NestedClass, DerivedClass2 *, "derived2", &NestedClass::SetDerived2)
         REGISTER_SETTER_END
     };
