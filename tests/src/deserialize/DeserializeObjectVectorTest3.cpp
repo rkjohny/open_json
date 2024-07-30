@@ -4,42 +4,39 @@
 
 namespace open_json_test::deserialize::vector_of_object::nested_pointer {
 
-    class Value {
+    class BaseClass {
     private:
         double *score;
         std::string *grade;
 
     public:
-        Value() = default;
+        BaseClass() = default;
 
-        virtual ~Value() {
-            std::cout << "Inside ~Value()" << std::endl;
+        virtual ~BaseClass() {
             delete score;
             delete grade;
         }
 
-        Value(Value &&v) {
-            std::cout << "inside move constructor Value" << std::endl;
+        BaseClass(BaseClass &&v) {
+            this->score = new double(std::move(*v.score));
+            this->grade = new std::string(std::move(*v.grade));
+        }
+
+        BaseClass(const BaseClass &v) {
             this->score = new double(*v.score);
             this->grade = new std::string(*v.grade);
         }
 
-        Value(const Value &v) {
-            std::cout << "inside copy constructor Value" << std::endl;
+        BaseClass &operator=(const BaseClass &v) {
             this->score = new double(*v.score);
             this->grade = new std::string(*v.grade);
+            return *this;
         }
 
-        void operator=(const Value &v) {
-            std::cout << "inside copy assignment Value" << std::endl;
-            this->score = new double(*v.score);
-            this->grade = new std::string(*v.grade);
-        }
-
-        void operator=(const Value &&v) {
-            std::cout << "inside move assignment Value" << std::endl;
-            this->score = new double(*v.score);
-            this->grade = new std::string(*v.grade);
+        BaseClass &operator=(const BaseClass &&v) {
+            this->score = new double(std::move(*v.score));
+            this->grade = new std::string(std::move(*v.grade));
+            return *this;
         }
 
         void SetScore(double *score) {
@@ -47,10 +44,10 @@ namespace open_json_test::deserialize::vector_of_object::nested_pointer {
         }
 
         void SetGrade(const std::string *grade) {
-            this->grade = const_cast<std::string*>(grade);
+            this->grade = const_cast<std::string *>(grade);
         }
 
-        double* GetScore() const {
+        double *GetScore() const {
             return score;
         }
 
@@ -59,55 +56,54 @@ namespace open_json_test::deserialize::vector_of_object::nested_pointer {
         }
 
         REGISTER_SETTER_START
-        SETTER(Value, double*, "score", &Value::SetScore),
-        SETTER(Value, const std::string*, "grade", &Value::SetGrade)
+        SETTER(BaseClass, double*, "score", &BaseClass::SetScore),
+        SETTER(BaseClass, const std::string*, "grade", &BaseClass::SetGrade)
         REGISTER_SETTER_END
     };
 
     class Nested1 {
     private:
-        Value *value;
+        BaseClass *value;
 
     public:
         Nested1() = default;
 
         virtual ~Nested1() {
-            std::cout << "Inside ~Nested1() Nested1" << std::endl;
             delete value;
         }
 
         Nested1(Nested1 &&v) {
-            std::cout << "inside move constructor Nested1" << std::endl;
-            this->value = new Value();
-            *this->value = *v.value;
+            this->value = new BaseClass();
+            *this->value = std::move(*v.value);
         }
 
         Nested1(const Nested1 &v) {
-            std::cout << "inside copy constructor Nested1" << std::endl;
-            this->value = new Value();
+            this->value = new BaseClass();
             *this->value = *v.value;
         }
 
-        void operator=(const Nested1 &v) {
-            std::cout << "inside copy assignment Nested1" << std::endl;
-            this->value = new Value();
+        Nested1 &operator=(const Nested1 &v) {
+            this->value = new BaseClass();
             *this->value = *v.value;
+            return *this;
         }
 
-        void operator=(const Nested1 &&v) {
-            std::cout << "inside move assignment Nested1" << std::endl;
-            this->value = new Value();
-            *this->value = *v.value;
+        Nested1 &operator=(const Nested1 &&v) {
+            this->value = new BaseClass();
+            *this->value = std::move(*v.value);
+            return *this;
         }
 
-        Value* GetValue() {
+        BaseClass *GetValue() {
             return value;
         }
-        void SetValue(const Value *value) {
-            this->value = const_cast<Value*>(value);
+
+        void SetValue(const BaseClass *value) {
+            this->value = const_cast<BaseClass *>(value);
         }
+
         REGISTER_SETTER_START
-        SETTER(Nested1, const Value*, "value", &Nested1::SetValue)
+        SETTER(Nested1, const BaseClass*, "value", &Nested1::SetValue)
         REGISTER_SETTER_END
     };
 
@@ -118,39 +114,39 @@ namespace open_json_test::deserialize::vector_of_object::nested_pointer {
         Nested2() = default;
 
         virtual ~Nested2() {
-            std::cout << "Inside ~Nested2()" << std::endl;
             delete nested;
         }
 
         Nested2(Nested2 &&v) {
-            std::cout << "inside move constructor Nested2" << std::endl;
             this->nested = new Nested1();
-            *this->nested = *v.nested;
+            *this->nested = std::move(*v.nested);
         }
 
         Nested2(const Nested2 &v) {
-            std::cout << "inside copy constructor Nested2" << std::endl;
             this->nested = new Nested1();
             *this->nested = *v.nested;
         }
 
-        void operator=(const Nested2 &v) {
-            std::cout << "inside copy assignment Nested2" << std::endl;
+        Nested2 &operator=(const Nested2 &v) {
             this->nested = new Nested1();
             *this->nested = *v.nested;
+            return *this;
         }
 
-        void operator=(const Nested2 &&v) {
-            std::cout << "inside move assignment Nested2" << std::endl;
+        Nested2 &operator=(const Nested2 &&v) {
             this->nested = new Nested1();
-            *this->nested = *v.nested;
+            *this->nested = std::move(*v.nested);
+            return *this;
         }
-        Nested1* GetNested() {
+
+        Nested1 *GetNested() {
             return nested;
         }
+
         void SetNested(Nested1 *nested) {
             this->nested = nested;
         }
+
         REGISTER_SETTER_START
         SETTER(Nested2, Nested1 *, "nested", &Nested2::SetNested)
         REGISTER_SETTER_END
@@ -172,9 +168,11 @@ namespace open_json_test::deserialize::vector_of_object::nested_pointer {
 
     }; // class DeserializeObjectVectorTest3
 
-    void check(Nested2 &v, const nlohmann::json &jsonObject)  {
-        ASSERT_DOUBLE_EQ(*v.GetNested()->GetValue()->GetScore(), jsonObject["nested"]["value"]["score"].template get<double>());
-        ASSERT_EQ(0, v.GetNested()->GetValue()->GetGrade()->compare(jsonObject["nested"]["value"]["grade"].template get<std::string>()));
+    void check(Nested2 &v, const nlohmann::json &jsonObject) {
+        ASSERT_DOUBLE_EQ(*v.GetNested()->GetValue()->GetScore(),
+                         jsonObject["nested"]["value"]["score"].template get<double>());
+        ASSERT_EQ(0, v.GetNested()->GetValue()->GetGrade()->compare(
+                jsonObject["nested"]["value"]["grade"].template get<std::string>()));
     }
 
     TEST_F(DeserializeObjectVectorTest3, VectorNestedPointer) {
@@ -187,42 +185,38 @@ namespace open_json_test::deserialize::vector_of_object::nested_pointer {
         jsonObject[2]["nested"]["value"]["score"] = 70;
         jsonObject[2]["nested"]["value"]["grade"] = "A-";
 
-        std::cout << jsonObject.dump() << std::endl;
-
-        //std::cout << "Going to call deserialize" << std::endl;
         std::vector<Nested2> vec = open_json::FromJson<std::vector<Nested2>>(jsonObject);
-        //std::cout << "After call deserialize" << std::endl;
 
         ASSERT_TRUE(vec.size() == 3);
         auto itr = vec.begin();
-        for (auto &obj : jsonObject) {
+        for (auto &obj: jsonObject) {
             check(*itr, obj);
             ++itr;
         }
 
-        std::vector<Nested2*> vecPtr = open_json::FromJson<std::vector<Nested2*>>(jsonObject);
+        std::vector<Nested2 *> vecPtr = open_json::FromJson<std::vector<Nested2 *>>(jsonObject);
 
         ASSERT_TRUE(vecPtr.size() == 3);
         auto itr2 = vecPtr.begin();
-        for (auto &obj : jsonObject) {
+        for (auto &obj: jsonObject) {
             check(*(*itr2), obj);
             ++itr2;
         }
 
-        for (auto p : vecPtr) {
+        for (auto p: vecPtr) {
             delete p;
         }
 
-        std::vector<Nested2**> **vecPtrPtr = open_json::FromJson<std::vector<Nested2**>**>(jsonObject);
+        std::vector<Nested2 **> **vecPtrPtr = open_json::FromJson<std::vector<Nested2 **> **>(jsonObject);
 
         ASSERT_TRUE((**vecPtrPtr).size() == 3);
         auto itr3 = (**vecPtrPtr).begin();
-        for (auto &obj : jsonObject) {
+        for (auto &obj: jsonObject) {
             check(**(*itr3), obj);
             ++itr3;
         }
 
-        for (auto p : **vecPtrPtr) {
+        for (auto p: **vecPtrPtr) {
             delete *p;
             delete p;
         }

@@ -16,15 +16,36 @@ namespace open_json_test::deserialize::student::no_constant {
         std::vector<std::string> m_subjects;
 
     public:
-        Student() {
-            m_name = "Rezaul Karim";
-            m_id = 100;
-            m_subjects.push_back("Math");
-            m_subjects.push_back("Calculus");
-            m_subjects.push_back("Geometry");
-        }
+        Student() = default;
 
         virtual ~Student() = default;
+
+        Student(const Student &obj) {
+            this->m_name = obj.m_name;
+            this->m_id = obj.m_id;
+            this->m_subjects = obj.m_subjects;
+        }
+
+        Student(Student &&obj) {
+            this->m_name = std::move(obj.m_name);
+            this->m_id = std::move(obj.m_id);
+            this->m_subjects = std::move(obj.m_subjects);
+        }
+
+        Student &operator=(const Student &obj) {
+            this->m_name = obj.m_name;
+            this->m_id = obj.m_id;
+            this->m_subjects = obj.m_subjects;
+            return *this;
+        }
+
+        Student &operator=(const Student &&obj) {
+            this->m_name = std::move(obj.m_name);
+            this->m_id = std::move(obj.m_id);
+            this->m_subjects = std::move(obj.m_subjects);
+            return *this;
+        }
+
 
         std::string GetName() const {
             return m_name;
@@ -79,6 +100,11 @@ namespace open_json_test::deserialize::student::no_constant {
 
     TEST_F(DeserializeStudentTest, SerializeStudentClassTest) {
         Student student;
+        student.SetName("Rezaul Karim");
+        student.SetId(100);
+        std::vector<std::string> sub;
+        student.SetSubjects({"Math", "Calculus", "Geometry"});
+
         nlohmann::json jsonObject;
 
         jsonObject = open_json::ToJson(student);
@@ -94,6 +120,7 @@ namespace open_json_test::deserialize::student::no_constant {
             ++itr2;
         }
     }
+
     TEST_F(DeserializeStudentTest, DeserializeStudentClassTest) {
         nlohmann::json jsonObject;
 

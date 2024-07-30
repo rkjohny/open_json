@@ -18,17 +18,9 @@ namespace open_json_test::deserialize::person::constant {
         std::vector<std::string> m_subjects;
 
     public:
-        Person() {
-            m_name = "Rezaul Karim";
-            m_age = 43;
-            m_scores.push_back(10.5);
-            m_scores.push_back(20.1);
-            m_scores.push_back(30.9);
+        // Using default copy_constructor, move_constructor, copy_assignment and move_assignment operator
 
-            m_subjects.push_back("Math");
-            m_subjects.push_back("Calculus");
-            m_subjects.push_back("Geometry");
-        }
+        Person() = default;
 
         virtual ~Person() = default;
 
@@ -56,7 +48,7 @@ namespace open_json_test::deserialize::person::constant {
             m_scores = scores;
         }
 
-        const std::vector<std::string>& GetSubjects() const {
+        const std::vector<std::string> &GetSubjects() const {
             return m_subjects;
         };
 
@@ -96,12 +88,18 @@ namespace open_json_test::deserialize::person::constant {
         Person person;
         nlohmann::json jsonObject;
 
+        person.SetName("Rezaul Karim");
+        person.SetAge(43);
+        person.SetScores({10.5, 20.1, 30.9});
+        person.SetSubjects({"Math", "Calculus", "Geometry"});
+
         jsonObject = open_json::ToJson(person);
         ASSERT_TRUE(jsonObject.is_object());
         ASSERT_EQ(0, person.GetName().compare(jsonObject.at("name").template get<std::string>()));
         ASSERT_EQ(person.GetAge(), jsonObject.at("age").template get<int>());
 
         ASSERT_TRUE(jsonObject.at("scores").is_array());
+        ASSERT_TRUE(jsonObject.at("scores").size() == 3);
         auto itr = person.GetScores().begin();
         for (auto &arrItem: jsonObject.at("scores")) {
             ASSERT_DOUBLE_EQ(*itr, arrItem.template get<double>());
@@ -109,6 +107,7 @@ namespace open_json_test::deserialize::person::constant {
         }
 
         ASSERT_TRUE(jsonObject.at("subjects").is_array());
+        ASSERT_TRUE(jsonObject.at("subjects").size() == 3);
         auto itr2 = person.GetSubjects().begin();
         for (auto &arrItem: jsonObject.at("subjects")) {
             ASSERT_EQ(0, itr2->compare(arrItem.template get<std::string>()));

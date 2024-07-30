@@ -4,8 +4,6 @@
 #include "../../../include/open_json.h"
 
 
-// test deserialization of derived1 class
-
 namespace open_json_test::deserialize::derived_class {
 
     class BaseClass {
@@ -16,8 +14,31 @@ namespace open_json_test::deserialize::derived_class {
     public:
         BaseClass() : score{24.5678}, is_valid{false} {
         }
-        
+
         virtual ~BaseClass() = default;
+
+        BaseClass(BaseClass &&v) {
+            this->score = std::move(v.score);
+            this->is_valid = std::move(v.is_valid);
+        }
+
+        BaseClass(const BaseClass &v) {
+            this->score = v.score;
+            this->is_valid = v.is_valid;
+        }
+
+        BaseClass &operator=(const BaseClass &v) {
+            this->score = v.score;
+            this->is_valid = v.is_valid;
+            return *this;
+        }
+
+        BaseClass &operator=(const BaseClass &&v) {
+            this->score = std::move(v.score);
+            this->is_valid = std::move(v.is_valid);
+            return *this;
+        }
+
 
         double GetScore() const {
             return score;
@@ -153,7 +174,7 @@ namespace open_json_test::deserialize::derived_class {
         ASSERT_DOUBLE_EQ(base.GetScore(), jsonObject.at("score").template get<double>());
         ASSERT_TRUE(base.IsValid() == jsonObject.at("is_valid").template get<bool>());
     }
-    
+
     TEST_F(DeserializeDerivedClassTest, BasePointerTest) {
         BaseClass *base = new BaseClass();
 
@@ -169,7 +190,7 @@ namespace open_json_test::deserialize::derived_class {
         base->Clear();
         delete base;
 
-        base = open_json::FromJson<BaseClass*>(jsonObject);
+        base = open_json::FromJson<BaseClass *>(jsonObject);
 
         ASSERT_DOUBLE_EQ(base->GetScore(), jsonObject.at("score").template get<double>());
         ASSERT_TRUE(base->IsValid() == jsonObject.at("is_valid").template get<bool>());
@@ -220,7 +241,7 @@ namespace open_json_test::deserialize::derived_class {
         derived1->Clear();
         delete derived1;
 
-        derived1 = open_json::FromJson<DerivedClass1*>(jsonObject);
+        derived1 = open_json::FromJson<DerivedClass1 *>(jsonObject);
 
         ASSERT_DOUBLE_EQ(derived1->GetId(), jsonObject.at("id").template get<long>());
         ASSERT_TRUE(0 == jsonObject.at("name").template get<std::string>().compare(derived1->GetName()));
@@ -278,7 +299,7 @@ namespace open_json_test::deserialize::derived_class {
         derived2->Clear();
         delete derived2;
 
-        derived2 = open_json::FromJson<DerivedClass2*>(jsonObject);
+        derived2 = open_json::FromJson<DerivedClass2 *>(jsonObject);
 
         ASSERT_EQ(derived2->GetCode(), jsonObject.at("code").template get<int>());
         ASSERT_DOUBLE_EQ(derived2->GetId(), jsonObject.at("id").template get<long>());

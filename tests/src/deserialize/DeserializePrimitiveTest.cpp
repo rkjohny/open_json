@@ -217,12 +217,12 @@ namespace open_json_test::deserialize::primitive_types {
         ASSERT_TRUE(bTrue);
 
         jsonObject = true;
-        bool *bTruePtr = open_json::FromJson<bool*>(jsonObject);
+        bool *bTruePtr = open_json::FromJson<bool *>(jsonObject);
         ASSERT_TRUE(*bTruePtr);
         delete bTruePtr;
 
         jsonObject = true;
-        bool **bTrueDPtr = open_json::FromJson<bool**>(jsonObject);
+        bool **bTrueDPtr = open_json::FromJson<bool **>(jsonObject);
         ASSERT_TRUE(**bTrueDPtr);
         delete *bTrueDPtr;
         delete bTrueDPtr;
@@ -232,12 +232,12 @@ namespace open_json_test::deserialize::primitive_types {
         ASSERT_FALSE(bFalse);
 
         jsonObject = false;
-        bool *bFalsePtr = open_json::FromJson<bool*>(jsonObject);
+        bool *bFalsePtr = open_json::FromJson<bool *>(jsonObject);
         ASSERT_FALSE(*bFalsePtr);
         delete bFalsePtr;
 
         jsonObject = false;
-        bool **bFalseDoublePtr = open_json::FromJson<bool**>(jsonObject);
+        bool **bFalseDoublePtr = open_json::FromJson<bool **>(jsonObject);
         ASSERT_FALSE(**bFalseDoublePtr);
         delete *bFalseDoublePtr;
         delete bFalseDoublePtr;
@@ -251,12 +251,12 @@ namespace open_json_test::deserialize::primitive_types {
         ASSERT_EQ(10.5F, floatValue);
 
         jsonObject = 10.1F;
-        float *floatPtr = open_json::FromJson<float*>(jsonObject);
+        float *floatPtr = open_json::FromJson<float *>(jsonObject);
         ASSERT_EQ(10.1F, *floatPtr);
         delete floatPtr;
 
         jsonObject = 10.9F;
-        float **floatDoublePtr = open_json::FromJson<float**>(jsonObject);
+        float **floatDoublePtr = open_json::FromJson<float **>(jsonObject);
         ASSERT_EQ(10.9F, **floatDoublePtr);
         delete *floatDoublePtr;
         delete floatDoublePtr;
@@ -270,12 +270,12 @@ namespace open_json_test::deserialize::primitive_types {
         ASSERT_EQ(10.5F, doubleValue);
 
         jsonObject = 10.1F;
-        double *doublePtr = open_json::FromJson<double*>(jsonObject);
+        double *doublePtr = open_json::FromJson<double *>(jsonObject);
         ASSERT_EQ(10.1F, *doublePtr);
         delete doublePtr;
 
         jsonObject = 10.9F;
-        double **doubleDoublePtr = open_json::FromJson<double**>(jsonObject);
+        double **doubleDoublePtr = open_json::FromJson<double **>(jsonObject);
         ASSERT_EQ(10.9F, **doubleDoublePtr);
         delete *doubleDoublePtr;
         delete doubleDoublePtr;
@@ -289,12 +289,12 @@ namespace open_json_test::deserialize::primitive_types {
         ASSERT_EQ(10.5F, doubleValue);
 
         jsonObject = 10.1F;
-        long double *doublePtr = open_json::FromJson<long double*>(jsonObject);
+        long double *doublePtr = open_json::FromJson<long double *>(jsonObject);
         ASSERT_EQ(10.1F, *doublePtr);
         delete doublePtr;
 
         jsonObject = 10.9F;
-        long double **doubleDoublePtr = open_json::FromJson<long double**>(jsonObject);
+        long double **doubleDoublePtr = open_json::FromJson<long double **>(jsonObject);
         ASSERT_EQ(10.9F, **doubleDoublePtr);
         delete *doubleDoublePtr;
         delete doubleDoublePtr;
@@ -350,12 +350,12 @@ namespace open_json_test::deserialize::primitive_types {
         ASSERT_EQ(0, STR.compare(str));
 
         jsonObject = STR;
-        std::string *strPtr = open_json::FromJson<std::string*>(jsonObject);
+        std::string *strPtr = open_json::FromJson<std::string *>(jsonObject);
         ASSERT_EQ(0, STR.compare(*strPtr));
         delete strPtr;
 
         jsonObject = STR;
-        std::string **strDoublePtr = open_json::FromJson<std::string**>(jsonObject);
+        std::string **strDoublePtr = open_json::FromJson<std::string **>(jsonObject);
         ASSERT_EQ(0, STR.compare(**strDoublePtr));
         delete *strDoublePtr;
         delete strDoublePtr;

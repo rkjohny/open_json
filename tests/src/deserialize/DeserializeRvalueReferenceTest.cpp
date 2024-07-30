@@ -7,6 +7,8 @@
 namespace open_json_test::deserialize::rvalue_reference {
     class RvalueReference {
     public:
+        // Using default copy_constructor, move_constructor, copy_assignment and move_assignment operator
+
         int id;
         std::string name;
 
@@ -20,7 +22,7 @@ namespace open_json_test::deserialize::rvalue_reference {
 
         REGISTER_SETTER_START
         SETTER(RvalueReference, int &&, "id", &RvalueReference::SetId),
-        SETTER(RvalueReference, std::string&&, "name", &RvalueReference::SetName)
+        SETTER(RvalueReference, std::string &&, "name", &RvalueReference::SetName)
         REGISTER_SETTER_END
     };
 

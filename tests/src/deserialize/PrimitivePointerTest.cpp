@@ -11,10 +11,10 @@ namespace open_json_test::deserialize::primitive_pointer::non_constant {
         std::string *name;
         double **score;
         int ***age;
-        std::vector<int*> *codes;
-        std::vector<std::string*> *members;
-        std::vector<std::string**> **subjects;
-        std::vector<int***> ***points;
+        std::vector<int *> *codes;
+        std::vector<std::string *> *members;
+        std::vector<std::string **> **subjects;
+        std::vector<int ***> ***points;
         std::vector<std::string ***> ***cities;
 
     public:
@@ -32,24 +32,24 @@ namespace open_json_test::deserialize::primitive_pointer::non_constant {
             delete *age;
             delete age;
 
-            for (auto p : *codes) {
+            for (auto p: *codes) {
                 delete p;
             }
             delete codes;
 
-            for (auto p : *members) {
+            for (auto p: *members) {
                 delete p;
             }
             delete members;
 
-            for (auto p : **subjects) {
+            for (auto p: **subjects) {
                 delete *p;
                 delete p;
             }
             delete *subjects;
             delete subjects;
 
-            for(auto p : ***points) {
+            for (auto p: ***points) {
                 delete **p;
                 delete *p;
                 delete p;
@@ -58,27 +58,27 @@ namespace open_json_test::deserialize::primitive_pointer::non_constant {
             delete *points;
             delete points;
 
-            for (auto p : ***cities) {
+            for (auto p: ***cities) {
                 delete **p;
                 delete *p;
                 delete p;
             }
         }
 
-        long* GetId() const {
+        long *GetId() const {
             return id;
         }
 
         void SetId(long *n) {
-            this->id = const_cast<long*>(n);
+            this->id = const_cast<long *>(n);
         }
 
-        std::string* GetName() const {
+        std::string *GetName() const {
             return name;
         }
 
         void SetName(std::string *s) {
-            this->name = const_cast<std::string*>(s);
+            this->name = const_cast<std::string *>(s);
         }
 
         double **GetScore() const {
@@ -94,38 +94,38 @@ namespace open_json_test::deserialize::primitive_pointer::non_constant {
         }
 
         void SetAge(int ***a) {
-            this->age =  a;
+            this->age = a;
         }
 
-        std::vector<int*>* GetCodes() const {
+        std::vector<int *> *GetCodes() const {
             return codes;
         }
 
-        void SetCodes(std::vector<int*> *v) {
+        void SetCodes(std::vector<int *> *v) {
             codes = v;
         }
 
-        std::vector<std::string*>* GetMembers() const {
+        std::vector<std::string *> *GetMembers() const {
             return members;
         }
 
-        void SetMembers(std::vector<std::string*> *v) {
+        void SetMembers(std::vector<std::string *> *v) {
             members = v;
         }
 
-        std::vector<std::string**>** GetSubjects() const {
+        std::vector<std::string **> **GetSubjects() const {
             return subjects;
         }
 
-        void SetSubjects(std::vector<std::string**> **v) {
+        void SetSubjects(std::vector<std::string **> **v) {
             subjects = v;
         }
 
-        std::vector<int***> *** GetPoints() const {
+        std::vector<int ***> ***GetPoints() const {
             return points;
         }
 
-        void SetPoints(std::vector<int***> ***p) {
+        void SetPoints(std::vector<int ***> ***p) {
             points = p;
         }
 
@@ -142,11 +142,11 @@ namespace open_json_test::deserialize::primitive_pointer::non_constant {
         GETTER(PrimitivePointerTest, std::string*, "name", &PrimitivePointerTest::GetName),
         GETTER(PrimitivePointerTest, double **, "score", &PrimitivePointerTest::GetScore),
         GETTER(PrimitivePointerTest, int***, "age", &PrimitivePointerTest::GetAge),
-        GETTER(PrimitivePointerTest, std::vector<int*>*, "codes", &PrimitivePointerTest::GetCodes),
-        GETTER(PrimitivePointerTest, std::vector<std::string*>*, "members", &PrimitivePointerTest::GetMembers),
-        GETTER(PrimitivePointerTest, std::vector<std::string**>**, "subjects", &PrimitivePointerTest::GetSubjects),
-        GETTER(PrimitivePointerTest, std::vector<int***>***, "points", &PrimitivePointerTest::GetPoints),
-        GETTER(PrimitivePointerTest, std::vector<std::string***>***, "cities", &PrimitivePointerTest::GetCities)
+        GETTER(PrimitivePointerTest, std::vector<int *>*, "codes", &PrimitivePointerTest::GetCodes),
+        GETTER(PrimitivePointerTest, std::vector<std::string *>*, "members", &PrimitivePointerTest::GetMembers),
+        GETTER(PrimitivePointerTest, std::vector<std::string **>**, "subjects", &PrimitivePointerTest::GetSubjects),
+        GETTER(PrimitivePointerTest, std::vector<int ***>***, "points", &PrimitivePointerTest::GetPoints),
+        GETTER(PrimitivePointerTest, std::vector<std::string ***>***, "cities", &PrimitivePointerTest::GetCities)
         REGISTER_GETTER_END
 
         REGISTER_SETTER_START
@@ -154,11 +154,11 @@ namespace open_json_test::deserialize::primitive_pointer::non_constant {
         SETTER(PrimitivePointerTest, std::string*, "name", &PrimitivePointerTest::SetName),
         SETTER(PrimitivePointerTest, double **, "score", &PrimitivePointerTest::SetScore),
         SETTER(PrimitivePointerTest, int***, "age", &PrimitivePointerTest::SetAge),
-        SETTER(PrimitivePointerTest, std::vector<int*>*, "codes", &PrimitivePointerTest::SetCodes),
-        SETTER(PrimitivePointerTest, std::vector<std::string*>*, "members", &PrimitivePointerTest::SetMembers),
-        SETTER(PrimitivePointerTest, std::vector<std::string**>**, "subjects", &PrimitivePointerTest::SetSubjects),
-        SETTER(PrimitivePointerTest, std::vector<int***>***, "points", &PrimitivePointerTest::SetPoints),
-        SETTER(PrimitivePointerTest, std::vector<std::string***>***, "cities", &PrimitivePointerTest::SetCities)
+        SETTER(PrimitivePointerTest, std::vector<int *>*, "codes", &PrimitivePointerTest::SetCodes),
+        SETTER(PrimitivePointerTest, std::vector<std::string *>*, "members", &PrimitivePointerTest::SetMembers),
+        SETTER(PrimitivePointerTest, std::vector<std::string **>**, "subjects", &PrimitivePointerTest::SetSubjects),
+        SETTER(PrimitivePointerTest, std::vector<int ***>***, "points", &PrimitivePointerTest::SetPoints),
+        SETTER(PrimitivePointerTest, std::vector<std::string ***>***, "cities", &PrimitivePointerTest::SetCities)
         REGISTER_SETTER_END
     };
 
@@ -166,38 +166,39 @@ namespace open_json_test::deserialize::primitive_pointer::non_constant {
         PrimitivePointerTest *p = new PrimitivePointerTest();
         p->SetId(new long(100));
         p->SetName(new std::string("Rezaul karim"));
-        p->SetScore(new double*(new double (100.5)));
-        p->SetAge(new int**(new int*(new int(45))));
+        p->SetScore(new double *(new double(100.5)));
+        p->SetAge(new int **(new int *(new int(45))));
 
-        p->SetCodes(new std::vector<int*> {
-            new int(10),
-            new int(20),
-            new int(30)
+        p->SetCodes(new std::vector<int *>{
+                new int(10),
+                new int(20),
+                new int(30)
         });
 
-        p->SetMembers(new std::vector<std::string*> {
-            new std::string("First member"),
-            new std::string("Second member"),
-            new std::string("Third member")
+        p->SetMembers(new std::vector<std::string *>{
+                new std::string("First member"),
+                new std::string("Second member"),
+                new std::string("Third member")
         });
 
-        p->SetSubjects(new std::vector<std::string**>*(new std::vector<std::string**>{
-            new std::string*(new std::string("Physics")),
-            new std::string*(new std::string("Math")),
-            new std::string*(new std::string("Chemistry"))
+        p->SetSubjects(new std::vector<std::string **> *(new std::vector<std::string **>{
+                new std::string *(new std::string("Physics")),
+                new std::string *(new std::string("Math")),
+                new std::string *(new std::string("Chemistry"))
         }));
 
-        p->SetPoints(new std::vector<int***>**(new std::vector<int***>*(new std::vector<int***>{
-            new int**(new int*(new int(1))),
-            new int**(new int*(new int(2))),
-            new int**(new int*(new int(3)))
+        p->SetPoints(new std::vector<int ***> **(new std::vector<int ***> *(new std::vector<int ***>{
+                new int **(new int *(new int(1))),
+                new int **(new int *(new int(2))),
+                new int **(new int *(new int(3)))
         })));
 
-        p->SetCities(new std::vector<std::string***>**(new std::vector<std::string***>*(new std::vector<std::string***>{
-                new std::string**(new std::string*(new std::string("New York"))),
-                new std::string**(new std::string*(new std::string("Paris"))),
-                new std::string**(new std::string*(new std::string("London")))
-        })));
+        p->SetCities(
+                new std::vector<std::string ***> **(new std::vector<std::string ***> *(new std::vector<std::string ***>{
+                        new std::string **(new std::string *(new std::string("New York"))),
+                        new std::string **(new std::string *(new std::string("Paris"))),
+                        new std::string **(new std::string *(new std::string("London")))
+                })));
 
         nlohmann::json jsonObject = open_json::ToJson(p);
         ASSERT_EQ(*p->GetId(), jsonObject["id"].template get<long>());
@@ -219,9 +220,9 @@ namespace open_json_test::deserialize::primitive_pointer::non_constant {
 
         ASSERT_TRUE(jsonObject["subjects"].is_array());
         ASSERT_TRUE(jsonObject["subjects"].size() == 3);
-        ASSERT_TRUE(jsonObject["subjects"][0].template get<std::string>().compare("Physics") ==0);
-        ASSERT_TRUE(jsonObject["subjects"][1].template get<std::string>().compare("Math") ==0);
-        ASSERT_TRUE(jsonObject["subjects"][2].template get<std::string>().compare("Chemistry") ==0);
+        ASSERT_TRUE(jsonObject["subjects"][0].template get<std::string>().compare("Physics") == 0);
+        ASSERT_TRUE(jsonObject["subjects"][1].template get<std::string>().compare("Math") == 0);
+        ASSERT_TRUE(jsonObject["subjects"][2].template get<std::string>().compare("Chemistry") == 0);
 
         ASSERT_TRUE(jsonObject["points"].is_array());
         ASSERT_TRUE(jsonObject["points"][0] == 1);
@@ -285,9 +286,9 @@ namespace open_json_test::deserialize::primitive_pointer::non_constant {
         ASSERT_TRUE((*a.GetMembers())[2]->compare("Third member") == 0);
 
         ASSERT_TRUE((**a.GetSubjects()).size() == 3);
-        ASSERT_TRUE((**(**a.GetSubjects())[0]).compare("Physics")  == 0);
-        ASSERT_TRUE((**(**a.GetSubjects())[1]).compare("Math")  == 0);
-        ASSERT_TRUE((**(**a.GetSubjects())[2]).compare("Chemistry")  == 0);
+        ASSERT_TRUE((**(**a.GetSubjects())[0]).compare("Physics") == 0);
+        ASSERT_TRUE((**(**a.GetSubjects())[1]).compare("Math") == 0);
+        ASSERT_TRUE((**(**a.GetSubjects())[2]).compare("Chemistry") == 0);
 
         ASSERT_TRUE((***a.GetPoints()).size() == 3);
         ASSERT_TRUE(***(***a.GetPoints())[0] == 1);
@@ -299,7 +300,7 @@ namespace open_json_test::deserialize::primitive_pointer::non_constant {
         ASSERT_TRUE((***(***a.GetCities())[1]).compare("Paris") == 0);
         ASSERT_TRUE((***(***a.GetCities())[2]).compare("London") == 0);
 
-        PrimitivePointerTest *p = open_json::FromJson<PrimitivePointerTest*>(jsonObject);
+        PrimitivePointerTest *p = open_json::FromJson<PrimitivePointerTest *>(jsonObject);
         ASSERT_EQ(jsonObject.at("id").template get<long>(), *p->GetId());
         ASSERT_EQ(0, jsonObject.at("name").template get<std::string>().compare(*p->GetName()));
         ASSERT_DOUBLE_EQ(jsonObject.at("score").template get<double>(), **p->GetScore());
@@ -331,7 +332,7 @@ namespace open_json_test::deserialize::primitive_pointer::non_constant {
         ASSERT_TRUE((***(***p->GetCities())[2]).compare("London") == 0);
         delete p;
 
-        PrimitivePointerTest **pp = open_json::FromJson<PrimitivePointerTest**>(jsonObject);
+        PrimitivePointerTest **pp = open_json::FromJson<PrimitivePointerTest **>(jsonObject);
         ASSERT_EQ(jsonObject.at("id").template get<long>(), *(*pp)->GetId());
         ASSERT_EQ(0, jsonObject.at("name").template get<std::string>().compare(*(*pp)->GetName()));
         ASSERT_DOUBLE_EQ(jsonObject.at("score").template get<double>(), **(*pp)->GetScore());
@@ -343,9 +344,9 @@ namespace open_json_test::deserialize::primitive_pointer::non_constant {
         ASSERT_TRUE(*(*(*pp)->GetCodes())[2] == 300);
 
         ASSERT_TRUE((*pp)->GetMembers()->size() == 3);
-        ASSERT_TRUE( (*(*(*pp)->GetMembers())[0]).compare("First member") == 0);
-        ASSERT_TRUE( (*(*(*pp)->GetMembers())[1]).compare("Second member") == 0);
-        ASSERT_TRUE( (*(*(*pp)->GetMembers())[2]).compare("Third member") == 0);
+        ASSERT_TRUE((*(*(*pp)->GetMembers())[0]).compare("First member") == 0);
+        ASSERT_TRUE((*(*(*pp)->GetMembers())[1]).compare("Second member") == 0);
+        ASSERT_TRUE((*(*(*pp)->GetMembers())[2]).compare("Third member") == 0);
 
         ASSERT_TRUE((**(*pp)->GetSubjects()).size() == 3);
         ASSERT_TRUE((**(**(*pp)->GetSubjects())[0]).compare("Physics") == 0);
@@ -364,16 +365,16 @@ namespace open_json_test::deserialize::primitive_pointer::non_constant {
         delete *pp;
         delete pp;
 
-        PrimitivePointerTest ***ppp = open_json::FromJson<PrimitivePointerTest***>(jsonObject);
+        PrimitivePointerTest ***ppp = open_json::FromJson<PrimitivePointerTest ***>(jsonObject);
         ASSERT_TRUE((**ppp)->GetCodes()->size() == 3);
         ASSERT_TRUE(*(*(**ppp)->GetCodes())[0] == 100);
         ASSERT_TRUE(*(*(**ppp)->GetCodes())[1] == 200);
         ASSERT_TRUE(*(*(**ppp)->GetCodes())[2] == 300);
 
         ASSERT_TRUE((**ppp)->GetMembers()->size() == 3);
-        ASSERT_TRUE( (*(*(**ppp)->GetMembers())[0]).compare("First member") == 0);
-        ASSERT_TRUE( (*(*(**ppp)->GetMembers())[1]).compare("Second member") == 0);
-        ASSERT_TRUE( (*(*(**ppp)->GetMembers())[2]).compare("Third member") == 0);
+        ASSERT_TRUE((*(*(**ppp)->GetMembers())[0]).compare("First member") == 0);
+        ASSERT_TRUE((*(*(**ppp)->GetMembers())[1]).compare("Second member") == 0);
+        ASSERT_TRUE((*(*(**ppp)->GetMembers())[2]).compare("Third member") == 0);
 
         ASSERT_TRUE((**(**ppp)->GetSubjects()).size() == 3);
         ASSERT_TRUE((**(**(**ppp)->GetSubjects())[0]).compare("Physics") == 0);

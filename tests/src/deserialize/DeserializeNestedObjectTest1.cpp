@@ -13,6 +13,26 @@ namespace open_json_test::deserialize::nested {
         int score;
 
     public:
+        BaseClass() = default;
+
+        BaseClass(BaseClass &&v) {
+            this->score = std::move(v.score);
+        }
+
+        BaseClass(const BaseClass &v) {
+            this->score = v.score;
+        }
+
+        BaseClass &operator=(const BaseClass &v) {
+            this->score = v.score;
+            return *this;
+        }
+
+        BaseClass &operator=(const BaseClass &&v) {
+            this->score = std::move(v.score);
+            return *this;
+        }
+
         int GetScore() const {
             return score;
         }
@@ -32,7 +52,31 @@ namespace open_json_test::deserialize::nested {
         int code;
 
     public:
-        const BaseClass& GetBase() const {
+        NestedClass() = default;
+
+        NestedClass(NestedClass &&v) {
+            this->base = std::move(v.base);
+            this->code = std::move(v.code);
+        }
+
+        NestedClass(const NestedClass &v) {
+            this->base = v.base;
+            this->code = v.code;
+        }
+
+        NestedClass &operator=(const NestedClass &v) {
+            this->base = v.base;
+            this->code = v.code;
+            return *this;
+        }
+
+        NestedClass &operator=(const NestedClass &&v) {
+            this->base = std::move(v.base);
+            this->code = std::move(v.code);
+            return *this;
+        }
+
+        const BaseClass &GetBase() const {
             return base;
         }
 
@@ -60,7 +104,31 @@ namespace open_json_test::deserialize::nested {
         int age;
 
     public:
-        const NestedClass& GetNested() const {
+        NestedClass2() = default;
+
+        NestedClass2(NestedClass2 &&v) {
+            this->nested = std::move(v.nested);
+            this->age = std::move(v.age);
+        }
+
+        NestedClass2(const NestedClass2 &v) {
+            this->nested = v.nested;
+            this->age = v.age;
+        }
+
+        NestedClass2 &operator=(const NestedClass2 &v) {
+            this->nested = v.nested;
+            this->age = v.age;
+            return *this;
+        }
+
+        NestedClass2 &operator=(const NestedClass2 &&v) {
+            this->nested = std::move(v.nested);
+            this->age = std::move(v.age);
+            return *this;
+        }
+
+        const NestedClass &GetNested() const {
             return nested;
         }
 
@@ -77,7 +145,7 @@ namespace open_json_test::deserialize::nested {
         }
 
         REGISTER_SETTER_START
-        SETTER(NestedClass2, NestedClass&, "nested", &NestedClass2::SetNested),
+        SETTER(NestedClass2, NestedClass &, "nested", &NestedClass2::SetNested),
         SETTER(NestedClass2, const int&, "age", &NestedClass2::SetAge)
         REGISTER_SETTER_END
 
@@ -91,7 +159,7 @@ namespace open_json_test::deserialize::nested {
         void TearDown() override {
         }
     };
-    
+
     TEST_F(DeserializeNestedObjectTest1, NestedTest) {
         nlohmann::json jsonNested = nlohmann::json::object();
         jsonNested["base"] = nlohmann::json::object();
@@ -110,7 +178,7 @@ namespace open_json_test::deserialize::nested {
         jsonNested2["nested"]["code"] = 20;
         jsonNested2["nested"]["base"]["score"] = 10;
 
-        NestedClass2 nested2 = open_json::FromJson <NestedClass2 >(jsonNested2);
+        NestedClass2 nested2 = open_json::FromJson<NestedClass2>(jsonNested2);
 
         ASSERT_EQ(40, nested2.GetAge());
         ASSERT_EQ(20, nested2.GetNested().GetCode());

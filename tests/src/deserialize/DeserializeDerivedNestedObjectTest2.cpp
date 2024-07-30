@@ -4,7 +4,6 @@
 #include "../../../include/open_json.h"
 
 
-// test deserialization of derived1 class
 
 namespace open_json_test::deserialize::nested::derived::pointer {
 
