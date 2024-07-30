@@ -1,6 +1,7 @@
 #ifndef OPEN_JSON_DESERIALIZER_H
 #define OPEN_JSON_DESERIALIZER_H
 
+#include <iostream>
 #include "CommonDef.h"
 #include <nlohmann/json.hpp>
 #include "boost/optional.hpp"
@@ -567,7 +568,10 @@ namespace open_json::deserializer {
         Type vec = Type();
 
         for (const auto &arrItem: jsonObject) {
-            vec.push_back(FromJsonObject<ValueType>(arrItem));
+            std::cout << "Going to create: " << typeid(ValueType).name() << std::endl;
+            ValueType var = FromJsonObject<ValueType>(arrItem);
+            std::cout << "After creating: " << typeid(ValueType).name() << std::endl;
+            vec.push_back(var);
         }
         return vec;
     }
@@ -579,7 +583,8 @@ namespace open_json::deserializer {
         typedef typename Type::value_type ValueType;
 
         for (const auto &arrItem: jsonObject) {
-            object.push_back(FromJsonObject<ValueType>(arrItem));
+            ValueType var = FromJsonObject<ValueType>(arrItem);
+            object.push_back(var);
         }
     }
 
