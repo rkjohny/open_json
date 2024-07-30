@@ -1,5 +1,4 @@
 #include <iostream>
-
 #include <gtest/gtest.h>
 #include <vector>
 #include <string>
@@ -18,7 +17,7 @@ namespace open_json_test::deserialize::person::constant {
         std::vector<std::string> m_subjects;
 
     public:
-        // Using default copy_constructor, move_constructor, copy_assignment and move_assignment operator
+        // Since no members are pointer type, Using default copy_constructor, move_constructor, copy_assignment and move_assignment operator
 
         Person() = default;
 
