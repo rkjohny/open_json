@@ -568,9 +568,7 @@ namespace open_json::deserializer {
         Type vec = Type();
 
         for (const auto &arrItem: jsonObject) {
-            std::cout << "Going to create: " << typeid(ValueType).name() << std::endl;
             ValueType var = FromJsonObject<ValueType>(arrItem);
-            std::cout << "After creating: " << typeid(ValueType).name() << std::endl;
             vec.push_back(var);
         }
         return vec;
