@@ -3,7 +3,7 @@
 #include "../../include/CommonDef.h"
 #include "../../../include/open_json.h"
 
-namespace open_json_test::deserialize::simple_class {
+namespace open_json_test::deserialize::simple_class2 {
 
     class ClassB : public open_json::Serializable {
     private:
@@ -68,7 +68,7 @@ namespace open_json_test::deserialize::simple_class {
         REGISTER_SETTER_INCLUDING_BASE_END
     };
 
-    TEST(ClassB, Test) {
+    TEST(SimpleObjectTest2, Test) {
         ClassB b;
         nlohmann::json jsonObject = open_json::ToJson(b);
         ASSERT_EQ(b.GetId(), jsonObject.at("id").template get<int>());

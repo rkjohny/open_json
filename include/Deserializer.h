@@ -40,15 +40,6 @@ namespace open_json::deserializer {
     typename std::enable_if<(iteration == 0), void>::type
     static Deserialize(T &, const nlohmann::json &);
 
-
-//    template<class T>
-//    typename std::enable_if<std::is_reference<T>::value || std::is_const<T>::value || Is_Array<T>::Value, T>::type
-//    FromJsonObject(nlohmann::json &);
-//
-//    template<class T, size_t length>
-//    typename std::enable_if<std::is_reference<T>::value || std::is_const<T>::value || Is_Array<T>::Value, T>::type
-//    FromJsonObject(nlohmann::json &);
-
     template<class T>
     typename std::enable_if<Is_Enum<T>::Value && !Is_Pointer<T>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject);
@@ -193,6 +184,12 @@ namespace open_json::deserializer {
     typename std::enable_if<Is_Pointer<T>::Value && !Is_Pointer<typename Remove_CVRP<T>::Type>::Value, T>::type
     static FromJsonObject(const nlohmann::json &jsonObject);
 
+    template<class T>
+    typename std::enable_if<Is_Pointer<T>::Value, T>::type
+    FromJsonObject(const nlohmann::json &jsonArray, size_t length);
+
+
+
 
     template<class T, class B, class ArgT>
     static void SetData(T &object, void (B::*SetterPtr)(ArgT &&), const nlohmann::json &jsonObject) {
@@ -278,28 +275,6 @@ namespace open_json::deserializer {
     typename std::enable_if<(iteration == 0), void>::type
     static Deserialize(T &, const nlohmann::json &) {
     }
-
-//    /**
-//     * object is pointer, constant or reference, return error
-//     */
-//    template<class T>
-//    typename std::enable_if<
-//            std::is_pointer<T>::value || std::is_rvalue_reference<T>::value || std::is_reference<T>::value ||
-//            std::is_const<T>::value || Is_Array<T>::Value, T>::type
-//    FromJsonObject(nlohmann::json &) {
-//        static_assert(true, "constant or reference object cannot be constructed");
-//    }
-//
-//    /**
-//     * object is pointer, constant or reference, return error
-//     */
-//    template<class T, size_t length>
-//    typename std::enable_if<
-//            std::is_pointer<T>::value || std::is_rvalue_reference<T>::value || std::is_reference<T>::value ||
-//            std::is_const<T>::value || Is_Array<T>::Value, T>::type
-//    FromJsonObject(nlohmann::json &) {
-//        static_assert(true, "constant or reference object cannot be constructed");
-//    }
 
 
     /********************************************************************************
@@ -607,6 +582,21 @@ namespace open_json::deserializer {
         Pointer p = new Type();
         FromJsonObject(*p, jsonObject);
         return p;
+    }
+
+    /***********************************************************************************
+     * object type: Array
+     ***********************************************************************************/
+    template<class T>
+    typename std::enable_if<Is_Pointer<T>::Value, T>::type
+    FromJsonObject(const nlohmann::json &jsonArray, size_t length) {
+        using Pointer = typename Remove_CVR<T>::Type;
+        using Type = typename Remove_CVRP<Pointer>::Type;
+        Pointer array = new Type [length];
+        for(size_t i = 0; i<length; ++i) {
+            array[i] = FromJsonObject<Type>(jsonArray[i]);
+        }
+        return array;
     }
 }
 

@@ -3,7 +3,7 @@
 #include "../../include/CommonDef.h"
 #include "../../../include/open_json.h"
 
-namespace open_json_test::deserialize::simple_class {
+namespace open_json_test::deserialize::simple_class3 {
 
     class ClassC {
     private:
@@ -59,7 +59,7 @@ namespace open_json_test::deserialize::simple_class {
         );
     };
 
-    TEST(ClassC, Test) {
+    TEST(SimpleObjectTest3, Test) {
         nlohmann::json jsonObject = nlohmann::json::object();
         jsonObject["id"] = 300;
         jsonObject["name"] = "David Backham";

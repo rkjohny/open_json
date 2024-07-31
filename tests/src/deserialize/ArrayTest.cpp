@@ -3,7 +3,7 @@
 #include "../../include/CommonDef.h"
 #include "../../../include/open_json.h"
 
-namespace open_json_test::deserialize::simple_class {
+namespace open_json_test::deserialize::array_test {
 
     class ClassA {
     private:
@@ -59,24 +59,27 @@ namespace open_json_test::deserialize::simple_class {
         REGISTER_GETTER_END
     };
 
-    TEST(ClassA, Test) {
-        nlohmann::json jsonObject = nlohmann::json::object();
-        jsonObject["id"] = 200;
-        jsonObject["name"] = "David Jonson";
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmismatched-new-delete"
 
-        ClassA a = open_json::FromJson<ClassA>(jsonObject);
-        ASSERT_EQ(jsonObject.at("id").template get<int>(), a.GetId());
-        ASSERT_EQ(0, jsonObject.at("name").template get<std::string>().compare(a.GetName()));
+    TEST(ArrayTest, Test) {
+        nlohmann::json jsonObject = nlohmann::json::array();
+        jsonObject[0]["id"] = 100;
+        jsonObject[0]["name"] = "David Jonson";
 
-        ClassA *p = open_json::FromJson<ClassA *>(jsonObject);
-        ASSERT_EQ(jsonObject.at("id").template get<int>(), p->GetId());
-        ASSERT_EQ(0, jsonObject.at("name").template get<std::string>().compare(p->GetName()));
-        delete p;
+        jsonObject[1]["id"] = 200;
+        jsonObject[1]["name"] = "Rezaul Karim";
 
-        ClassA **pp = open_json::FromJson<ClassA **>(jsonObject);
-        ASSERT_EQ(jsonObject.at("id").template get<int>(), (*pp)->GetId());
-        ASSERT_EQ(0, jsonObject.at("name").template get<std::string>().compare((*pp)->GetName()));
-        delete *pp;
-        delete pp;
+        jsonObject[2]["id"] = 300;
+        jsonObject[2]["name"] = "Mr. xyz";
+
+        ClassA *a = open_json::FromJson<ClassA*>(jsonObject, jsonObject.size());
+
+        for( int i = 0; i<3; i++) {
+            ASSERT_EQ(jsonObject[i].at("id").template get<int>(), a[i].GetId());
+            ASSERT_EQ(0, jsonObject[i].at("name").template get<std::string>().compare(a[i].GetName()));
+        }
+        delete [] (a);
     }
+#pragma GCC diagnostic pop
 }
