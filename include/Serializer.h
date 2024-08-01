@@ -144,43 +144,6 @@ namespace open_json::serializer {
         return nlohmann::json(std::string(object));
     }
 
-    ///////////////////// std::unique_ptr<T> ///////////////////////////////////
-    template<class T>
-    static nlohmann::json ToJsonObject(const std::unique_ptr<T> &object) {
-        if (object) {
-            return ToJsonObject(*object);
-        }
-        return {};
-    }
-
-    ///////////////////// std::shared_ptr<T> ///////////////////////////////////
-    template<class T>
-    static nlohmann::json ToJsonObject(const std::shared_ptr<T> &object) {
-        if (object) {
-            return ToJsonObject(*object);
-        }
-        return {};
-    }
-
-    ///////////////////// std::weak_ptr<T> ///////////////////////////////////
-    template<class T>
-    static nlohmann::json ToJsonObject(const std::weak_ptr<T> &object) {
-        auto sharedObject = object.lock();
-        if (sharedObject) {
-            return ToJsonObject(*sharedObject);
-        }
-        return {};
-    }
-
-    ///////////////////// boost::optional<T> ///////////////////////////////////
-    template<class T>
-    static nlohmann::json ToJsonObject(const boost::optional<T> &object) {
-        if (object) {
-            return ToJsonObject(*object);
-        }
-        return {};
-    }
-
     //////////////////  custom object ////////////////////////
     template<class T>
     std::enable_if_t<is_class_v<T> && !is_pointer_v<T>, nlohmann::json>
@@ -263,6 +226,46 @@ namespace open_json::serializer {
         }
         return {};
     }
+
+    ///////////////////// std::unique_ptr<T> ///////////////////////////////////
+    template<class T>
+    static nlohmann::json ToJsonObject(const std::unique_ptr<T> &object) {
+        if (object) {
+            return ToJsonObject(*object);
+        }
+        return {};
+    }
+
+    ///////////////////// std::shared_ptr<T> ///////////////////////////////////
+    template<class T>
+    static nlohmann::json ToJsonObject(const std::shared_ptr<T> &object) {
+        if (object) {
+            return ToJsonObject(*object);
+        }
+        return {};
+    }
+
+    ///////////////////// std::weak_ptr<T> ///////////////////////////////////
+    template<class T>
+    static nlohmann::json ToJsonObject(const std::weak_ptr<T> &object) {
+        auto sharedObject = object.lock();
+        if (sharedObject) {
+            nlohmann::json jsonObject = ToJsonObject(*sharedObject);
+            sharedObject.reset();
+            return jsonObject;
+        }
+        return {};
+    }
+
+    ///////////////////// boost::optional<T> ///////////////////////////////////
+    template<class T>
+    static nlohmann::json ToJsonObject(const boost::optional<T> &object) {
+        if (object) {
+            return ToJsonObject(*object);
+        }
+        return {};
+    }
+
 }
 
 
