@@ -98,7 +98,7 @@ namespace open_json {
     template<class T>
     struct is_const {
     private:
-        typedef typename remove_all_vrp<T>::type U;
+        typedef remove_all_vrp_t<T> U;
     public:
         static constexpr bool value = std::is_const<U>::value;
     };
@@ -109,7 +109,7 @@ namespace open_json {
     template<class T>
     struct is_pointer {
     private:
-        typedef typename remove_all_cvr<T>::type U;
+        typedef remove_all_cvr_t<T> U;
     public:
         static constexpr bool value = std::is_pointer<U>::value;
     };
@@ -121,7 +121,7 @@ namespace open_json {
     template<class T>
     struct is_enum {
     private:
-        typedef typename remove_all_cvrp<T>::type U;
+        typedef remove_all_cvrp_t<T> U;
     public:
         static constexpr bool value = std::is_enum<U>::value;
     };
@@ -132,9 +132,9 @@ namespace open_json {
     template<class T>
     struct is_union {
     private:
-        typedef typename remove_all_cvrp<T>::type U;
+        typedef remove_all_cvrp_t<T> U;
     public:
-        static constexpr bool value = std::is_union<T>::value;
+        static constexpr bool value = std::is_union<U>::value;
     };
 
     /**
@@ -153,7 +153,7 @@ namespace open_json {
     template<class T>
     struct is_bool {
     private:
-        typedef typename remove_all_cvrp<T>::type U;
+        typedef remove_all_cvrp_t<T> U;
     public:
         static constexpr bool value = is_bool_type<U>::value;
     };
@@ -174,7 +174,7 @@ namespace open_json {
     template<class T>
     struct is_char {
     private:
-        typedef typename remove_all_cvrp<T>::type U;
+        typedef remove_all_cvrp_t<T> U;
     public:
         static constexpr bool value = is_char_type<U>::value;
     };
@@ -195,7 +195,7 @@ namespace open_json {
     template<class T>
     struct is_uchar {
     private:
-        typedef typename remove_all_cvrp<T>::type U;
+        typedef remove_all_cvrp_t<T> U;
     public:
         static constexpr bool value = is_uchar_type<U>::value;
     };
@@ -216,7 +216,7 @@ namespace open_json {
     template<class T>
     struct is_int8 {
     private:
-        typedef typename remove_all_cvrp<T>::type U;
+        typedef remove_all_cvrp_t<T> U;
     public:
         static constexpr bool value = is_int8_type<U>::value;
     };
@@ -237,7 +237,7 @@ namespace open_json {
     template<class T>
     struct is_uint8 {
     private:
-        typedef typename remove_all_cvrp<T>::type U;
+        typedef remove_all_cvrp_t<T> U;
     public:
         static constexpr bool value = is_uint8_type<U>::value;
     };
@@ -259,7 +259,7 @@ namespace open_json {
     template<class T>
     struct is_int16 {
     private:
-        typedef typename remove_all_cvrp<T>::type U;
+        typedef remove_all_cvrp_t<T> U;
     public:
         static constexpr bool value = is_int16_type<U>::value;
     };
@@ -281,7 +281,7 @@ namespace open_json {
     template<class T>
     struct is_uint16 {
     private:
-        typedef typename remove_all_cvrp<T>::type U;
+        typedef remove_all_cvrp_t<T> U;
     public:
         static constexpr bool value = is_uint16_type<U>::value;
     };
@@ -310,7 +310,7 @@ namespace open_json {
     template<class T>
     struct is_int32 {
     private:
-        typedef typename remove_all_cvrp<T>::type U;
+        typedef remove_all_cvrp_t<T> U;
     public:
         static constexpr bool value = is_int32_type<U>::value;
     };
@@ -340,7 +340,7 @@ namespace open_json {
     template<class T>
     struct is_uint32 {
     private:
-        typedef typename remove_all_cvrp<T>::type U;
+        typedef remove_all_cvrp_t<T> U;
     public:
         static constexpr bool value = is_uint32_type<U>::value;
     };
@@ -369,7 +369,7 @@ namespace open_json {
     template<class T>
     struct is_int64 {
     private:
-        typedef typename remove_all_cvrp<T>::type U;
+        typedef remove_all_cvrp_t<T> U;
     public:
         static constexpr bool value = is_int64_type<U>::value;
     };
@@ -398,7 +398,7 @@ namespace open_json {
     template<class T>
     struct is_uint64 {
     private:
-        typedef typename remove_all_cvrp<T>::type U;
+        typedef remove_all_cvrp_t<T> U;
     public:
         static constexpr bool value = is_uint64_type<U>::value;
     };
@@ -419,7 +419,7 @@ namespace open_json {
     template<class T>
     struct is_float {
     private:
-        typedef typename remove_all_cvrp<T>::type U;
+        typedef remove_all_cvrp_t<T> U;
     public:
         static constexpr bool value = is_float_type<U>::value;
     };
@@ -440,7 +440,7 @@ namespace open_json {
     template<class T>
     struct is_double {
     private:
-        typedef typename remove_all_cvrp<T>::type U;
+        typedef remove_all_cvrp_t<T> U;
     public:
         static constexpr bool value = is_double_type<U>::value;
     };
@@ -461,7 +461,7 @@ namespace open_json {
     template<class T>
     struct is_long_double {
     private:
-        typedef typename remove_all_cvrp<T>::type U;
+        typedef remove_all_cvrp_t<T> U;
     public:
         static constexpr bool value = is_long_double_type<U>::value;
     };
@@ -482,7 +482,7 @@ namespace open_json {
     template<class T>
     struct is_string {
     private:
-        typedef typename remove_all_cvrp<T>::type U;
+        typedef remove_all_cvrp_t<T> U;
     public:
         static constexpr bool value = is_string_type<U>::value;
     };
@@ -494,7 +494,7 @@ namespace open_json {
     template<class T>
     struct is_array {
     private:
-        typedef typename remove_all_cvr<T>::type U;
+        typedef remove_all_cvr_t<T> U;
     public:
         static constexpr bool value = std::is_array<U>::value;
     };
@@ -506,7 +506,7 @@ namespace open_json {
     template<class T>
     struct is_decimal {
     private:
-        typedef typename remove_all_cvrp<T>::type U;
+        typedef remove_all_cvrp_t<T> U;
 
     public:
         static constexpr bool value = (
@@ -522,7 +522,7 @@ namespace open_json {
     template<class T>
     struct is_integer {
     private:
-        typedef typename remove_all_cvrp<T>::type U;
+        typedef remove_all_cvrp_t<T> U;
     public:
         static constexpr bool value = (
                 (is_int8<U>::value) || (is_uint8<U>::value) ||
@@ -538,7 +538,7 @@ namespace open_json {
     template<class T>
     struct is_number {
     private:
-        typedef typename remove_all_cvrp<T>::type U;
+        typedef remove_all_cvrp_t<T> U;
     public:
         static constexpr bool value = (
                 (is_integer<U>::value) || (is_decimal<U>::value)
@@ -551,7 +551,7 @@ namespace open_json {
     template<class T>
     struct is_primitive {
     private:
-        typedef typename remove_all_cvrp<T>::type U;
+        typedef remove_all_cvrp_t<T> U;
 
     public:
         static constexpr bool value = (
@@ -634,7 +634,7 @@ namespace open_json {
     template<class T>
     struct is_class {
     private:
-        typedef typename remove_all_cvrp<T>::type U;
+        typedef remove_all_cvrp_t<T> U;
 
     public:
         static constexpr bool value = (
