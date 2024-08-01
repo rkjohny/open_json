@@ -7,7 +7,7 @@
 #include "boost/optional.hpp"
 #include "TypeTraits.h"
 #include "Setter.h"
-
+#include "Utils.h"
 
 namespace open_json::deserializer {
 
@@ -187,8 +187,11 @@ namespace open_json::deserializer {
 
     template<class T>
     std::enable_if_t<is_pointer<T>::value, T>
-    FromJsonObject(const nlohmann::json &jsonArray, size_t length);
+    static FromJsonObject(const nlohmann::json &jsonArray, size_t length);
 
+    template<class T>
+    std::enable_if_t<is_unique_ptr<T>::value, T>
+    static FromJsonObject(const nlohmann::json &jsonObject);
 
 
 
@@ -590,7 +593,7 @@ namespace open_json::deserializer {
      ***********************************************************************************/
     template<class T>
     std::enable_if_t<is_pointer<T>::value, T>
-    FromJsonObject(const nlohmann::json &jsonArray, size_t length) {
+    static FromJsonObject(const nlohmann::json &jsonArray, size_t length) {
         using Pointer = remove_all_cvr_t<T>;
         using Type = remove_all_cvr_single_p_t<Pointer>;
         Pointer array = new Type [length];
@@ -603,13 +606,14 @@ namespace open_json::deserializer {
     /***********************************************************************************
     * object type: std::unique_ptr<T>
     ***********************************************************************************/
-//    template<class T>
-//    static void FromJson(const nlohmann::json &jsonObject) {
-//        using Type = typename remove_all_cvr_t<T>::type;
-//        std::unique_ptr<Type> var = std::make_unique<Type>();
-//        FromJson(*var.get(), jsonObject);
-//        return std::move(var);
-//    }
+    template<class T>
+    std::enable_if_t<is_unique_ptr<T>::value, T>
+    static FromJsonObject(const nlohmann::json &jsonObject) {
+        using Type = typename unique_ptr_value_type<T>::type;
+        std::unique_ptr<Type> var = std::make_unique<Type>();
+        FromJsonObject(*var.get(), jsonObject);
+        return std::move(var);
+    }
 }
 
 #endif //OPEN_JSON_DESERIALIZER_H

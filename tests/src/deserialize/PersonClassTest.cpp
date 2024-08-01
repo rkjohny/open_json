@@ -3,7 +3,6 @@
 #include <vector>
 #include <string>
 #include <tuple>
-#include "../../include/CommonDef.h"
 #include "../../../include/open_json.h"
 
 

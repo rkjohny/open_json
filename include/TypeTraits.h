@@ -628,26 +628,6 @@ namespace open_json {
         static const bool value = true;
     };
 
-    /**
-     * check weather T is a custom class
-     */
-    template<class T>
-    struct is_class {
-    private:
-        typedef remove_all_cvrp_t<T> U;
-
-    public:
-        static constexpr bool value = (
-                (!is_primitive<U>::value) &&
-                (!is_string<U>::value) &&
-                (!is_enum<U>::value) &&
-                (!is_union<U>::value) &&
-                (!is_vector<U>::value) &&
-                (!is_map<U>::value) &&
-                (std::is_class<U>::value)
-        );
-    };
-
     template<typename T>
     struct is_unique_ptr : std::false_type {
 
@@ -667,6 +647,27 @@ namespace open_json {
     template<typename T, typename D>
     struct unique_ptr_value_type<std::unique_ptr<T, D>> {
         using type = T; // Extract the value type for unique_ptr
+    };
+
+    /**
+     * check weather T is a custom class
+     */
+    template<class T>
+    struct is_class {
+    private:
+        typedef remove_all_cvrp_t<T> U;
+
+    public:
+        static constexpr bool value = (
+                (!is_primitive<U>::value) &&
+                (!is_string<U>::value) &&
+                (!is_enum<U>::value) &&
+                (!is_union<U>::value) &&
+                (!is_vector<U>::value) &&
+                (!is_map<U>::value) &&
+                (!is_unique_ptr<T>::value) &&
+                (std::is_class<U>::value)
+        );
     };
 }
 
