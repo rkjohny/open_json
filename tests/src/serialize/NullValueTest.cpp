@@ -89,8 +89,6 @@ namespace open_json_test::serialize::null_value {
 
         nlohmann::json jsonObject = open_json::ToJson(a);
 
-        std::cout << jsonObject.dump(4) << std::endl;
-
         ASSERT_EQ(jsonObject.at("id").template get<int>(), -1);
         ASSERT_EQ(0, jsonObject.at("name").template get<std::string>().compare(a.GetName()));
         ASSERT_FALSE(jsonObject.contains("age"));
