@@ -8,10 +8,10 @@ namespace open_json {
     class Getter {
     public:
 
-        using Class = ClassT;
-        using Type = ReturnT;
+        using ClassType = ClassT;
+        using ReturnType = ReturnT;
 
-        typedef ReturnT(Class::*GetterPtr)() const;
+        typedef ReturnT(ClassT::*GetterPtr)() const;
 
         GetterPtr fp;
         const char *name;

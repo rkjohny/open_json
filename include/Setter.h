@@ -7,10 +7,10 @@ namespace open_json {
     template<class ClassT, class ArgT>
     class Setter {
     public:
-        using Class = ClassT;
+        using ClassType = ClassT;
         using ArgType = ArgT;
 
-        typedef void (Class::*SetterPtr)(ArgType);
+        typedef void (ClassT::*SetterPtr)(ArgT);
 
         SetterPtr fp;
         const char *name;
@@ -18,7 +18,7 @@ namespace open_json {
         constexpr Setter(SetterPtr fp, const char *name) : fp(fp), name(name) {
         }
 
-    }; //Class Setter
+    }; //ClassType Setter
 
 }
 

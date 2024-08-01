@@ -7,6 +7,7 @@
 #include "nlohmann/json.hpp"
 #include "boost/optional.hpp"
 #include "string"
+#include "Getter.h"
 
 
 namespace open_json::serializer {
@@ -15,32 +16,32 @@ namespace open_json::serializer {
     static void DoSerialize(const T &object, nlohmann::json &jsonObject);
 
     template<std::size_t iteration, class T>
-    typename std::enable_if<(iteration > 1), void>::type
+    std::enable_if_t<(iteration > 1), void>
     static Serialize(const T &object, nlohmann::json &jsonObject);
 
     template<std::size_t iteration, class T>
-    typename std::enable_if<(iteration == 1), void>::type
+    std::enable_if_t<(iteration == 1), void>
     static Serialize(const T &object, nlohmann::json &jsonObject);
 
     template<std::size_t iteration, class T>
-    typename std::enable_if<(iteration == 0), void>::type
+    std::enable_if_t<(iteration == 0), void>
     static Serialize(const T &object, nlohmann::json &);
 
     template<class T>
-    typename std::enable_if<Is_Enum<T>::Value && !Is_Pointer<T>::Value, nlohmann::json>::type
+    std::enable_if_t<is_enum<T>::value && !is_pointer<T>::value, nlohmann::json>
     static ToJsonObject(const T &object);
 
     template<class T>
-    typename std::enable_if<
-            (Is_Number<T>::Value || Is_Bool<T>::Value) && !Is_Pointer<T>::Value, nlohmann::json>::type
+    std::enable_if_t<
+            (is_number<T>::value || is_bool<T>::value) && !is_pointer<T>::value, nlohmann::json>
     static ToJsonObject(const T &object);
 
     template<class T>
-    typename std::enable_if<Is_Char<T>::Value && !Is_Pointer<T>::Value, nlohmann::json>::type
+    std::enable_if_t<is_char<T>::value && !is_pointer<T>::value, nlohmann::json>
     static ToJsonObject(const T &object);
 
     template<class T>
-    typename std::enable_if<Is_String<T>::Value && !Is_Pointer<T>::Value, nlohmann::json>::type
+    std::enable_if_t<is_string<T>::value && !is_pointer<T>::value, nlohmann::json>
     static ToJsonObject(const T &object);
 
     template<class T>
@@ -56,41 +57,41 @@ namespace open_json::serializer {
     static nlohmann::json ToJsonObject(const boost::optional<T> &object);
 
     template<class T>
-    typename std::enable_if<Is_Class<T>::Value && !Is_Pointer<T>::Value, nlohmann::json>::type
+    std::enable_if_t<is_class<T>::value && !is_pointer<T>::value, nlohmann::json>
     static ToJsonObject(const T &object);
 
     template<class T>
-    typename std::enable_if<Is_Vector<T>::Value && !Is_Pointer<T>::Value, nlohmann::json>::type
+    std::enable_if_t<is_vector<T>::value && !is_pointer<T>::value, nlohmann::json>
     static ToJsonObject(const T &object);
 
     template<class T>
-    typename std::enable_if<Is_Array<T>::Value, nlohmann::json>::type
+    std::enable_if_t<is_array<T>::value, nlohmann::json>
     static ToJsonObject(const T &object, const std::size_t &length);
 
     template<class T>
-    typename std::enable_if<Is_Pointer<T>::Value && !Is_Array<T>::Value, nlohmann::json>::type
+    std::enable_if_t<is_pointer<T>::value && !is_array<T>::value, nlohmann::json>
     static ToJsonObject(const T &object, const std::size_t &length);
 
     template<class T>
-    typename std::enable_if<Is_Pointer<T>::Value && !Is_Array<T>::Value, nlohmann::json>::type
+    std::enable_if_t<is_pointer<T>::value && !is_array<T>::value, nlohmann::json>
     static ToJsonObject(const T &object);
 
 
     template<std::size_t iteration, class T>
     static void DoSerialize(const T &object, nlohmann::json &jsonObject) {
-        using ObjectType = typename Remove_CVRP<T>::Type;
+        using ObjectType = remove_all_cvrp_t<T>;
         constexpr auto getter = std::get<iteration>(ObjectType::getters);
         auto getterName = getter.name;
-        //using GetterReturnType = typename decltype( getter )::Type;
+        //using GetterReturnType = typename decltype( getter )::type;
         auto method = getter.fp;
 
-        const auto &getterReturnedObject = (object.*method)();
+        const auto getterReturnedObject = (object.*method)();
 
         jsonObject[std::string(getterName)] = ToJsonObject(getterReturnedObject);
     }
 
     template<std::size_t iteration, class T>
-    typename std::enable_if<(iteration > 1), void>::type
+    std::enable_if_t<(iteration > 1), void>
     static Serialize(const T &object, nlohmann::json &jsonObject) {
         DoSerialize<iteration - 1, T>(object, jsonObject);
 
@@ -98,7 +99,7 @@ namespace open_json::serializer {
     }
 
     template<std::size_t iteration, class T>
-    typename std::enable_if<(iteration == 1), void>::type
+    std::enable_if_t<(iteration == 1), void>
     static Serialize(const T &object, nlohmann::json &jsonObject) {
         DoSerialize<0, T>(object, jsonObject);
     }
@@ -108,37 +109,37 @@ namespace open_json::serializer {
      * when setters length is 0, it will try to compile with iteration = 0
      */
     template<std::size_t iteration, class T>
-    typename std::enable_if<(iteration == 0), void>::type
+    std::enable_if_t<(iteration == 0), void>
     static Serialize(const T &, nlohmann::json &) {
     }
 
 
     //////////////////////////////// Enum ///////////////////
     template<class T>
-    typename std::enable_if<Is_Enum<T>::Value && !Is_Pointer<T>::Value, nlohmann::json>::type
+    std::enable_if_t<is_enum<T>::value && !is_pointer<T>::value, nlohmann::json>
     static ToJsonObject(const T &object) {
         return nlohmann::json(static_cast<int>(object));
     }
 
     //////////////////////////////// Bool, Integer, Decimal ///////////////////
     template<class T>
-    typename std::enable_if<
-            (Is_Number<T>::Value || Is_Bool<T>::Value) && !Is_Pointer<T>::Value, nlohmann::json>::type
+    std::enable_if_t<
+            (is_number<T>::value || is_bool<T>::value) && !is_pointer<T>::value, nlohmann::json>
     static ToJsonObject(const T &object) {
         return nlohmann::json(object);
     }
 
     ///////////////// char ///////////////////////////////////
-    // TODO: why it is needed? it should be covered by Is_Int8
+    // TODO: why it is needed? it should be covered by is_int8
     template<class T>
-    typename std::enable_if<Is_Char<T>::Value && !Is_Pointer<T>::Value, nlohmann::json>::type
+    std::enable_if_t<is_char<T>::value && !is_pointer<T>::value, nlohmann::json>
     static ToJsonObject(const T &object) {
         return nlohmann::json(static_cast<int8_t> (object));
     }
 
     /////////////////////// std::string //////////////////////////////////////
     template<class T>
-    typename std::enable_if<Is_String<T>::Value && !Is_Pointer<T>::Value, nlohmann::json>::type
+    std::enable_if_t<is_string<T>::value && !is_pointer<T>::value, nlohmann::json>
     static ToJsonObject(const T &object) {
         return nlohmann::json(std::string(object));
     }
@@ -182,11 +183,11 @@ namespace open_json::serializer {
 
     //////////////////  custom object ////////////////////////
     template<class T>
-    typename std::enable_if<Is_Class<T>::Value && !Is_Pointer<T>::Value, nlohmann::json>::type
+    std::enable_if_t<is_class<T>::value && !is_pointer<T>::value, nlohmann::json>
     static ToJsonObject(const T &object) {
         nlohmann::json jsonObject = nlohmann::json::object();
 
-        using ObjectType = typename Remove_CVRP<T>::Type;
+        using ObjectType = remove_all_cvrp_t<T>;
         auto getters = ObjectType::getters;
         const auto length = std::tuple_size<decltype(getters)>::value;
         if (length > 0) {
@@ -197,7 +198,7 @@ namespace open_json::serializer {
 
     //////////////////  std::vector ////////////////////////
     template<class T>
-    typename std::enable_if<Is_Vector<T>::Value && !Is_Pointer<T>::Value, nlohmann::json>::type
+    std::enable_if_t<is_vector<T>::value && !is_pointer<T>::value, nlohmann::json>
     static ToJsonObject(const T &object) {
         std::size_t length = object.size();
         nlohmann::json jsonObject = nlohmann::json::array();
@@ -212,7 +213,7 @@ namespace open_json::serializer {
 
     ////////////////// Array ///////////////////////////////
     template<class T>
-    typename std::enable_if<Is_Array<T>::Value, nlohmann::json>::type
+    std::enable_if_t<is_array<T>::value, nlohmann::json>
     static ToJsonObject(const T &object, const std::size_t &length) {
         nlohmann::json jsonObject = nlohmann::json::array();
         if (length > 0) {
@@ -224,7 +225,7 @@ namespace open_json::serializer {
     }
 
     template<class T>
-    typename std::enable_if<Is_Pointer<T>::Value && !Is_Array<T>::Value, nlohmann::json>::type
+    std::enable_if_t<is_pointer<T>::value && !is_array<T>::value, nlohmann::json>
     static ToJsonObject(const T &object, const std::size_t &length) {
         nlohmann::json jsonObject = nlohmann::json::array();
         if (object) {
@@ -239,7 +240,7 @@ namespace open_json::serializer {
 
     ////////////////// Map ///////////////////////////////
     template<class T>
-    typename std::enable_if<Is_Map<T>::Value && !Is_Pointer<T>::Value, nlohmann::json>::type
+    std::enable_if_t<is_map<T>::value && !is_pointer<T>::value, nlohmann::json>
     static ToJsonObject(const T &object) {
         nlohmann::json jsonObject = nlohmann::json::object();
 
@@ -255,7 +256,7 @@ namespace open_json::serializer {
 
     ////////////////// Pointer ///////////////////////////////
     template<class T>
-    typename std::enable_if<Is_Pointer<T>::Value && !Is_Array<T>::Value, nlohmann::json>::type
+    std::enable_if_t<is_pointer<T>::value && !is_array<T>::value, nlohmann::json>
     static ToJsonObject(const T &object) {
         if (object) {
             return ToJsonObject(*object);

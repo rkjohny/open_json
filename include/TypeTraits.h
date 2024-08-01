@@ -11,204 +11,235 @@
 
 namespace open_json {
 
-    // base class to remove const, volatile and reference qualifiers at all levels
+    /********************************************************************************
+     *  class to remove const, volatile and reference qualifiers at all levels
+     ********************************************************************************/
     template <typename T>
-    struct Remove_CVR {
-        using Type = std::remove_cv_t<std::remove_reference_t<T>>;
+    struct remove_all_cvr {
+        using type = std::remove_cv_t<std::remove_reference_t<T>>;
     };
 
     template <typename T>
-    struct Remove_CVR<T*> {
-        using Type = typename Remove_CVR<std::remove_cv_t<std::remove_reference_t<T>>>::Type*;
+    struct remove_all_cvr<T*> {
+        using type = typename remove_all_cvr<std::remove_cv_t<std::remove_reference_t<T>>>::type*;
     };
 
-    // Helper alias template
-    template <typename T>
-    using Remove_CVR_T = typename Remove_CVR<T>::Type;
-
-    // base class to remove const, volatile and reference at all levels, and removes top level pointer qualifiers
-    template <typename T>
-    struct Remove_CVRP {
-        using Type = std::remove_pointer_t<Remove_CVR_T<T>>;
+    template <typename T, std::size_t N>
+    struct remove_all_cvr<T[N]> {
+        using type = typename remove_all_cvr<std::remove_cv_t<std::remove_reference_t<T>>>::type[N];
     };
-    
-    // Helper alias template
+
     template <typename T>
-    using Remove_CVRP_T = typename Remove_CVRP<T>::Type;
+    struct remove_all_cvr<T[]> {
+        using type = typename remove_all_cvr<std::remove_cv_t<std::remove_reference_t<T>>>::type[];
+    };
+
+    template <typename T>
+    using remove_all_cvr_t = typename remove_all_cvr<T>::type;
 
 
-    // Base class to remove volatile, references, and pointers at all levels
+    /********************************************************************************
+     *  class to remove const, volatile and reference at all levels, and removes top level pointer qualifiers
+     ********************************************************************************/
     template <typename T>
-    struct Remove_VRP {
-        using Type = std::remove_volatile_t<std::remove_reference_t<T>>;
+    struct remove_all_cvr_single_p {
+        using type = std::remove_pointer_t<remove_all_cvr_t<T>>;
+    };
+
+    template <typename T>
+    using remove_all_cvr_single_p_t = typename remove_all_cvr_single_p<T>::type;
+
+
+    /********************************************************************************
+     *  class to remove volatile, references, and pointers at all levels
+     ********************************************************************************/
+    template <typename T>
+    struct remove_all_vrp {
+        using type = std::remove_volatile_t<std::remove_reference_t<T>>;
     };
 
     // Specialization to handle pointers
     template <typename T>
-    struct Remove_VRP<T*> {
-        using Type = typename Remove_VRP<std::remove_volatile_t<std::remove_reference_t<T>>>::Type;
+    struct remove_all_vrp<T*> {
+        using type = typename remove_all_vrp<std::remove_volatile_t<std::remove_reference_t<T>>>::type;
     };
 
     // Specialization to handle pointers to volatile
     template <typename T>
-    struct Remove_VRP<volatile T*> {
-        using Type = typename Remove_VRP<T>::Type;
+    struct remove_all_vrp<volatile T*> {
+        using type = typename remove_all_vrp<std::remove_volatile_t<std::remove_reference_t<T>>>::type;
     };
 
-    // Helper alias template
     template <typename T>
-    using Remove_VRP_T = typename Remove_VRP<T>::Type;
+    using remove_all_vrp_t = typename remove_all_vrp<T>::type;
 
-    
+
+    /********************************************************************************
+     *  class to remove const, volatile, references, and pointers at all levels
+     ********************************************************************************/
+    template <typename T>
+    struct remove_all_cvrp {
+        using type = remove_all_cvr_t<T>;
+    };
+
+    template <typename T>
+    struct remove_all_cvrp<T*> {
+        using type = typename remove_all_cvrp<remove_all_cvr_t<T>>::type;
+    };
+
+    template <typename T>
+    using remove_all_cvrp_t = typename remove_all_cvrp<T>::type;
+
+
 
     /**
-     * Type check for const
+     * type check for const
      */
     template<class T>
-    struct Is_Const {
+    struct is_const {
     private:
-        typedef typename Remove_VRP<T>::Type U;
+        typedef typename remove_all_vrp<T>::type U;
     public:
-        static constexpr bool Value = std::is_const<U>::value;
+        static constexpr bool value = std::is_const<U>::value;
     };
 
     /**
-     * Type check for pointer
+     * type check for pointer
      */
     template<class T>
-    struct Is_Pointer {
+    struct is_pointer {
     private:
-        typedef typename Remove_CVR<T>::Type U;
+        typedef typename remove_all_cvr<T>::type U;
     public:
-        static constexpr bool Value = std::is_pointer<U>::value;
+        static constexpr bool value = std::is_pointer<U>::value;
     };
 
     ///////////////////////////////////////////////////////////////
     /**
-     * Type check for enum
+     * type check for enum
      */
     template<class T>
-    struct Is_Enum {
+    struct is_enum {
     private:
-        typedef typename Remove_CVR<T>::Type U;
+        typedef typename remove_all_cvrp<T>::type U;
     public:
-        static constexpr bool Value = std::is_enum<U>::value;
+        static constexpr bool value = std::is_enum<U>::value;
     };
 
     /**
-     * Type check for union
+     * type check for union
      */
     template<class T>
-    struct Is_Union {
+    struct is_union {
     private:
-        typedef typename Remove_CVR<T>::Type U;
+        typedef typename remove_all_cvrp<T>::type U;
     public:
-        static constexpr bool Value = std::is_union<T>::value;
+        static constexpr bool value = std::is_union<T>::value;
     };
 
     /**
      * type check for boolean
      */
     template<class T>
-    struct Is_Bool_Type {
-        static const bool Value = false;
+    struct is_bool_type {
+        static const bool value = false;
     };
 
     template<>
-    struct Is_Bool_Type<bool> {
-        static const bool Value = true;
+    struct is_bool_type<bool> {
+        static const bool value = true;
     };
 
     template<class T>
-    struct Is_Bool {
+    struct is_bool {
     private:
-        typedef typename Remove_CVR<T>::Type U;
+        typedef typename remove_all_cvrp<T>::type U;
     public:
-        static constexpr bool Value = Is_Bool_Type<U>::Value;
+        static constexpr bool value = is_bool_type<U>::value;
     };
 
     /**
      * type char, it may vary among platforms
      */
     template<class T>
-    struct Is_Char_Type {
-        static const bool Value = false;
+    struct is_char_type {
+        static const bool value = false;
     };
 
     template<>
-    struct Is_Char_Type<char> {
-        static const bool Value = true;
+    struct is_char_type<char> {
+        static const bool value = true;
     };
 
     template<class T>
-    struct Is_Char {
+    struct is_char {
     private:
-        typedef typename Remove_CVR<T>::Type U;
+        typedef typename remove_all_cvrp<T>::type U;
     public:
-        static constexpr bool Value = Is_Char_Type<U>::Value;
+        static constexpr bool value = is_char_type<U>::value;
     };
 
     /**
      * type unsigned char, it may vary among platforms
      */
     template<class T>
-    struct Is_UChar_Type {
-        static const bool Value = false;
+    struct is_uchar_type {
+        static const bool value = false;
     };
 
     template<>
-    struct Is_UChar_Type<unsigned char> {
-        static const bool Value = true;
+    struct is_uchar_type<unsigned char> {
+        static const bool value = true;
     };
 
     template<class T>
-    struct Is_UChar {
+    struct is_uchar {
     private:
-        typedef typename Remove_CVR<T>::Type U;
+        typedef typename remove_all_cvrp<T>::type U;
     public:
-        static constexpr bool Value = Is_UChar_Type<U>::Value;
+        static constexpr bool value = is_uchar_type<U>::value;
     };
 
     /**
      * type: signed char, byte
      */
     template<class T>
-    struct Is_Int8_Type {
-        static const bool Value = false;
+    struct is_int8_type {
+        static const bool value = false;
     };
 
     template<>
-    struct Is_Int8_Type<int8_t> {
-        static const bool Value = true;
+    struct is_int8_type<int8_t> {
+        static const bool value = true;
     };
 
     template<class T>
-    struct Is_Int8 {
+    struct is_int8 {
     private:
-        typedef typename Remove_CVR<T>::Type U;
+        typedef typename remove_all_cvrp<T>::type U;
     public:
-        static constexpr bool Value = Is_Int8_Type<U>::Value;
+        static constexpr bool value = is_int8_type<U>::value;
     };
 
     /**
      * type: unsigned char, byte
      */
     template<class T>
-    struct Is_UInt8_Type {
-        static const bool Value = false;
+    struct is_uint8_type {
+        static const bool value = false;
     };
 
     template<>
-    struct Is_UInt8_Type<uint8_t> {
-        static const bool Value = true;
+    struct is_uint8_type<uint8_t> {
+        static const bool value = true;
     };
 
     template<class T>
-    struct Is_UInt8 {
+    struct is_uint8 {
     private:
-        typedef typename Remove_CVR<T>::Type U;
+        typedef typename remove_all_cvrp<T>::type U;
     public:
-        static constexpr bool Value = Is_UInt8_Type<U>::Value;
+        static constexpr bool value = is_uint8_type<U>::value;
     };
 
     /**
@@ -216,21 +247,21 @@ namespace open_json {
      *
      */
     template<class T>
-    struct Is_Int16_Type {
-        static const bool Value = false;
+    struct is_int16_type {
+        static const bool value = false;
     };
 
     template<>
-    struct Is_Int16_Type<int16_t> {
-        static const bool Value = true;
+    struct is_int16_type<int16_t> {
+        static const bool value = true;
     };
 
     template<class T>
-    struct Is_Int16 {
+    struct is_int16 {
     private:
-        typedef typename Remove_CVR<T>::Type U;
+        typedef typename remove_all_cvrp<T>::type U;
     public:
-        static constexpr bool Value = Is_Int16_Type<U>::Value;
+        static constexpr bool value = is_int16_type<U>::value;
     };
 
     /**
@@ -238,21 +269,21 @@ namespace open_json {
      *
      */
     template<class T>
-    struct Is_UInt16_Type {
-        static const bool Value = false;
+    struct is_uint16_type {
+        static const bool value = false;
     };
 
     template<>
-    struct Is_UInt16_Type<uint16_t> {
-        static const bool Value = true;
+    struct is_uint16_type<uint16_t> {
+        static const bool value = true;
     };
 
     template<class T>
-    struct Is_UInt16 {
+    struct is_uint16 {
     private:
-        typedef typename Remove_CVR<T>::Type U;
+        typedef typename remove_all_cvrp<T>::type U;
     public:
-        static constexpr bool Value = Is_UInt16_Type<U>::Value;
+        static constexpr bool value = is_uint16_type<U>::value;
     };
 
     /**
@@ -260,28 +291,28 @@ namespace open_json {
      *
      */
     template<class T>
-    struct Is_Int32_Type {
-        static const bool Value = false;
+    struct is_int32_type {
+        static const bool value = false;
     };
 
     template<>
-    struct Is_Int32_Type<int32_t> {
-        static const bool Value = true;
+    struct is_int32_type<int32_t> {
+        static const bool value = true;
     };
 
 #if WORD_SIZE == 32
     template<>
-    struct Is_Int32_Type<long int > {
-        static const bool Value = true;
+    struct is_int32_type<long int > {
+        static const bool value = true;
     };
 #endif
 
     template<class T>
-    struct Is_Int32 {
+    struct is_int32 {
     private:
-        typedef typename Remove_CVR<T>::Type U;
+        typedef typename remove_all_cvrp<T>::type U;
     public:
-        static constexpr bool Value = Is_Int32_Type<U>::Value;
+        static constexpr bool value = is_int32_type<U>::value;
     };
 
     /**
@@ -289,29 +320,29 @@ namespace open_json {
      *
      */
     template<class T>
-    struct Is_UInt32_Type {
-        static const bool Value = false;
+    struct is_uint32_type {
+        static const bool value = false;
     };
 
 
     template<>
-    struct Is_UInt32_Type<uint32_t> {
-        static const bool Value = true;
+    struct is_uint32_type<uint32_t> {
+        static const bool value = true;
     };
 
 #if WORD_SIZE == 32
     template<>
-    struct Is_UInt32_Type<unsigned long int> {
-        static const bool Value = true;
+    struct is_uint32_type<unsigned long int> {
+        static const bool value = true;
     };
 #endif
 
     template<class T>
-    struct Is_UInt32 {
+    struct is_uint32 {
     private:
-        typedef typename Remove_CVR<T>::Type U;
+        typedef typename remove_all_cvrp<T>::type U;
     public:
-        static constexpr bool Value = Is_UInt32_Type<U>::Value;
+        static constexpr bool value = is_uint32_type<U>::value;
     };
 
     /**
@@ -319,28 +350,28 @@ namespace open_json {
      *
      */
     template<class T>
-    struct Is_Int64_Type {
-        static const bool Value = false;
+    struct is_int64_type {
+        static const bool value = false;
     };
 
     template<>
-    struct Is_Int64_Type<int64_t> {
-        static const bool Value = true;
+    struct is_int64_type<int64_t> {
+        static const bool value = true;
     };
 
 #if WORD_SIZE == 64
     template<>
-    struct Is_Int64_Type<long int> {
-        static const bool Value = true;
+    struct is_int64_type<long int> {
+        static const bool value = true;
     };
 #endif
 
     template<class T>
-    struct Is_Int64 {
+    struct is_int64 {
     private:
-        typedef typename Remove_CVR<T>::Type U;
+        typedef typename remove_all_cvrp<T>::type U;
     public:
-        static constexpr bool Value = Is_Int64_Type<U>::Value;
+        static constexpr bool value = is_int64_type<U>::value;
     };
 
     /**
@@ -348,140 +379,140 @@ namespace open_json {
      *
      */
     template<class T>
-    struct Is_UInt64_Type {
-        static const bool Value = false;
+    struct is_uint64_type {
+        static const bool value = false;
     };
 
     template<>
-    struct Is_UInt64_Type<uint64_t> {
-        static const bool Value = true;
+    struct is_uint64_type<uint64_t> {
+        static const bool value = true;
     };
 
 #if WORD_SIZE == 64
     template<>
-    struct Is_UInt64_Type<unsigned long int> {
-        static const bool Value = true;
+    struct is_uint64_type<unsigned long int> {
+        static const bool value = true;
     };
 #endif
 
     template<class T>
-    struct Is_UInt64 {
+    struct is_uint64 {
     private:
-        typedef typename Remove_CVR<T>::Type U;
+        typedef typename remove_all_cvrp<T>::type U;
     public:
-        static constexpr bool Value = Is_UInt64_Type<U>::Value;
+        static constexpr bool value = is_uint64_type<U>::value;
     };
 
     /**
      * type check for float
      */
     template<class T>
-    struct Is_Float_Type {
-        static const bool Value = false;
+    struct is_float_type {
+        static const bool value = false;
     };
 
     template<>
-    struct Is_Float_Type<float> {
-        static const bool Value = true;
+    struct is_float_type<float> {
+        static const bool value = true;
     };
 
     template<class T>
-    struct Is_Float {
+    struct is_float {
     private:
-        typedef typename Remove_CVR<T>::Type U;
+        typedef typename remove_all_cvrp<T>::type U;
     public:
-        static constexpr bool Value = Is_Float_Type<U>::Value;
+        static constexpr bool value = is_float_type<U>::value;
     };
 
     /**
      * type check for double
      */
     template<class T>
-    struct Is_Double_Type {
-        static const bool Value = false;
+    struct is_double_type {
+        static const bool value = false;
     };
 
     template<>
-    struct Is_Double_Type<double> {
-        static const bool Value = true;
+    struct is_double_type<double> {
+        static const bool value = true;
     };
 
     template<class T>
-    struct Is_Double {
+    struct is_double {
     private:
-        typedef typename Remove_CVR<T>::Type U;
+        typedef typename remove_all_cvrp<T>::type U;
     public:
-        static constexpr bool Value = Is_Double_Type<U>::Value;
+        static constexpr bool value = is_double_type<U>::value;
     };
 
     /**
      * long double type
      */
     template<class T>
-    struct Is_LongDouble_Type {
-        static const bool Value = false;
+    struct is_long_double_type {
+        static const bool value = false;
     };
 
     template<>
-    struct Is_LongDouble_Type<long double> {
-        static const bool Value = true;
+    struct is_long_double_type<long double> {
+        static const bool value = true;
     };
 
     template<class T>
-    struct Is_LongDouble {
+    struct is_long_double {
     private:
-        typedef typename Remove_CVR<T>::Type U;
+        typedef typename remove_all_cvrp<T>::type U;
     public:
-        static constexpr bool Value = Is_LongDouble_Type<U>::Value;
+        static constexpr bool value = is_long_double_type<U>::value;
     };
 
     /**
      * type check for string
      */
     template<class T>
-    struct Is_String_Type {
-        static const bool Value = false;
+    struct is_string_type {
+        static const bool value = false;
     };
 
     template<>
-    struct Is_String_Type<std::string> {
-        static const bool Value = true;
+    struct is_string_type<std::string> {
+        static const bool value = true;
     };
 
     template<class T>
-    struct Is_String {
+    struct is_string {
     private:
-        typedef typename Remove_CVR<T>::Type U;
+        typedef typename remove_all_cvrp<T>::type U;
     public:
-        static constexpr bool Value = Is_String_Type<U>::Value;
-    };
-
-
-    /**
-     * Type check for array
-     */
-    template<class T>
-    struct Is_Array {
-    private:
-        typedef typename Remove_CVR<T>::Type U;
-    public:
-        static constexpr bool Value = std::is_array<T>::value;
+        static constexpr bool value = is_string_type<U>::value;
     };
 
 
     /**
-     * Type check for Is_Decimal
+     * type check for array
      */
     template<class T>
-    struct Is_Decimal {
+    struct is_array {
     private:
-        typedef typename Remove_CVR<T>::Type U;
+        typedef typename remove_all_cvr<T>::type U;
+    public:
+        static constexpr bool value = std::is_array<U>::value;
+    };
+
+
+    /**
+     * type check for is_decimal
+     */
+    template<class T>
+    struct is_decimal {
+    private:
+        typedef typename remove_all_cvrp<T>::type U;
 
     public:
-        static constexpr bool Value = (
-                (Is_Float<U>::Value) ||
-                (Is_Double<U>::Value) ||
-                (Is_LongDouble<U>::Value)
+        static constexpr bool value = (
+                (is_float<U>::value) ||
+                (is_double<U>::value) ||
+                (is_long_double<U>::value)
         );
     };
 
@@ -489,15 +520,15 @@ namespace open_json {
      * type check for integers
      */
     template<class T>
-    struct Is_Integer {
+    struct is_integer {
     private:
-        typedef typename Remove_CVR<T>::Type U;
+        typedef typename remove_all_cvrp<T>::type U;
     public:
-        static constexpr bool Value = (
-                (Is_Int8<U>::Value) || (Is_UInt8<U>::Value) ||
-                (Is_Int16<U>::Value) || (Is_UInt16<U>::Value) ||
-                (Is_Int32<U>::Value) || (Is_UInt32<U>::Value) ||
-                (Is_Int64<U>::Value) || (Is_UInt64<U>::Value)
+        static constexpr bool value = (
+                (is_int8<U>::value) || (is_uint8<U>::value) ||
+                (is_int16<U>::value) || (is_uint16<U>::value) ||
+                (is_int32<U>::value) || (is_uint32<U>::value) ||
+                (is_int64<U>::value) || (is_uint64<U>::value)
         );
     };
 
@@ -505,12 +536,12 @@ namespace open_json {
      * type check for integers
      */
     template<class T>
-    struct Is_Number {
+    struct is_number {
     private:
-        typedef typename Remove_CVR<T>::Type U;
+        typedef typename remove_all_cvrp<T>::type U;
     public:
-        static constexpr bool Value = (
-                (Is_Integer<U>::Value) || (Is_Decimal<U>::Value)
+        static constexpr bool value = (
+                (is_integer<U>::value) || (is_decimal<U>::value)
         );
     };
 
@@ -518,15 +549,15 @@ namespace open_json {
      * Determines weather T is primitive type (i.e. not a class except string)
      */
     template<class T>
-    struct Is_Primitive {
+    struct is_primitive {
     private:
-        typedef typename Remove_CVR<T>::Type U;
+        typedef typename remove_all_cvrp<T>::type U;
 
     public:
-        static constexpr bool Value = (
-                (Is_Bool<U>::Value) ||
-                (Is_Char<U>::Value) ||
-                (Is_Number<U>::Value)
+        static constexpr bool value = (
+                (is_bool<U>::value) ||
+                (is_char<U>::value) ||
+                (is_number<U>::value)
         );
     };
 
@@ -535,86 +566,107 @@ namespace open_json {
      * check weather T is a std::vector
      */
     template<class T>
-    struct Is_Vector {
-        static const bool Value = false;
+    struct is_vector {
+        static const bool value = false;
     };
 
     template<class T, class Alloc>
-    struct Is_Vector<std::vector<T, Alloc> > {
-        static const bool Value = true;
+    struct is_vector<std::vector<T, Alloc> > {
+        static const bool value = true;
     };
 
     template<class T, class Alloc>
-    struct Is_Vector<const std::vector<T, Alloc> > {
-        static const bool Value = true;
+    struct is_vector<const std::vector<T, Alloc> > {
+        static const bool value = true;
     };
 
     template<class T, class Alloc>
-    struct Is_Vector<std::vector<T, Alloc> &&> {
-        static const bool Value = true;
+    struct is_vector<std::vector<T, Alloc> &&> {
+        static const bool value = true;
     };
 
     template<class T, class Alloc>
-    struct Is_Vector<std::vector<T, Alloc> &> {
-        static const bool Value = true;
+    struct is_vector<std::vector<T, Alloc> &> {
+        static const bool value = true;
     };
 
     template<class T, class Alloc>
-    struct Is_Vector<const std::vector<T, Alloc> &> {
-        static const bool Value = true;
+    struct is_vector<const std::vector<T, Alloc> &> {
+        static const bool value = true;
     };
 
     /**
      * check weather T is a std::map
      */
     template<class T>
-    struct Is_Map {
-        static const bool Value = false;
+    struct is_map {
+        static const bool value = false;
     };
 
     template<class T, class U, class Alloc>
-    struct Is_Map<std::map<T, U, Alloc> > {
-        static const bool Value = true;
+    struct is_map<std::map<T, U, Alloc> > {
+        static const bool value = true;
     };
 
     template<class T, class U, class Alloc>
-    struct Is_Map<const std::map<T, U, Alloc> > {
-        static const bool Value = true;
+    struct is_map<const std::map<T, U, Alloc> > {
+        static const bool value = true;
     };
 
     template<class T, class U, class Alloc>
-    struct Is_Map<std::map<T, U, Alloc> &&> {
-        static const bool Value = true;
+    struct is_map<std::map<T, U, Alloc> &&> {
+        static const bool value = true;
     };
 
     template<class T, class U, class Alloc>
-    struct Is_Map<std::map<T, U, Alloc> &> {
-        static const bool Value = true;
+    struct is_map<std::map<T, U, Alloc> &> {
+        static const bool value = true;
     };
 
     template<class T, class U, class Alloc>
-    struct Is_Map<const std::map<T, U, Alloc> &> {
-        static const bool Value = true;
+    struct is_map<const std::map<T, U, Alloc> &> {
+        static const bool value = true;
     };
 
     /**
      * check weather T is a custom class
      */
     template<class T>
-    struct Is_Class {
+    struct is_class {
     private:
-        typedef typename Remove_CVR<T>::Type U;
+        typedef typename remove_all_cvrp<T>::type U;
 
     public:
-        static constexpr bool Value = (
-                (!Is_Primitive<U>::Value) &&
-                (!Is_String<U>::Value) &&
-                (!Is_Enum<U>::Value) &&
-                (!Is_Union<U>::Value) &&
-                (!Is_Vector<U>::Value) &&
-                (!Is_Map<U>::Value) &&
+        static constexpr bool value = (
+                (!is_primitive<U>::value) &&
+                (!is_string<U>::value) &&
+                (!is_enum<U>::value) &&
+                (!is_union<U>::value) &&
+                (!is_vector<U>::value) &&
+                (!is_map<U>::value) &&
                 (std::is_class<U>::value)
         );
+    };
+
+    template<typename T>
+    struct is_unique_ptr : std::false_type {
+
+    };
+
+    template<typename T, typename D>
+    struct is_unique_ptr<std::unique_ptr<T, D>> : std::true_type {
+
+    };
+
+    // Helper template to extract the value type of a unique_ptr
+    template<typename T>
+    struct unique_ptr_value_type {
+        using type = void; // Default to void for non-unique_ptr types
+    };
+
+    template<typename T, typename D>
+    struct unique_ptr_value_type<std::unique_ptr<T, D>> {
+        using type = T; // Extract the value type for unique_ptr
     };
 }
 

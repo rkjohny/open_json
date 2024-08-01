@@ -23,7 +23,7 @@ namespace open_json_test::serialize::empty_class::without_getters {
 #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 
     TEST(DeserializeEmptyClassTest1, EmptyObject1) {
-        using Type = typename open_json::Remove_CVR<SerializeEmptyClass>::Type;
+        using Type = typename open_json::remove_all_cvrp<SerializeEmptyClass>::type;
         auto setters = Type::setters;
         const size_t lengthSetter = std::tuple_size<decltype(setters)>::value;
 
@@ -36,7 +36,7 @@ namespace open_json_test::serialize::empty_class::without_getters {
     }
 
     TEST(DeserializeEmptyClassTest1, EmptyObject2) {
-        using Type = typename open_json::Remove_CVR<SerializeEmptyClass2>::Type;
+        using Type = typename open_json::remove_all_cvrp<SerializeEmptyClass2>::type;
         auto setters = Type::setters;
         const size_t lengthSetter = std::tuple_size<decltype(setters)>::value;
 

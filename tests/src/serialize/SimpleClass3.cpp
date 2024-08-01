@@ -4,7 +4,7 @@
 
 namespace open_json_test::serialize::simple_class {
 
-    class ClassC {
+    class SimpleClass3 {
     private:
         int id = 100;
         std::string name = "Rezaul karim";
@@ -19,24 +19,24 @@ namespace open_json_test::serialize::simple_class {
         }
 
         static constexpr std::tuple getters = std::make_tuple(
-                open_json::Getter<ClassC, int>(&ClassC::GetId, "id"),
-                open_json::Getter<ClassC, const std::string &>(&ClassC::GetName, "name")
+                open_json::Getter<SimpleClass3, int>(&SimpleClass3::GetId, "id"),
+                open_json::Getter<SimpleClass3, const std::string &>(&SimpleClass3::GetName, "name")
         );
     };
 
-    TEST(ClassC, Test) {
-        ClassC c;
+    TEST(SimpleClass3, Test) {
+        SimpleClass3 c;
         nlohmann::json jsonObject = open_json::ToJson(c);
         ASSERT_EQ(c.GetId(), jsonObject.at("id").template get<int>());
         ASSERT_EQ(0, c.GetName().compare(jsonObject.at("name").template get<std::string>()));
 
-        ClassC *p = new ClassC();
+        SimpleClass3 *p = new SimpleClass3();
         jsonObject = open_json::ToJson(p);
         ASSERT_EQ(p->GetId(), jsonObject.at("id").template get<int>());
         ASSERT_EQ(0, p->GetName().compare(jsonObject.at("name").template get<std::string>()));
         delete p;
 
-        ClassC **pp = new ClassC *(new ClassC());
+        SimpleClass3 **pp = new SimpleClass3 *(new SimpleClass3());
         jsonObject = open_json::ToJson(pp);
         ASSERT_EQ((*pp)->GetId(), jsonObject.at("id").template get<int>());
         ASSERT_EQ(0, (*pp)->GetName().compare(jsonObject.at("name").template get<std::string>()));

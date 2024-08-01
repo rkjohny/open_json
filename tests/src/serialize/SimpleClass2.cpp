@@ -4,12 +4,14 @@
 
 namespace open_json_test::serialize::simple_class {
 
-    class ClassA {
+    class SimpleClass2 : public open_json::Serializable {
     private:
         int id = 100;
         std::string name = "Rezaul karim";
 
     public:
+        SimpleClass2() = default;
+
         int GetId() const {
             return id;
         }
@@ -18,25 +20,26 @@ namespace open_json_test::serialize::simple_class {
             return name;
         }
 
-        REGISTER_GETTER_START
-        GETTER(ClassA, int, "id", &ClassA::GetId),
-        GETTER(ClassA, const std::string&, "name", &ClassA::GetName)
-        REGISTER_GETTER_END
+
+        REGISTER_GETTER_INCLUDING_BASE_START(open_json::Serializable)
+        GETTER(SimpleClass2, int, "id", &SimpleClass2::GetId),
+        GETTER(SimpleClass2, const std::string&, "name", &SimpleClass2::GetName)
+        REGISTER_GETTER_INCLUDING_BASE_END
     };
 
-    TEST(ClassA, Serialize) {
-        ClassA a;
-        nlohmann::json jsonObject = open_json::ToJson(a);
-        ASSERT_EQ(a.GetId(), jsonObject.at("id").template get<int>());
-        ASSERT_EQ(0, a.GetName().compare(jsonObject.at("name").template get<std::string>()));
+    TEST(SimpleClass2, Test) {
+        SimpleClass2 b;
+        nlohmann::json jsonObject = open_json::ToJson(b);
+        ASSERT_EQ(b.GetId(), jsonObject.at("id").template get<int>());
+        ASSERT_EQ(0, b.GetName().compare(jsonObject.at("name").template get<std::string>()));
 
-        ClassA *p = new ClassA();
+        SimpleClass2 *p = new SimpleClass2();
         jsonObject = open_json::ToJson(p);
         ASSERT_EQ(p->GetId(), jsonObject.at("id").template get<int>());
         ASSERT_EQ(0, p->GetName().compare(jsonObject.at("name").template get<std::string>()));
         delete p;
 
-        ClassA **pp = new ClassA*(new ClassA());
+        SimpleClass2 **pp = new SimpleClass2*(new SimpleClass2());
         jsonObject = open_json::ToJson(pp);
         ASSERT_EQ((*pp)->GetId(), jsonObject.at("id").template get<int>());
         ASSERT_EQ(0, (*pp)->GetName().compare(jsonObject.at("name").template get<std::string>()));

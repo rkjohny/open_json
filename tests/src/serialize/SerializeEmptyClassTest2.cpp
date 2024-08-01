@@ -15,7 +15,7 @@ namespace open_json_test::serialize::empty_class::with_getters {
     };
 
     TEST(SerializeEmptyClass, EmptyObject) {
-        using Type = typename open_json::Remove_CVR<SerializeEmptyClass>::Type;
+        using Type = typename open_json::remove_all_cvrp<SerializeEmptyClass>::type;
         auto getters = Type::getters;
         const size_t lengthGetter = std::tuple_size<decltype(getters)>::value;
 
