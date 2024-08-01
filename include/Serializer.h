@@ -12,6 +12,14 @@
 
 namespace open_json::serializer {
 
+    template<class T>
+    std::enable_if_t<is_pointer_v<T>, void>
+    static GetData(T &object, nlohmann::json &jsonObject, const char * name);
+
+    template<class T>
+    std::enable_if_t<!is_pointer_v<T>, void>
+    static GetData(T &object, nlohmann::json &jsonObject, const char * name);
+
     template<std::size_t iteration, class T>
     static void DoSerialize(const T &object, nlohmann::json &jsonObject);
 
@@ -77,6 +85,20 @@ namespace open_json::serializer {
     static ToJsonObject(const T &object);
 
 
+    template<class T>
+    std::enable_if_t<!is_pointer_v<T>, void>
+    static GetData(T &object, nlohmann::json &jsonObject, const char * name) {
+        jsonObject[std::string(name)] = ToJsonObject(object);
+    }
+
+    template<class T>
+    std::enable_if_t<is_pointer_v<T>, void>
+    static GetData(T &object, nlohmann::json &jsonObject, const char * name) {
+        if (object) {
+            jsonObject[std::string(name)] = ToJsonObject(object);
+        }
+    }
+
     template<std::size_t iteration, class T>
     static void DoSerialize(const T &object, nlohmann::json &jsonObject) {
         using ObjectType = remove_all_cvrp_t<T>;
@@ -85,9 +107,9 @@ namespace open_json::serializer {
         //using GetterReturnType = typename decltype( getter )::type;
         auto method = getter.fp;
 
-        const auto getterReturnedObject = (object.*method)();
+        const auto returnedObject = (object.*method)();
 
-        jsonObject[std::string(getterName)] = ToJsonObject(getterReturnedObject);
+        GetData(returnedObject, jsonObject, getterName);
     }
 
     template<std::size_t iteration, class T>

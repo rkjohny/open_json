@@ -2,7 +2,7 @@
 #include <string>
 #include "../../../include/open_json.h"
 
-namespace open_json_test::deserialize::null_value {
+namespace open_json_test::serialize::null_value {
 
     class ClassA {
     private:
@@ -75,32 +75,24 @@ namespace open_json_test::deserialize::null_value {
             this->age = a;
         }
 
-        REGISTER_SETTER_START
-        SETTER(ClassA, const int, "id", &ClassA::SetId),
-        SETTER(ClassA, const std::string&, "name", &ClassA::SetName),
-        SETTER(ClassA, int *, "age", &ClassA::SetAge)
-        REGISTER_SETTER_END
+        REGISTER_GETTER_START
+        GETTER(ClassA, int, "id", &ClassA::GetId),
+        GETTER(ClassA, const std::string&, "name", &ClassA::GetName),
+        GETTER(ClassA, int *, "age", &ClassA::GetAge)
+        REGISTER_GETTER_END
     };
 
     TEST(ClassA, Test) {
-        nlohmann::json jsonObject = nlohmann::json::object();
-        jsonObject["id"] = 200;
-        jsonObject["name"] = "David Jonson";
-        // age is null
+        ClassA a;
+        a.SetName("Rrzaul Karim");
+        // id has default value, age is null
 
-        ClassA a = open_json::FromJson<ClassA>(jsonObject);
-        ASSERT_EQ(jsonObject.at("id").template get<int>(), a.GetId());
+        nlohmann::json jsonObject = open_json::ToJson(a);
+
+        std::cout << jsonObject.dump(4) << std::endl;
+
+        ASSERT_EQ(jsonObject.at("id").template get<int>(), -1);
         ASSERT_EQ(0, jsonObject.at("name").template get<std::string>().compare(a.GetName()));
-        ASSERT_TRUE(a.GetAge() == nullptr);
-
-        jsonObject = nlohmann::json::object();
-        jsonObject["age"] = 20;
-        jsonObject["name"] = "David Jonson";
-        // id is null
-
-        a = open_json::FromJson<ClassA>(jsonObject);
-        ASSERT_EQ(jsonObject.at("age").template get<int>(), *a.GetAge());
-        ASSERT_EQ(0, jsonObject.at("name").template get<std::string>().compare(a.GetName()));
-        ASSERT_TRUE(a.GetId() == -1); // default value -1
+        ASSERT_FALSE(jsonObject.contains("age"));
     }
 }
