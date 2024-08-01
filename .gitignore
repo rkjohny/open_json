@@ -41,3 +41,4 @@
 /tests/CMakeCache.txt
 /cmake_install.cmake
 /CMakeCache.txt
+/_deps/gsl-src/
