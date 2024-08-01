@@ -85,6 +85,9 @@ namespace open_json::serializer {
     static ToJsonObject(const T &object);
 
 
+
+    //************************ Implementation *************************************
+
     template<class T>
     std::enable_if_t<!is_pointer_v<T>, void>
     static GetData(T &object, nlohmann::json &jsonObject, const char * name) {

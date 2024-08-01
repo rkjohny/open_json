@@ -199,6 +199,8 @@ namespace open_json::deserializer {
 
 
 
+    //************************ Implementation *************************************
+
     template<class T, class B, class ArgT>
     static void SetData(T &object, void (B::*SetterPtr)(ArgT &&), const nlohmann::json &jsonObject) {
         using Type = remove_all_cvr_t<ArgT>;
