@@ -561,8 +561,8 @@ namespace open_json::deserializer {
         Type vec = Type();
 
         for (const auto &arrItem: jsonObject) {
-            ValueType var = FromJsonObject<ValueType>(arrItem);
-            vec.push_back(var);
+            //ValueType var = FromJsonObject<ValueType>(arrItem);
+            vec.push_back(FromJsonObject<ValueType>(arrItem));
         }
         return vec;
     }
@@ -574,8 +574,8 @@ namespace open_json::deserializer {
         typedef typename Type::value_type ValueType;
 
         for (const auto &arrItem: jsonObject) {
-            ValueType var = FromJsonObject<ValueType>(arrItem);
-            object.push_back(var);
+            //ValueType var = FromJsonObject<ValueType>(arrItem);
+            object.push_back(FromJsonObject<ValueType>(arrItem));
         }
     }
 
