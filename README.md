@@ -111,34 +111,34 @@ REGISTER_GETTER_END
 #### Example:
 ````
 class Person {
-    protected:
-        int age;
-        std::string name;
+protected:
+    int age;
+    std::string name;
 
-    public:
-        Person() = default;
-        virtual ~Person() = default;
+public:
+    Person() = default;
+    virtual ~Person() = default;
 
-        int GetAge() const {
-            return age;
-        }
+    int GetAge() const {
+        return age;
+    }
 
-        void SetAge(int age) {
-            this->age = age;
-        }
+    void SetAge(int age) {
+        this->age = age;
+    }
 
-        const std::string &GetName() const {
-            return name;
-        }
+    const std::string &GetName() const {
+        return name;
+    }
 
-        void SetName(const std::string &name) {
-            this->name = name;
-        }
+    void SetName(const std::string &name) {
+        this->name = name;
+    }
 
-        REGISTER_GETTER_START
-        GETTER(Person, int, "age", &Person::GetAge),
-        GETTER(Person, const std::string&, "name", &Person::GetName)
-        REGISTER_GETTER_END
+    REGISTER_GETTER_START
+    GETTER(Person, int, "age", &Person::GetAge),
+    GETTER(Person, const std::string&, "name", &Person::GetName)
+    REGISTER_GETTER_END
 };
 ````
 
@@ -182,31 +182,32 @@ REGISTER_GETTER_INCLUDING_BASE_END
 ##### Example
 ````
 class Student : public Person {
-    protected:
-        int *id;
+protected:
+    int *id;
 
-    public:
-        Student() {
-            id = nullptr;
+public:
+    Student() {
+        // Important: assign null as the default value of the member, so if we dont set a valid value, it will be ignored and will not be desrialized
+        id = nullptr;
+    }
+    
+    virtual ~Student() {
+        if(id) {
+            delete id;
         }
-        
-        virtual ~Student() {
-            if(id) {
-                delete id;
-            }
-        }
-        
-        const int* GetId() const {
-            return id;
-        }
+    }
+    
+    const int* GetId() const {
+        return id;
+    }
 
-        void SetId(const int* id) {
-            this->id = const_cast<int*>(id);
-        }
+    void SetId(const int* id) {
+        this->id = const_cast<int*>(id);
+    }
 
-        REGISTER_GETTER_INCLUDING_BASE_START(Person)
-        GETTER(Student, const int*, "id", &Student::GetId)
-        REGISTER_GETTER_INCLUDING_BASE_END
+    REGISTER_GETTER_INCLUDING_BASE_START(Person)
+    GETTER(Student, const int*, "id", &Student::GetId)
+    REGISTER_GETTER_INCLUDING_BASE_END
 };
 ````
 
@@ -289,9 +290,9 @@ jsonArray = open_json::ToJson(strArray, 3);
 std::map<std::string, Student> mapObj;
 
 // insert into map like:
-//mapObj["first"] = student1;
-//mapObj["second"] = student2;
-//mapObj["third"] = student3;
+mapObj["first"] = student1;
+mapObj["second"] = student2;
+mapObj["third"] = student3;
                 
 jsonObject = open_json::ToJson(mapObj);
 ````
@@ -324,5 +325,431 @@ std::weak_ptr<Person> wp = sp;
 
 // if wp can be locked, person object will be serilazied and returned, otherwise an empty json objetc will be returned
 nlohmann::json jsonObject = open_json::ToJson(wp);
+````
+
+* ## Deserializing
+* Deserializing is done by open_json::FromJson<>() method. It takes a nlohmann::json object and returns a C++ object
+* This method supports any level of pointer
+* Use pointer to avoid copying
+
+* ### Primitive Integer
+````
+nlohmann::json jsonObject = 10;
+
+// deserializing        
+int intValue = open_json::FromJson<int>(jsonObject);
+
+jsonObject = -1;
+// while getting pointer, memory will be allocated by the library so amke sure to free the allocated memory
+int *minusOne = open_json::FromJson<int *>(jsonObject);
+delete minusOne;
+
+jsonObject = 1;
+int **plusOne = open_json::FromJson<int **>(jsonObject);
+delete *plusOne;
+delete plusOne;
+````
+
+* ### Primitive char
+````
+nlohmann::json jsonObject = 'A';
+              
+char charValue = open_json::FromJson<char>(jsonObject);
+````
+
+* ### String
+````
+nlohmann::json jsonObject = "Hello World!";
+
+std::string str = open_json::FromJson<std::string>(jsonObject);
+````
+
+* ### Vector 
+````
+nlohmann::json jsonArr = nlohmann::json::array();
+jsonArr.push_back(10);
+jsonArr.push_back(20);
+jsonArr.push_back(30);
+
+std::vector<int> intVec = open_json::FromJson<std::vector<int>>(jsonArr);
+
+std::vector<int *> *ptrVec = open_json::FromJson<std::vector<int *> *>(jsonArr);
+// Make sure to deallocate the memory
+for (auto p: *ptrVec) {
+    delete p;
+}
+delete ptrVec
+````
+#### Vector of object can be deserialized in the same way
+
+* ### Custom Class
+* To deserialize a custom object, you need to write setter methods of the member variable those you want to deserialize.
+* Then register the setter method as bellow:
+````
+REGISTER_SETTER_START
+SETTER(<Class>, <setter method return type>, <json priperty>, <setter method>),
+REGISTER_SETTER_END
+````
+* #### To deserialize an object of a custom class you must follow some rules:
+* #### Rule 1: The class must have a public default constructor
+In our example of Person class:
+````
+class Person {
+    public:
+        Person() = default;
+};
+````
+* #### Rule 2: The class must have a cpoy constructor, move constructor, copy assignment operator and move operator
+In our example of Person class:
+````
+class Person {
+protected:
+    int age;
+    std::string name;
+
+public:
+    Person() = default;
+
+    virtual ~Person() = default;
+
+    Person(const Person &person) {
+        this->age = person.age;
+        this->name = person.name;
+    }
+
+    Person(Person &&person) {
+        this->age = std::move(person.age);
+        this->name = std::move(person.name);
+    }
+
+    Person &operator=(const Person &person){
+        this->age = person.age;
+        this->name = person.name;
+        return *this;
+    }
+
+    Person &operator=(Person &&person){
+        this->age = std::move(person.age);
+        this->name = std::move(person.name);
+        return *this;
+    }
+};
+````
+
+* #### Rule 3: If there is any pointers in the class member do not allocate memory for that pointer, memory will be allocated by the library. And do not forget to deallocate the allocated memory. Also assign null as the default value of the member
+In our example of Student class:
+````
+class Student : public Person {
+protected:
+    int *id;
+
+public:
+    Student() {
+        // do not allocate memory. id will be allocated by the librray 
+        id = nullptr;
+    }
+
+    virtual ~Student() {
+        // do not forget to deallocate the allocated memory
+        if(id) {
+            delete id;
+        }
+    }
+};
+````
+
+Now our Person class
+````
+class Person {
+protected:
+    int age;
+    std::string name;
+
+public:
+    Person() = default;
+
+    virtual ~Person() = default;
+
+    Person(const Person &person) {
+        this->age = person.age;
+        this->name = person.name;
+    }
+
+    Person(Person &&person) {
+        this->age = std::move(person.age);
+        this->name = std::move(person.name);
+    }
+
+    Person &operator=(const Person &person){
+        this->age = person.age;
+        this->name = person.name;
+        return *this;
+    }
+
+    Person &operator=(Person &&person){
+        this->age = std::move(person.age);
+        this->name = std::move(person.name);
+        return *this;
+    }
+
+    int GetAge() const {
+        return age;
+    }
+
+    void SetAge(int age) {
+        this->age = age;
+    }
+
+    const std::string &GetName() const {
+        return name;
+    }
+
+    void SetName(const std::string &name) {
+        this->name = name;
+    }
+    
+    REGISTER_SETTER_START
+    SETTER(Person, int, "age", &Person::SetAge),
+    SETTER(Person, const std::string&, "name", &Person::SetName)
+    REGISTER_SETTER_END
+};
+````
+
+#### To deserialize
+````
+nlohmann::json jsonObject;
+
+jsonObject["age"] = 20;
+jsonObject["name"] = "David Beckham";
+
+Person person = open_json::FromJson<Person>(jsonObject);
+
+Person *p = open_json::FromJson<Person*>(jsonObject);
+delete p;
+````
+
+* ### Derived Class
+* To deserialize ab object of derived class, if you want to deserialize the member variables you need to register the setters in derived class as bellow:
+* Base class must have the setters registered
+````
+REGISTER_SETTER_INCLUDING_BASE_START(<Base Class>)
+SETTER(.....
+REGISTER_SETTER_INCLUDING_BASE_END
+````
+
+#### Example
+Now our Person and Student class
+````
+class Person {
+protected:
+    int age;
+    std::string name;
+
+public:
+    Person() = default;
+
+    virtual ~Person() = default;
+
+    Person(const Person &person) {
+        this->age = person.age;
+        this->name = person.name;
+    }
+
+    Person(Person &&person) {
+        this->age = std::move(person.age);
+        this->name = std::move(person.name);
+    }
+
+    Person &operator=(const Person &person){
+        this->age = person.age;
+        this->name = person.name;
+        return *this;
+    }
+
+    Person &operator=(Person &&person){
+        this->age = std::move(person.age);
+        this->name = std::move(person.name);
+        return *this;
+    }
+
+    int GetAge() const {
+        return age;
+    }
+
+    void SetAge(int age) {
+        this->age = age;
+    }
+
+    const std::string &GetName() const {
+        return name;
+    }
+
+    void SetName(const std::string &name) {
+        this->name = name;
+    }
+
+    REGISTER_SETTER_START
+    SETTER(Person, int, "age", &Person::SetAge),
+    SETTER(Person, const std::string&, "name", &Person::SetName)
+    REGISTER_SETTER_END
+};
+
+class Student : public Person {
+protected:
+    int *id;
+
+public:
+    Student() {
+        id = nullptr;
+    }
+
+    virtual ~Student() {
+        if(id) {
+            delete id;
+        }
+    }
+
+    Student(const Student &student) : Person(student) {
+        // Imnportant: allocate new memory, do not directly assign pointer
+        this->id = new int(*student.id);
+    }
+
+    Student(Student &&student) : Person(std::move(student)) {
+        this->id = new int(std::move(*student.id));
+    }
+
+    Student &operator=(const Student &student) {
+        this->age = student.age;
+        this->name = student.name;
+        this->id = new int(*student.id);
+        return *this;
+    }
+
+    Student& operator=(Student &&student) {
+        this->age = std::move(student.age);
+        this->name = std::move(student.name);
+        this->id = new int(std::move(*student.id));
+        return *this;
+    }
+
+    const int* GetId() const {
+        return id;
+    }
+
+    void SetId(const int* id) {
+        this->id = const_cast<int*>(id);
+    }
+
+    REGISTER_SETTER_INCLUDING_BASE_START(Person)
+    SETTER(Student, const int*, "id", &Student::SetId)
+    REGISTER_SETTER_INCLUDING_BASE_END
+};
+````
+
+#### To deserialize
+````
+nlohmann::json jsonObject;
+
+jsonObject["age"] = 30;
+jsonObject["name"] = "Leonel Messi";
+jsonObject["id"] = 10;
+
+Student student = open_json::FromJson<Student>(jsonObject);
+
+Student *p = open_json::FromJson<Student*>(jsonObject);
+delete p;
+````
+#### See the file <a href="./tests/src/Tutorial.cpp">Tutorial.cpp</a> to see the full example
+
+* ### Deserializing enum
+````
+enum EnumTest {
+    A = 10,
+    B = 20,
+    C = 30,
+};
+
+nlohmann::json jsonObject = static_cast<int>(EnumTest::B);
+EnumTest enm = open_json::FromJson<EnumTest>(jsonObject);    
+````
+
+* ### Deserializing Array
+````
+nlohmann::json jsonObject = nlohmann::json::array();
+jsonObject[0]["age"] = 30;
+jsonObject[0]["name"] = "David Jonson";
+
+jsonObject[1]["age"] = 20;
+jsonObject[1]["name"] = "Rezaul Karim";
+
+jsonObject[2]["age"] = 40;
+jsonObject[2]["name"] = "Mr. xyz";
+
+Person *a = open_json::FromJson<Person*>(jsonObject, 3);
+delete [] (a);
+````
+
+* ### Deserializing Map
+````
+nlohmann::json jsonObject;
+
+// create json for the map
+jsonObject["first"] = student1;
+jsonObject["second"] = student2;
+jsonObject["third"] = student3
+
+std::map<std::string, Student> mapObject = open_json::FromJson<std::map<std::string, Student>>(jsonObject);
+````
+
+* ### Deserializing UniquePtr
+````
+nlohmann::json jsonObject;
+
+jsonObject["age"] = 40;
+jsonObject["name"] = "Rezaul karim";
+
+std::unique_ptr<Person> ptr = open_json::FromJson<std::unique_ptr<Person>>(jsonObject);
+````
+
+* ### Deserializing SharedPtr
+````
+nlohmann::json jsonObject;
+
+jsonObject["age"] = 40;
+jsonObject["name"] = "Rezaul karim";
+
+std::shared_ptr<Person> ptr = open_json::FromJson<std::shared_ptr<Person>>(jsonObject);
+````
+
+* ### Deserializing Rvalue Reference
+````
+class RvalueReference {
+public:
+    int id;
+    std::string name;
+    
+    RvalueReference() = default;
+    
+    // Implement copy_constructor, move_constructor, copy_assignment and move_assignment operator
+      
+    void SetId(int &&id) {
+        this->id = std::move(id);
+    }
+
+    void SetName(std::string &&name) {
+        this->name = std::move(name);
+    }
+
+    REGISTER_SETTER_START
+    SETTER(RvalueReference, int &&, "id", &RvalueReference::SetId),
+    SETTER(RvalueReference, std::string &&, "name", &RvalueReference::SetName)
+    REGISTER_SETTER_END
+};
+
+nlohmann::json jsonObject = nlohmann::json::object();
+jsonObject["id"] = 10;
+jsonObject["name"] = "Rezaul Karim";
+
+RvalueReference obj = open_json::FromJson<RvalueReference>(jsonObject);
 ````
 
