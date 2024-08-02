@@ -18,7 +18,7 @@ namespace open_json {
 
 
 #define REGISTER_CLASS_DEF(TYPE, KEY, ID) \
-    private: static open_json::ClassRegistrar<TYPE> _class_registrar_##ID;
+    private: static inline open_json::ClassRegistrar<TYPE> _class_registrar_##ID = open_json::ClassRegistrar<TYPE>( std::string(KEY) )
 
 #define REGISTER_CLASS_DEC(TYPE, KEY, ID) \
     open_json::ClassRegistrar<TYPE> \
@@ -46,7 +46,7 @@ namespace open_json {
         }
 
         static std::vector<std::shared_ptr<Serializable>>
-        CreateObjectArray(const std::string &key, const std::size_t size) {
+        CreateObjectList(const std::string &key, const std::size_t size) {
             std::vector<std::shared_ptr<Serializable>> v;
             std::string lwKey = key;
             StringUtils::ToLower(lwKey);
@@ -70,7 +70,7 @@ namespace open_json {
             cm_mutex.unlock();
 
             cm_mutexList.lock();
-            cm_objectListCreators[lwKey] = &CreateArray<T>;
+            cm_objectListCreators[lwKey] = &CreateList<T>;
             cm_mutexList.unlock();
         }
 
@@ -104,8 +104,22 @@ namespace open_json {
             cm_objectListCreators.clear();
             cm_mutexList.unlock();
         }
-
     protected:
+        template<class T>
+        static std::shared_ptr<Serializable> Create() {
+            std::shared_ptr<Serializable> ptr = std::make_shared<T>();
+            return ptr;
+        }
+
+        template<class T>
+        static std::vector<std::shared_ptr<Serializable>> CreateList(const size_t &size) {
+            std::vector<std::shared_ptr<Serializable>> v;
+            for (size_t i = 0; i < size; ++i) {
+                v.push_back(std::make_shared<T>());
+            }
+            return v;
+        }
+
         typedef std::shared_ptr<Serializable> (*FunPtr)(void);
 
         typedef std::map<std::string, FunPtr> ListCreators;
@@ -113,20 +127,6 @@ namespace open_json {
         typedef std::vector<std::shared_ptr<Serializable>> (*FunPtrArr)(const size_t&);
 
         typedef std::map<std::string, FunPtrArr> ListCreatorsArr;
-
-        template<class T>
-        static std::shared_ptr<Serializable> Create() {
-            return std::make_shared<T>();
-        }
-
-        template<class T>
-        static std::vector<std::shared_ptr<Serializable>> CreateArray(const size_t &size) {
-            std::vector<std::shared_ptr<Serializable>> v;
-            for (size_t i = 0; i < size; ++i) {
-                v.push_back(std::make_shared<T>());
-            }
-            return v;
-        }
 
         static inline std::mutex cm_mutex;
         static inline ListCreators cm_objectCreators;

@@ -1,0 +1,51 @@
+[1/2] Building CXX object CMakeFiles/open_json_test.dir/src/sofactory/SimpleClass1.cpp.obj
+FAILED: CMakeFiles/open_json_test.dir/src/sofactory/SimpleClass1.cpp.obj 
+C:\msys64\mingw64\bin\c++.exe -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -IC:/Works/C++/open_json/tests/include -g -c -O1 -g3 -Wall -Wextra -Wno-unused-variable -Wno-unused-parameter -Wno-write-strings -Wno-unused-local-typedefs -std=c++17 -MD -MT CMakeFiles/open_json_test.dir/src/sofactory/SimpleClass1.cpp.obj -MF CMakeFiles\open_json_test.dir\src\sofactory\SimpleClass1.cpp.obj.d -o CMakeFiles/open_json_test.dir/src/sofactory/SimpleClass1.cpp.obj -c C:/Works/C++/open_json/tests/src/sofactory/SimpleClass1.cpp
+In file included from C:/Works/C++/open_json/include/open_json.h:18,
+                 from C:/Works/C++/open_json/tests/src/sofactory/SimpleClass1.cpp:3:
+C:/Works/C++/open_json/include/SOFactory.h: In instantiation of 'static std::shared_ptr<open_json::Serializable> open_json::SOFactory::Create() [with T = open_json_test::so_factory::simple_class_1::SimpleClass1]':
+C:/Works/C++/open_json/include/SOFactory.h:69:40:   required from 'static void open_json::SOFactory::Register(const std::string&) [with T = open_json_test::so_factory::simple_class_1::SimpleClass1; std::string = std::__cxx11::basic_string<char>]'
+   69 |             cm_objectCreators[lwKey] = &Create<T>;
+      |                                        ^~~~~~~~~~
+C:/Works/C++/open_json/include/SOFactory.h:144:35:   required from 'open_json::ClassRegistrar<T>::ClassRegistrar(const std::string&) [with T = open_json_test::so_factory::simple_class_1::SimpleClass1; std::string = std::__cxx11::basic_string<char>]'
+  144 |             SOFactory::Register<T>(key);
+      |             ~~~~~~~~~~~~~~~~~~~~~~^~~~~
+C:/Works/C++/open_json/tests/src/sofactory/SimpleClass1.cpp:15:9:   required from here
+   21 |     private: static inline open_json::ClassRegistrar<TYPE> _class_registrar_##ID = open_json::ClassRegistrar<TYPE>( std::string(KEY) )
+      |                                                                                                                                      ^
+C:/Works/C++/open_json/include/SOFactory.h:110:68: error: conversion from 'shared_ptr<open_json_test::so_factory::simple_class_1::SimpleClass1>' to non-scalar type 'shared_ptr<open_json::Serializable>' requested
+  110 |             std::shared_ptr<Serializable> ptr = std::make_shared<T>();
+      |                                                 ~~~~~~~~~~~~~~~~~~~^~
+C:/Works/C++/open_json/include/SOFactory.h:111:33: warning: moving a local object in a return statement prevents copy elision [-Wpessimizing-move]
+  111 |             return std::move(ptr);
+      |                                 ^
+C:/Works/C++/open_json/include/SOFactory.h:111:33: note: remove 'std::move' call
+C:/Works/C++/open_json/include/SOFactory.h: In instantiation of 'static std::vector<std::shared_ptr<open_json::Serializable> > open_json::SOFactory::CreateArray(const size_t&) [with T = open_json_test::so_factory::simple_class_1::SimpleClass1; size_t = long long unsigned int]':
+C:/Works/C++/open_json/include/SOFactory.h:73:44:   required from 'static void open_json::SOFactory::Register(const std::string&) [with T = open_json_test::so_factory::simple_class_1::SimpleClass1; std::string = std::__cxx11::basic_string<char>]'
+   73 |             cm_objectListCreators[lwKey] = &CreateArray<T>;
+      |                                            ^~~~~~~~~~~~~~~
+C:/Works/C++/open_json/include/SOFactory.h:144:35:   required from 'open_json::ClassRegistrar<T>::ClassRegistrar(const std::string&) [with T = open_json_test::so_factory::simple_class_1::SimpleClass1; std::string = std::__cxx11::basic_string<char>]'
+  144 |             SOFactory::Register<T>(key);
+      |             ~~~~~~~~~~~~~~~~~~~~~~^~~~~
+C:/Works/C++/open_json/tests/src/sofactory/SimpleClass1.cpp:15:9:   required from here
+   21 |     private: static inline open_json::ClassRegistrar<TYPE> _class_registrar_##ID = open_json::ClassRegistrar<TYPE>( std::string(KEY) )
+      |                                                                                                                                      ^
+C:/Works/C++/open_json/include/SOFactory.h:118:28: error: no matching function for call to 'std::vector<std::shared_ptr<open_json::Serializable> >::push_back(std::shared_ptr<open_json_test::so_factory::simple_class_1::SimpleClass1>)'
+  118 |                 v.push_back(std::make_shared<T>());
+      |                 ~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+In file included from C:/msys64/mingw64/include/c++/14.1.0/vector:66,
+                 from C:/msys64/mingw64/include/gtest/gtest.h:62,
+                 from C:/Works/C++/open_json/tests/src/sofactory/SimpleClass1.cpp:1:
+C:/msys64/mingw64/include/c++/14.1.0/bits/stl_vector.h:1283:7: note: candidate: 'void std::vector<_Tp, _Alloc>::push_back(const value_type&) [with _Tp = std::shared_ptr<open_json::Serializable>; _Alloc = std::allocator<std::shared_ptr<open_json::Serializable> >; value_type = std::shared_ptr<open_json::Serializable>]'
+ 1283 |       push_back(const value_type& __x)
+      |       ^~~~~~~~~
+C:/msys64/mingw64/include/c++/14.1.0/bits/stl_vector.h:1283:35: note:   no known conversion for argument 1 from 'std::shared_ptr<open_json_test::so_factory::simple_class_1::SimpleClass1>' to 'const std::vector<std::shared_ptr<open_json::Serializable> >::value_type&' {aka 'const std::shared_ptr<open_json::Serializable>&'}
+ 1283 |       push_back(const value_type& __x)
+      |                 ~~~~~~~~~~~~~~~~~~^~~
+C:/msys64/mingw64/include/c++/14.1.0/bits/stl_vector.h:1300:7: note: candidate: 'void std::vector<_Tp, _Alloc>::push_back(value_type&&) [with _Tp = std::shared_ptr<open_json::Serializable>; _Alloc = std::allocator<std::shared_ptr<open_json::Serializable> >; value_type = std::shared_ptr<open_json::Serializable>]'
+ 1300 |       push_back(value_type&& __x)
+      |       ^~~~~~~~~
+C:/msys64/mingw64/include/c++/14.1.0/bits/stl_vector.h:1300:30: note:   no known conversion for argument 1 from 'std::shared_ptr<open_json_test::so_factory::simple_class_1::SimpleClass1>' to 'std::vector<std::shared_ptr<open_json::Serializable> >::value_type&&' {aka 'std::shared_ptr<open_json::Serializable>&&'}
+ 1300 |       push_back(value_type&& __x)
+      |                 ~~~~~~~~~~~~~^~~
+ninja: build stopped: subcommand failed.

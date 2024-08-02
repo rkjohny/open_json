@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 #include <string>
-#include <random>
 #include "../../../include/open_json.h"
+#include "../../include/RandomGenerator.h"
 
 
 namespace open_json_test::deserialize::nested::derived::vector {
@@ -408,28 +408,6 @@ namespace open_json_test::deserialize::nested::derived::vector {
         }
     };
 
-    // Seed with a real random value, if available
-    std::random_device rd;
-
-    // Choose a random number between 1 and 100
-    std::mt19937 gen(rd()); // Standard mersenne_twister_engine
-    std::uniform_int_distribution<> dis(1, 100);
-
-    char *letters = "abcdefghijklmnopqurstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    int LEN = 62;
-
-    int GetNextInt() {
-        return dis(gen);
-    }
-
-    std::string GetNextString() {
-        std::string str;
-        for (int i = 0; i < 10; i++) {
-            str += letters[GetNextInt() % 62];
-        }
-        return str;
-    }
-
     void CheckDerived2(const DerivedClass2 &derived, const nlohmann::json &object) {
         ASSERT_DOUBLE_EQ(*derived.GetScore(), object["score"].template get<double>());
         ASSERT_DOUBLE_EQ(derived.IsValid(), object["is_valid"].template get<bool>());
@@ -441,12 +419,12 @@ namespace open_json_test::deserialize::nested::derived::vector {
 
     nlohmann::json GetDerived2() {
         nlohmann::json derived2 = nlohmann::json::object();
-        derived2["score"] = (GetNextInt() + 0.5);
-        derived2["is_valid"] = ((GetNextInt() % 2) == 0);
-        derived2["id"] = GetNextInt();
-        derived2["name"] = GetNextString();
-        derived2["code"] = GetNextInt();
-        derived2["age"] = GetNextInt();
+        derived2["score"] = (open_json_test::RandomGenerator::GetInstance().GetNextInt() + 0.5);
+        derived2["is_valid"] = ((open_json_test::RandomGenerator::GetInstance().GetNextInt() % 2) == 0);
+        derived2["id"] = open_json_test::RandomGenerator::GetInstance().GetNextInt();
+        derived2["name"] = open_json_test::RandomGenerator::GetInstance().GetNextString(10);
+        derived2["code"] = open_json_test::RandomGenerator::GetInstance().GetNextInt();
+        derived2["age"] = open_json_test::RandomGenerator::GetInstance().GetNextInt();
         return derived2;
     }
 
