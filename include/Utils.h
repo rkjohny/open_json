@@ -7,11 +7,13 @@
 #include <memory>
 #include <string>
 #include <regex>
+#include "CommonDef.h"
 
 namespace open_json {
 
 class Utils {
 private:
+    MAKE_STATIC(Utils);
 
 public:
     static std::string Demangle(const char *mangled_name) {

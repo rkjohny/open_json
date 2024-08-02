@@ -4,7 +4,6 @@
 #include <iostream>
 #include "CommonDef.h"
 #include <nlohmann/json.hpp>
-#include "boost/optional.hpp"
 #include "TypeTraits.h"
 #include "Setter.h"
 #include "Utils.h"

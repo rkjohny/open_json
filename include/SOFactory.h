@@ -36,7 +36,7 @@ namespace open_json {
             StringUtils::ToLower(lwKey);
 
             cm_mutex.lock();
-            ListCreators::iterator itr = cm_objectCreators.find(lwKey);
+            auto itr = cm_objectCreators.find(lwKey);
             if (itr != cm_objectCreators.end()) {
                 p = itr->second();
             }
@@ -51,36 +51,32 @@ namespace open_json {
             std::string lwKey = key;
             StringUtils::ToLower(lwKey);
 
-            cm_mutexArr.lock();
-            ListCreatorsArr::iterator itr = cm_objectArrayCreators.find(lwKey);
-            if (itr != cm_objectArrayCreators.end()) {
+            cm_mutexList.lock();
+            auto itr = cm_objectListCreators.find(lwKey);
+            if (itr != cm_objectListCreators.end()) {
                 v = itr->second(size);
             }
-            cm_mutexArr.unlock();
+            cm_mutexList.unlock();
             return v;
         }
 
         template<class T>
         static void Register(const std::string &key) {
-            static_assert(std::is_base_of<Serializable, T>::value,
-                          "T must be derived from Serializable");
-            std::string lwKey = key;
+            std::string lwKey = std::string(key);
             StringUtils::ToLower(lwKey);
 
             cm_mutex.lock();
             cm_objectCreators[lwKey] = &Create<T>;
             cm_mutex.unlock();
 
-            cm_mutexArr.lock();
-            cm_objectArrayCreators[lwKey] = &CreateArray<T>;
-            cm_mutexArr.unlock();
+            cm_mutexList.lock();
+            cm_objectListCreators[lwKey] = &CreateArray<T>;
+            cm_mutexList.unlock();
         }
 
         template<class T>
         static void UnRegister(const std::string &key) {
-            static_assert(std::is_base_of<Serializable, T>::value,
-                          "T must be derived from Serializable");
-            std::string lwKey = key;
+            std::string lwKey = std::string(key);
             StringUtils::ToLower(lwKey);
 
             cm_mutex.lock();
@@ -91,15 +87,23 @@ namespace open_json {
             cm_mutex.unlock();
 
 
-            cm_mutexArr.lock();
-            auto itrArr = cm_objectArrayCreators.find(lwKey);
-            if (itrArr != cm_objectArrayCreators.end()) {
-                cm_objectArrayCreators.erase(itrArr);
+            cm_mutexList.lock();
+            auto itrArr = cm_objectListCreators.find(lwKey);
+            if (itrArr != cm_objectListCreators.end()) {
+                cm_objectListCreators.erase(itrArr);
             }
-            cm_mutexArr.unlock();
+            cm_mutexList.unlock();
         }
 
-        static void Clear();
+        static void Clear() {
+            cm_mutex.lock();
+            cm_objectCreators.clear();
+            cm_mutex.unlock();
+
+            cm_mutexList.lock();
+            cm_objectListCreators.clear();
+            cm_mutexList.unlock();
+        }
 
     protected:
         typedef std::shared_ptr<Serializable> (*FunPtr)(void);
@@ -127,15 +131,15 @@ namespace open_json {
         static inline std::mutex cm_mutex;
         static inline ListCreators cm_objectCreators;
 
-        static inline std::mutex cm_mutexArr;
-        static inline ListCreatorsArr cm_objectArrayCreators;
+        static inline std::mutex cm_mutexList;
+        static inline ListCreatorsArr cm_objectListCreators;
     };
 
     template<class T>
     class ClassRegistrar {
     public:
 
-        ClassRegistrar(const std::string &key) {
+        explicit ClassRegistrar(const std::string &key) {
             SOFactory::Register<T>(key);
         }
 

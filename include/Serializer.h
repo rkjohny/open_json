@@ -5,7 +5,6 @@
 #include "CommonDef.h"
 #include "TypeTraits.h"
 #include "nlohmann/json.hpp"
-#include "boost/optional.hpp"
 #include "string"
 #include "Getter.h"
 #include "Utils.h"
@@ -61,9 +60,6 @@ namespace open_json::serializer {
 
     template<class T>
     static nlohmann::json ToJsonObject(const std::weak_ptr<T> &object);
-
-    template<class T>
-    static nlohmann::json ToJsonObject(const boost::optional<T> &object);
 
     template<class T>
     std::enable_if_t<is_class_v<T> && !is_pointer_v<T>, nlohmann::json>
@@ -283,16 +279,6 @@ namespace open_json::serializer {
         }
         return {};
     }
-
-    ///////////////////// boost::optional<T> ///////////////////////////////////
-    template<class T>
-    static nlohmann::json ToJsonObject(const boost::optional<T> &object) {
-        if (object) {
-            return ToJsonObject(*object);
-        }
-        return {};
-    }
-
 }
 
 
