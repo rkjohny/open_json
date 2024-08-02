@@ -30,5 +30,5 @@ Unit testing of open_json using Google Test <b>(gtest or googletest)</b>
 * ### Install gtest:
   * pacman -S mingw-w64-x86_64-gtest
 
-* ### Install boost (installing boost::system are sufficient):
+* ### Install boost (installing boost::system is sufficient):
   * pacman -S mingw-w64-x86_64-boost
