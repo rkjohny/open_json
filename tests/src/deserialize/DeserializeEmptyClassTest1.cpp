@@ -2,11 +2,12 @@
 #include <string>
 #include <tuple>
 #include "../../../include/open_json.h"
+#include "../../include/EmptyClass.h"
 
 
 namespace open_json_test::serialize::empty_class::without_getters {
 
-    class SerializeEmptyClass : public open_json::Serializable {
+    class SerializeEmptyClass : public open_json_test::EmptyClass {
     public:
         SerializeEmptyClass() = default;
 

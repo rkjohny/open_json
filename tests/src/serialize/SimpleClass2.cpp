@@ -4,7 +4,7 @@
 
 namespace open_json_test::serialize::simple_class {
 
-    class SimpleClass2 : public open_json::Serializable {
+    class SimpleClass2 {
     private:
         int id = 100;
         std::string name = "Rezaul karim";
@@ -21,10 +21,10 @@ namespace open_json_test::serialize::simple_class {
         }
 
 
-        REGISTER_GETTER_INCLUDING_BASE_START(open_json::Serializable)
+        REGISTER_GETTER_START
         GETTER(SimpleClass2, int, "id", &SimpleClass2::GetId),
         GETTER(SimpleClass2, const std::string&, "name", &SimpleClass2::GetName)
-        REGISTER_GETTER_INCLUDING_BASE_END
+        REGISTER_GETTER_END
     };
 
     TEST(SimpleClass2, Test) {
