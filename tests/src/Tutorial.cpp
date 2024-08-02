@@ -126,6 +126,8 @@ namespace open_json_test::tutorial {
 
         jsonObject = open_json::ToJson(person);
 
+        //std::cout << jsonObject.dump(4) << std::endl;
+
         ASSERT_EQ(person.GetAge(), jsonObject["age"].template get<int>());
         ASSERT_EQ(0, person.GetName().compare(jsonObject["name"].template get<std::string>()));
 
@@ -167,6 +169,9 @@ namespace open_json_test::tutorial {
         student.SetId(new int(10));
 
         jsonObject = open_json::ToJson(student);
+
+        //std::cout << jsonObject.dump(4) << std::endl;
+
         ASSERT_EQ(student.GetAge(), jsonObject["age"].template get<int>());
         ASSERT_EQ(0, student.GetName().compare(jsonObject["name"].template get<std::string>()));
         ASSERT_EQ(*student.GetId(), jsonObject["id"].template get<int>());
