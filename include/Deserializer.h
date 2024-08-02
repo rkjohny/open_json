@@ -638,7 +638,7 @@ namespace open_json::deserializer {
         using Type = shared_ptr_value_type_t<T>;
         std::shared_ptr<Type> var = std::make_shared<Type>();
         FromJsonObject(*var.get(), jsonObject);
-        return std::move(var);
+        return var;
     }
 
     /***********************************************************************************
