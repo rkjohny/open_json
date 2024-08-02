@@ -656,7 +656,7 @@ namespace open_json::deserializer {
 
         auto itr = jsonObject.begin();
         while (itr != jsonObject.end()) {
-            // TODO: not working if key is a object type (rather than string or primitive type)
+            // TODO: will work if key is an object type (rather than string or primitive type)
             nlohmann::json keyJson= itr.key();
             FromJsonObject<KeyType>(keyObj, keyJson);
 
