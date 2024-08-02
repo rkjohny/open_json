@@ -4,7 +4,7 @@
 #include "../../../include/open_json.h"
 
 
-namespace open_json_test::serialize::map_test {
+namespace open_json_test::deserialize::map_test {
 
     class KeyComparator;
 
@@ -36,7 +36,7 @@ namespace open_json_test::serialize::map_test {
             this->index = index;
         }
 
-        void SetValue(std::string value) {
+        void SetValue(const std::string &value) {
             this->value = value;
         }
 
@@ -64,10 +64,10 @@ namespace open_json_test::serialize::map_test {
             return *this;
         }
 
-        REGISTER_GETTER_START
-        GETTER(Key, int, "id", &Key::GetIndex),
-        GETTER(Key, const std::string&, "name", &Key::GetValue)
-        REGISTER_GETTER_END
+        REGISTER_SETTER_START
+        SETTER(Key, int, "id", &Key::SetIndex),
+        SETTER(Key, const std::string&, "name", &Key::SetValue)
+        REGISTER_SETTER_END
     };
 
     class KeyComparator {
@@ -102,7 +102,7 @@ namespace open_json_test::serialize::map_test {
             this->score = score;
         }
 
-        void setGrade(std::string grade) {
+        void SetGrade(std::string grade) {
             this->grade = grade;
         }
 
@@ -126,54 +126,23 @@ namespace open_json_test::serialize::map_test {
             return *this;
         }
 
-        REGISTER_GETTER_START
-        GETTER(Value, double, "score", &Value::GetScore),
-        GETTER(Value, const std::string&, "grade", &Value::GetGrade)
-        REGISTER_GETTER_END
+        REGISTER_SETTER_START
+        SETTER(Value, double, "score", &Value::SetScore),
+        SETTER(Value, std::string, "grade", &Value::SetGrade)
+        REGISTER_SETTER_END
     };
 
-    class SerializeMapTest : public ::testing::Test {
+    class DeserializeMapTest : public ::testing::Test {
     public:
-        SerializeMapTest() = default;
-
-        virtual ~SerializeMapTest() {
-        };
-
-        std::map<std::string, int> mapObj;
-        std::map<std::string, std::string> *mapPtr;
-        std::map<std::string, Value> mapObject;
+        DeserializeMapTest() = default;
 
         // TODO: not working because key is an object type (instead of string or primitive type)
         std::map<Key, Value> mapKeyValue;
 
+        virtual ~DeserializeMapTest() {
+        };
+
         void SetUp() override {
-            mapObj["first"] = 1;
-            mapObj["second"] = 2;
-            mapObj["third"] = 3;
-
-            mapPtr = new std::map<std::string, std::string>();
-            (*mapPtr)["first"] = "one";
-            (*mapPtr)["second"] = "two";
-            (*mapPtr)["third"] = "three";
-
-            mapObject.insert(std::pair<std::string, Value>("first", {80, "A+"}));
-            mapObject.insert(std::pair<std::string, Value>("second", {70, "A"}));
-            mapObject.insert(std::pair<std::string, Value>("third", {60, "A-"}));
-
-            mapKeyValue.insert(std::pair<Key, Value>(
-                    {1, "Rezaul Karim"},
-                    {80, "A+"}
-            ));
-
-            mapKeyValue.insert(std::pair<Key, Value>(
-                    {2, "David Backham"},
-                    {70, "A"}
-            ));
-
-            mapKeyValue.insert(std::pair<Key, Value>(
-                    {3, "John Cena"},
-                    {60, "A-"}
-            ));
         }
 
         void TearDown() override {
@@ -181,23 +150,20 @@ namespace open_json_test::serialize::map_test {
         }
     };
 
-    TEST_F(SerializeMapTest, TestMap1) {
+    TEST_F(DeserializeMapTest, TestMap1) {
         nlohmann::json jsonObject;
 
-        jsonObject = open_json::ToJson(mapObj);
-        ASSERT_TRUE(jsonObject.is_object());
-        ASSERT_EQ(mapObj.at("first"), jsonObject.at("first").template get<int>());
-        ASSERT_EQ(mapObj.at("second"), jsonObject.at("second").template get<int>());
-        ASSERT_EQ(mapObj.at("third"), jsonObject.at("third").template get<int>());
+        jsonObject["first"]["score"] = 90;
+        jsonObject["first"]["grade"] = "A+";
 
-        jsonObject = open_json::ToJson(mapPtr);
-        ASSERT_EQ(0, mapPtr->at("first").compare(jsonObject.at("first").template get<std::string>()));
-        ASSERT_EQ(0, mapPtr->at("second").compare(jsonObject.at("second").template get<std::string>()));
-        ASSERT_EQ(0, mapPtr->at("third").compare(jsonObject.at("third").template get<std::string>()));
-        delete mapPtr;
+        jsonObject["second"]["score"] = 80;
+        jsonObject["second"]["grade"] = "A-";
 
-        jsonObject = open_json::ToJson(mapObject);
-        ASSERT_TRUE(jsonObject.is_object());
+        jsonObject["third"]["score"] = 90;
+        jsonObject["third"]["grade"] = "A";
+
+        std::map<std::string, Value> mapObject = open_json::FromJson<std::map<std::string, Value>>(jsonObject);
+
         ASSERT_DOUBLE_EQ(mapObject.at("first").GetScore(), jsonObject["first"].at("score").template get<double>());
         ASSERT_EQ(mapObject.at("first").GetGrade(), jsonObject["first"].at("grade").template get<std::string>());
 

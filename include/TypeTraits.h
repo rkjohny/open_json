@@ -704,6 +704,11 @@ namespace open_json {
     };
 
     template<class T, class U, class Alloc>
+    struct is_map<volatile std::map<T, U, Alloc> &> {
+        static const bool value = true;
+    };
+
+    template<class T, class U, class Alloc>
     struct is_map<const volatile std::map<T, U, Alloc> &> {
         static const bool value = true;
     };
@@ -711,25 +716,48 @@ namespace open_json {
     template<class T>
     inline constexpr bool is_map_v = is_map<std::remove_cv_t<std::remove_reference_t<T>>>::value;
 
+    template<class T>
+    struct map_type {
+        using KeyType = void;
+        using ValueType = void;
+    };
+
+    template<class T, class U, class Alloc>
+    struct map_type<std::map<T, U, Alloc>> {
+        using KeyType = T;
+        using ValueType = U;
+    };
+
+    template<class T>
+    using map_key_type_t = typename map_type<T>::KeyType;
+
+    template<class T>
+    using map_value_type_t = typename map_type<T>::ValueType;
+
     /**
     * check whether T is a std::unique_ptr
     */
-    template <typename T>
-    struct is_unique_ptr : std::false_type {};
+    template<typename T>
+    struct is_unique_ptr : std::false_type {
+    };
 
-    template <typename T, class D>
-    struct is_unique_ptr<std::unique_ptr<T, D>> : std::true_type {};
+    template<typename T, class D>
+    struct is_unique_ptr<std::unique_ptr<T, D>> : std::true_type {
+    };
 
-    template <typename T, class D>
-    struct is_unique_ptr<std::unique_ptr<T, D> const> : std::true_type {};
+    template<typename T, class D>
+    struct is_unique_ptr<std::unique_ptr<T, D> const> : std::true_type {
+    };
 
-    template <typename T, class D>
-    struct is_unique_ptr<std::unique_ptr<T, D> volatile> : std::true_type {};
+    template<typename T, class D>
+    struct is_unique_ptr<std::unique_ptr<T, D> volatile> : std::true_type {
+    };
 
-    template <typename T, class D>
-    struct is_unique_ptr<std::unique_ptr<T, D> const volatile> : std::true_type {};
+    template<typename T, class D>
+    struct is_unique_ptr<std::unique_ptr<T, D> const volatile> : std::true_type {
+    };
 
-    template <typename T>
+    template<typename T>
     inline constexpr bool is_unique_ptr_v = is_unique_ptr<std::remove_cv_t<std::remove_reference_t<T>>>::value;
 
     // Helper template to extract the value type of a unique_ptr
@@ -743,28 +771,48 @@ namespace open_json {
         using type = T; // Extract the value type for unique_ptr
     };
 
+    template<typename T, typename D>
+    struct unique_ptr_value_type<std::unique_ptr<T, D> const> {
+        using type = T; // Extract the value type for unique_ptr
+    };
+
+    template<typename T, typename D>
+    struct unique_ptr_value_type<std::unique_ptr<T, D> volatile> {
+        using type = T; // Extract the value type for unique_ptr
+    };
+
+    template<typename T, typename D>
+    struct unique_ptr_value_type<std::unique_ptr<T, D> const volatile> {
+        using type = T; // Extract the value type for unique_ptr
+    };
+
     template<typename T>
     using unique_ptr_value_type_t = typename unique_ptr_value_type<T>::type;
 
     /**
     * check whether T is a std::shared_ptr
     */
-    template <typename T>
-    struct is_shared_ptr : std::false_type {};
+    template<typename T>
+    struct is_shared_ptr : std::false_type {
+    };
 
-    template <typename T>
-    struct is_shared_ptr<std::shared_ptr<T>> : std::true_type {};
+    template<typename T>
+    struct is_shared_ptr<std::shared_ptr<T>> : std::true_type {
+    };
 
-    template <typename T>
-    struct is_shared_ptr<std::shared_ptr<T> const> : std::true_type {};
+    template<typename T>
+    struct is_shared_ptr<std::shared_ptr<T> const> : std::true_type {
+    };
 
-    template <typename T>
-    struct is_shared_ptr<std::shared_ptr<T> volatile> : std::true_type {};
+    template<typename T>
+    struct is_shared_ptr<std::shared_ptr<T> volatile> : std::true_type {
+    };
 
-    template <typename T>
-    struct is_shared_ptr<std::shared_ptr<T> const volatile> : std::true_type {};
+    template<typename T>
+    struct is_shared_ptr<std::shared_ptr<T> const volatile> : std::true_type {
+    };
 
-    template <typename T>
+    template<typename T>
     inline constexpr bool is_shared_ptr_v = is_shared_ptr<std::remove_cv_t<std::remove_reference_t<T>>>::value;
 
     // Helper template to extract the value type of a unique_ptr
@@ -775,6 +823,21 @@ namespace open_json {
 
     template<typename T>
     struct shared_ptr_value_type<std::shared_ptr<T>> {
+        using type = T; // Extract the value type for unique_ptr
+    };
+
+    template<typename T>
+    struct shared_ptr_value_type<std::shared_ptr<T> const> {
+        using type = T; // Extract the value type for unique_ptr
+    };
+
+    template<typename T>
+    struct shared_ptr_value_type<std::shared_ptr<T> volatile> {
+        using type = T; // Extract the value type for unique_ptr
+    };
+
+    template<typename T>
+    struct shared_ptr_value_type<std::shared_ptr<T> const volatile> {
         using type = T; // Extract the value type for unique_ptr
     };
 
@@ -803,7 +866,7 @@ namespace open_json {
         );
     };
 
-    template <typename T>
+    template<typename T>
     inline constexpr bool is_class_v = is_class<T>::value;
 }
 

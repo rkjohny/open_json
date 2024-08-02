@@ -8,6 +8,7 @@
 #include "boost/optional.hpp"
 #include "string"
 #include "Getter.h"
+#include "Utils.h"
 
 
 namespace open_json::serializer {
@@ -236,6 +237,7 @@ namespace open_json::serializer {
         while (itr != object.end()) {
             auto &key = itr->first;
             auto &value = itr->second;
+            // TODO: not working if key is a object type (rather than string or primitive type)
             jsonObject[ToJsonObject(key)] = ToJsonObject(value);
             ++itr;
         }

@@ -197,6 +197,15 @@ namespace open_json::deserializer {
     std::enable_if_t<is_shared_ptr_v<T>, T>
     static FromJsonObject(const nlohmann::json &jsonObject);
 
+    template<class T>
+    std::enable_if_t<is_map_v<T>, void>
+    static FromJsonObject(T &mapObj, const nlohmann::json &jsonObject);
+
+    template<class T>
+    std::enable_if_t<is_map_v<T>, T>
+    static FromJsonObject(const nlohmann::json &jsonObject);
+
+
 
 
     //************************ Implementation *************************************
@@ -602,8 +611,8 @@ namespace open_json::deserializer {
     static FromJsonObject(const nlohmann::json &jsonArray, size_t length) {
         using Pointer = remove_all_cvr_t<T>;
         using Type = remove_all_cvr_single_p_t<Pointer>;
-        Pointer array = new Type [length];
-        for(size_t i = 0; i<length; ++i) {
+        Pointer array = new Type[length];
+        for (size_t i = 0; i < length; ++i) {
             array[i] = FromJsonObject<Type>(jsonArray[i]);
         }
         return array;
@@ -615,7 +624,7 @@ namespace open_json::deserializer {
     template<class T>
     std::enable_if_t<is_unique_ptr_v<T>, T>
     static FromJsonObject(const nlohmann::json &jsonObject) {
-        using Type = typename unique_ptr_value_type<T>::type;
+        using Type = unique_ptr_value_type_t<T>;
         std::unique_ptr<Type> var = std::make_unique<Type>();
         FromJsonObject(*var.get(), jsonObject);
         return std::move(var);
@@ -627,10 +636,44 @@ namespace open_json::deserializer {
     template<class T>
     std::enable_if_t<is_shared_ptr_v<T>, T>
     static FromJsonObject(const nlohmann::json &jsonObject) {
-        using Type = typename shared_ptr_value_type<T>::type;
+        using Type = shared_ptr_value_type_t<T>;
         std::shared_ptr<Type> var = std::make_shared<Type>();
         FromJsonObject(*var.get(), jsonObject);
         return std::move(var);
+    }
+
+    /***********************************************************************************
+    * object type: std::map
+    ***********************************************************************************/
+    template<class T>
+    std::enable_if_t<is_map_v<T>, void>
+    static FromJsonObject(T &mapObj, const nlohmann::json &jsonObject) {
+        using KeyType = map_key_type_t<T>;
+        using ValueType = map_value_type_t<T>;
+
+        KeyType keyObj = KeyType();
+        ValueType valueObj = ValueType();
+
+        auto itr = jsonObject.begin();
+        while (itr != jsonObject.end()) {
+            // TODO: not working if key is a object type (rather than string or primitive type)
+            nlohmann::json keyJson= itr.key();
+            FromJsonObject<KeyType>(keyObj, keyJson);
+
+            nlohmann::json valueJson = itr.value();
+            FromJsonObject<ValueType>(valueObj, valueJson);
+
+            mapObj.insert(std::pair<KeyType , ValueType>(keyJson, valueObj));
+            ++itr;
+        }
+    }
+
+    template<class T>
+    std::enable_if_t<is_map_v<T>, T>
+    static FromJsonObject(const nlohmann::json &jsonObject) {
+        T mapObj;
+        FromJsonObject<T>(mapObj, jsonObject);
+        return mapObj;
     }
 }
 
