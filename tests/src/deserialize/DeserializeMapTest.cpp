@@ -136,7 +136,7 @@ namespace open_json_test::deserialize::map_test {
     public:
         DeserializeMapTest() = default;
 
-        // TODO: not working because key is an object type (instead of string or primitive type)
+        // TODO: both key and value are object type
         std::map<Key, Value> mapKeyValue;
 
         virtual ~DeserializeMapTest() {

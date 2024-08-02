@@ -143,7 +143,7 @@ namespace open_json_test::serialize::map_test {
         std::map<std::string, std::string> *mapPtr;
         std::map<std::string, Value> mapObject;
 
-        // TODO: not working because key is an object type (instead of string or primitive type)
+        // TODO: // TODO: both key and value are object type
         std::map<Key, Value> mapKeyValue;
 
         void SetUp() override {
