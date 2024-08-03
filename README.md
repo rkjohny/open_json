@@ -399,7 +399,7 @@ class Person {
         Person() = default;
 };
 ````
-* #### Rule 2: The class must have a cpoy constructor, move constructor, copy assignment operator and move operator
+* #### Rule 2: The class must override default cpoy constructor, move constructor, copy assignment operator and move assignment operator
 In our example of Person class:
 ````
 class Person {
@@ -730,7 +730,7 @@ public:
     
     RvalueReference() = default;
     
-    // Implement copy_constructor, move_constructor, copy_assignment and move_assignment operator
+    // Override default copy constructor, move constructor, copy assignment and move assignment operator
       
     void SetId(int &&id) {
         this->id = std::move(id);
