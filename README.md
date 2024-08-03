@@ -48,6 +48,24 @@ A modern c++ library to serialize and deserialize c++ objects to and from <a hre
 * ### Install nlohmann json library:
   * pacman -S mingw-w64-x86_64-nlohmann-json
 
+# To build:
+````
+cd open_json
+cmake .
+ninja all
+
+it will create libopen_json.a in open_json/build
+````
+
+# To build tests:
+````
+cd open_josn/tests
+cmake .
+ninja all
+
+it will create open_json_test.exe in open_json/build
+to run the test cases run the exe file
+````
 
 # How to use:
 
