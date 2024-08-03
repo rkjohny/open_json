@@ -187,7 +187,7 @@ protected:
 
 public:
     Student() {
-        // Important: assign null as the default value of the member, so if we dont set a valid value, it will be ignored and will not be serialized
+        // Important: assign null as the default value of any pointer member variable, so if we dont set a valid value, it will be ignored and will not be serialized
         id = nullptr;
     }
     
