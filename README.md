@@ -104,7 +104,7 @@ nlohmann::json jsonArray = open_json::ToJson(vecInt);
 * Then register the getter method as bellow:
 ````
 REGISTER_GETTER_START
-GETTER(<class>, <return type of the getterr>, <json property>, <getter method>)
+GETTER(<class>, <return type of the getter>, <json property>, <getter method>)
 REGISTER_GETTER_END
 ````
 
@@ -387,7 +387,7 @@ delete ptrVec
 * Then register the setter method as bellow:
 ````
 REGISTER_SETTER_START
-SETTER(<Class>, <setter method return type>, <json priperty>, <setter method>),
+SETTER(<Class>, <argument type of the setter>, <json priperty>, <setter method>),
 REGISTER_SETTER_END
 ````
 * #### To deserialize an object of a custom class you must follow some rules:
